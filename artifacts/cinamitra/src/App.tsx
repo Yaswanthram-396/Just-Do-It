@@ -17,18 +17,21 @@ import Budget from "@/pages/budget";
 import ProducerView from "@/pages/producer";
 import LineProducerView from "@/pages/line-producer";
 import ADMobileView from "@/pages/ad-mobile";
+import DirectorView from "@/pages/director";
+import AccountantView from "@/pages/accountant";
+import ContinuityView from "@/pages/continuity";
+import CashierView from "@/pages/cashier";
+import ProductionManagerView from "@/pages/production-manager";
+import CinematographerView from "@/pages/cinematographer";
+import ProductionDesignerView from "@/pages/production-designer";
+import CostumeDesignerView from "@/pages/costume-designer";
+import EditorView from "@/pages/editor";
+import DiscussionsView from "@/pages/discussions";
+import VendorsView from "@/pages/vendors";
+import ReportsView from "@/pages/reports";
+import TeamView from "@/pages/team";
 
 const queryClient = new QueryClient();
-
-// Placeholder for unbuilt pages
-function PlaceholderPage({ title }: { title: string }) {
-  return (
-    <div className="flex-1 p-8 flex flex-col items-center justify-center min-h-[calc(100vh-3.5rem)]">
-      <h2 className="text-2xl font-display text-muted-foreground mb-4">{title}</h2>
-      <p className="text-muted-foreground">Module under construction.</p>
-    </div>
-  );
-}
 
 function Router() {
   return (
@@ -64,12 +67,38 @@ function Router() {
       <Route path="/ad">
         <Layout><ADMobileView /></Layout>
       </Route>
+      <Route path="/director">
+        <Layout><DirectorView /></Layout>
+      </Route>
+      <Route path="/accountant">
+        <Layout><AccountantView /></Layout>
+      </Route>
+      <Route path="/continuity">
+        <Layout><ContinuityView /></Layout>
+      </Route>
+      <Route path="/cashier">
+        <Layout><CashierView /></Layout>
+      </Route>
+      <Route path="/production-manager">
+        <Layout><ProductionManagerView /></Layout>
+      </Route>
+      <Route path="/cinematographer">
+        <Layout><CinematographerView /></Layout>
+      </Route>
+      <Route path="/production-designer">
+        <Layout><ProductionDesignerView /></Layout>
+      </Route>
+      <Route path="/costume-designer">
+        <Layout><CostumeDesignerView /></Layout>
+      </Route>
+      <Route path="/editor">
+        <Layout><EditorView /></Layout>
+      </Route>
 
-      {/* Placeholders */}
-      <Route path="/discussions"><Layout><PlaceholderPage title="Discussions" /></Layout></Route>
-      <Route path="/vendors"><Layout><PlaceholderPage title="Vendors" /></Layout></Route>
-      <Route path="/reports"><Layout><PlaceholderPage title="Reports" /></Layout></Route>
-      <Route path="/team"><Layout><PlaceholderPage title="Team" /></Layout></Route>
+      <Route path="/discussions"><Layout><DiscussionsView /></Layout></Route>
+      <Route path="/vendors"><Layout><VendorsView /></Layout></Route>
+      <Route path="/reports"><Layout><ReportsView /></Layout></Route>
+      <Route path="/team"><Layout><TeamView /></Layout></Route>
 
       <Route component={NotFound} />
     </Switch>

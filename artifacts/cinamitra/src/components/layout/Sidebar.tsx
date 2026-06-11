@@ -15,7 +15,14 @@ import {
   Briefcase,
   Clapperboard,
   Calculator,
-  Radio
+  Radio,
+  ScrollText,
+  Banknote,
+  Truck,
+  Camera,
+  Layers,
+  Shirt,
+  Scissors
 } from "lucide-react";
 import {
   Sidebar,
@@ -39,35 +46,102 @@ export function AppSidebar() {
   const isCollapsed = state === "collapsed";
 
   const getPrimaryNav = () => {
-    const baseNav = [
-      { title: "Command Center", icon: LayoutDashboard, url: "/dashboard" },
-      { title: "Scene Explorer", icon: Film, url: "/scenes" },
-      { title: "Breakdown Studio", icon: ListChecks, url: "/breakdown" },
-      { title: "Scheduling", icon: Calendar, url: "/scheduling" },
-      { title: "Budget OS", icon: Wallet, url: "/budget" },
-      { title: "Discussions", icon: MessageSquare, url: "/discussions" },
-      { title: "Vendors", icon: Briefcase, url: "/vendors" },
-      { title: "Reports", icon: FileText, url: "/reports" },
-      { title: "Team", icon: Users, url: "/team" },
-    ];
-
-    return baseNav;
-  };
-
-  const getRoleSpecificNav = () => {
     switch (role) {
       case "Producer":
-        return [{ title: "Producer View", icon: UserCircle, url: "/producer" }];
+        return [
+          { title: "Home", icon: UserCircle, url: "/producer" },
+          { title: "Scenes", icon: Film, url: "/scenes" },
+          { title: "Approvals", icon: ListChecks, url: "/approvals" }, // Fallback to breakdown or just leave
+          { title: "Finance", icon: Wallet, url: "/budget" },
+          { title: "Reports", icon: FileText, url: "/reports" },
+        ];
       case "Director":
-        return [{ title: "Director View", icon: Clapperboard, url: "/director" }];
+        return [
+          { title: "Home", icon: Clapperboard, url: "/director" },
+          { title: "Scenes", icon: Film, url: "/scenes" },
+          { title: "Creative", icon: ListChecks, url: "/breakdown" },
+          { title: "References", icon: FileText, url: "/reports" },
+        ];
       case "Line Producer":
-        return [{ title: "Line Producer View", icon: LayoutDashboard, url: "/line-producer" }];
+        return [
+          { title: "Home", icon: LayoutDashboard, url: "/line-producer" },
+          { title: "Scenes", icon: Film, url: "/scenes" },
+          { title: "Breakdown", icon: ListChecks, url: "/breakdown" },
+          { title: "Scheduling", icon: Calendar, url: "/scheduling" },
+          { title: "Budget", icon: Wallet, url: "/budget" },
+          { title: "Vendors", icon: Briefcase, url: "/vendors" },
+          { title: "Reports", icon: FileText, url: "/reports" },
+        ];
       case "AD":
-        return [{ title: "AD Mobile View", icon: Radio, url: "/ad" }];
+        return [
+          { title: "Home", icon: Radio, url: "/ad" },
+          { title: "Scenes", icon: Film, url: "/scenes" },
+          { title: "Issues", icon: MessageSquare, url: "/discussions" },
+          { title: "Reports", icon: FileText, url: "/reports" },
+        ];
       case "Accountant":
-        return [{ title: "Accountant View", icon: Calculator, url: "/accountant" }];
+        return [
+          { title: "Home", icon: Calculator, url: "/accountant" },
+          { title: "Invoices", icon: Briefcase, url: "/vendors" },
+          { title: "Expenses", icon: Wallet, url: "/budget" },
+          { title: "Reports", icon: FileText, url: "/reports" },
+        ];
+      case "Continuity":
+        return [
+          { title: "Home", icon: ScrollText, url: "/continuity" },
+          { title: "Scenes", icon: Film, url: "/scenes" },
+          { title: "Reports", icon: FileText, url: "/reports" },
+        ];
+      case "Cashier":
+        return [
+          { title: "Home", icon: Banknote, url: "/cashier" },
+          { title: "Expenses", icon: Wallet, url: "/budget" },
+          { title: "Receipts", icon: FileText, url: "/reports" },
+        ];
+      case "Production Manager":
+        return [
+          { title: "Home", icon: Truck, url: "/production-manager" },
+          { title: "Logistics", icon: Calendar, url: "/scheduling" },
+          { title: "Vendors", icon: Briefcase, url: "/vendors" },
+          { title: "Resources", icon: Users, url: "/team" },
+        ];
+      case "Cinematographer":
+        return [
+          { title: "Home", icon: Camera, url: "/cinematographer" },
+          { title: "Scenes", icon: Film, url: "/scenes" },
+          { title: "Equipment", icon: ListChecks, url: "/breakdown" },
+        ];
+      case "Production Designer":
+        return [
+          { title: "Home", icon: Layers, url: "/production-designer" },
+          { title: "Props", icon: ListChecks, url: "/breakdown" },
+          { title: "Locations", icon: Calendar, url: "/scheduling" },
+          { title: "Vendors", icon: Briefcase, url: "/vendors" },
+        ];
+      case "Costume Designer":
+        return [
+          { title: "Home", icon: Shirt, url: "/costume-designer" },
+          { title: "Costumes", icon: ListChecks, url: "/breakdown" },
+          { title: "Characters", icon: Film, url: "/scenes" },
+        ];
+      case "Editor":
+        return [
+          { title: "Home", icon: Scissors, url: "/editor" },
+          { title: "Scenes", icon: Film, url: "/scenes" },
+          { title: "Post Production", icon: FileText, url: "/reports" },
+        ];
       default:
-        return [];
+        return [
+          { title: "Command Center", icon: LayoutDashboard, url: "/dashboard" },
+          { title: "Scene Explorer", icon: Film, url: "/scenes" },
+          { title: "Breakdown Studio", icon: ListChecks, url: "/breakdown" },
+          { title: "Scheduling", icon: Calendar, url: "/scheduling" },
+          { title: "Budget OS", icon: Wallet, url: "/budget" },
+          { title: "Discussions", icon: MessageSquare, url: "/discussions" },
+          { title: "Vendors", icon: Briefcase, url: "/vendors" },
+          { title: "Reports", icon: FileText, url: "/reports" },
+          { title: "Team", icon: Users, url: "/team" },
+        ];
     }
   };
 
@@ -94,26 +168,6 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent>
-        {role && (
-          <SidebarGroup>
-            <SidebarGroupLabel>Role Specific</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {getRoleSpecificNav().map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={location === item.url}>
-                      <Link href={item.url}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        )}
-
         <SidebarGroup>
           <SidebarGroupLabel>Production</SidebarGroupLabel>
           <SidebarGroupContent>

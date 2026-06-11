@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { CloudRain, Sun, Cloud, AlertTriangle, GripVertical } from "lucide-react";
 
 export default function Scheduling() {
-  const days = [
+  const days: { day: number; date: string; loc: string; weather: string; scenes: { id: number; t: string; conflict?: boolean }[] }[] = [
     { day: 23, date: "Oct 12", loc: "Palace", weather: "sun", scenes: [{ id: 12, t: "Palace Interior" }] },
     { day: 24, date: "Oct 13", loc: "Village", weather: "cloud", scenes: [{ id: 23, t: "Flashback Village" }] },
     { day: 25, date: "Oct 14", loc: "Hideout", weather: "sun", scenes: [{ id: 41, t: "Confrontation" }] },

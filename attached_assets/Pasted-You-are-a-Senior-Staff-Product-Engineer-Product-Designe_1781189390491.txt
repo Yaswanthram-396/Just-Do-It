@@ -1,0 +1,487 @@
+You are a Senior Staff Product Engineer, Product Designer, UX Architect, and Enterprise SaaS Expert.
+
+You are working on Cinamitra, a role-based film production operating system.
+
+IMPORTANT:
+
+Some role dashboards, pages, and flows are already implemented.
+
+DO NOT rebuild existing functionality.
+
+Your task is to:
+
+1. Audit the entire application.
+2. Identify missing role-specific experiences.
+3. Identify broken navigation paths.
+4. Identify inconsistent UI patterns.
+5. Complete all missing role-based flows.
+6. Ensure every role has a complete end-to-end experience.
+7. Ensure all existing functionality continues to work.
+
+---
+
+CORE PRODUCT PRINCIPLE
+
+The Scene is the primary object.
+
+Every role views the same production data through a different lens.
+
+Do NOT create isolated modules.
+
+Everything must connect back to:
+
+* Scenes
+* Schedule
+* Budget
+* Discussions
+* Approvals
+* Resources
+* Production Context
+
+---
+
+FIRST TASK
+
+Perform a full audit of the current codebase.
+
+Create a report containing:
+
+EXISTING FEATURES
+MISSING FEATURES
+BROKEN FLOWS
+MISSING NAVIGATION
+MISSING ROLE PAGES
+UI INCONSISTENCIES
+DUPLICATE COMPONENTS
+
+Do not start implementation until the audit is complete.
+
+---
+
+ROLE SYSTEM
+
+The platform must support:
+
+1. Producer
+2. Director
+3. Line Producer
+4. Assistant Director
+5. Continuity / Script Supervisor
+6. Accountant
+7. Cashier
+8. Production Manager
+9. Cinematographer (DOP)
+10. Production Designer (Art)
+11. Costume Designer
+12. Editor
+
+Future Ready:
+
+13. Vendor
+14. Actor
+15. Agent
+16. VFX Supervisor
+17. Music Director
+18. Dub Engineer
+19. SFX
+
+---
+
+ROLE-BASED HOME EXPERIENCE
+
+Each role must have:
+
+* Dedicated homepage
+* Dedicated navigation
+* Dedicated widgets
+* Dedicated dashboards
+* Dedicated KPIs
+
+The application should feel like a different product depending on role.
+
+---
+
+PRODUCER
+
+Homepage:
+
+* Production Health
+* Budget Status
+* Schedule Progress
+* Variance Reports
+* Approval Queue
+* Active Risks
+* Executive Summary
+
+Navigation:
+
+Home
+Scenes
+Approvals
+Finance
+Reports
+
+Should NOT see operational clutter by default.
+
+---
+
+DIRECTOR
+
+Homepage:
+
+* Scene Status
+* Locked Scenes
+* Revision Requests
+* Creative Notes
+* Mood Boards
+* References
+* Continuity Alerts
+
+Navigation:
+
+Home
+Scenes
+Creative
+References
+
+Hide financial modules.
+
+---
+
+LINE PRODUCER
+
+Primary Power User.
+
+Homepage:
+
+* Breakdown Progress
+* Scheduling Progress
+* Budget Status
+* Vendor Status
+* Resource Allocation
+* Team Activity
+* Production Risks
+
+Navigation:
+
+Home
+Scenes
+Breakdown
+Scheduling
+Budget
+Resources
+Vendors
+Reports
+
+This should be the most powerful desktop experience.
+
+---
+
+ASSISTANT DIRECTOR
+
+Mobile-first experience.
+
+Homepage:
+
+* Today's Scenes
+* Call Times
+* Actor Arrivals
+* Open Issues
+* Daily Tasks
+* Voice Notes
+
+Navigation:
+
+Today
+Scenes
+Issues
+Reports
+
+Fast actions:
+
+Mark Arrived
+Mark Completed
+Upload Photo
+Record Voice Note
+
+---
+
+CONTINUITY / SCRIPT SUPERVISOR
+
+Homepage:
+
+* Continuity Warnings
+* Character Timeline
+* Scene Relationships
+* Reference Images
+
+Navigation:
+
+Home
+Continuity
+Scenes
+Reports
+
+---
+
+ACCOUNTANT
+
+Homepage:
+
+* Invoice Queue
+* Reimbursement Queue
+* Budget vs Actual
+* GST
+* TDS
+* Payroll
+
+Navigation:
+
+Home
+Invoices
+Expenses
+Reports
+
+---
+
+CASHIER
+
+Mobile-first.
+
+Homepage:
+
+* Cash Balance
+* Today's Expenses
+* Receipt Upload
+* Reconciliation
+
+Navigation:
+
+Home
+Expenses
+Receipts
+
+Quick Add Expense must always be available.
+
+---
+
+PRODUCTION MANAGER
+
+Homepage:
+
+* Vehicles
+* Drivers
+* Accommodation
+* Equipment
+* Logistics
+
+Navigation:
+
+Home
+Logistics
+Vehicles
+Resources
+
+---
+
+CINEMATOGRAPHER
+
+Homepage:
+
+* Upcoming Scenes
+* Camera Requirements
+* Lighting Requirements
+* Equipment Schedule
+
+Navigation:
+
+Home
+Scenes
+Equipment
+
+---
+
+PRODUCTION DESIGNER
+
+Homepage:
+
+* Props
+* Sets
+* Locations
+* Construction Status
+
+Navigation:
+
+Home
+Props
+Locations
+Vendors
+
+---
+
+COSTUME DESIGNER
+
+Homepage:
+
+* Character Wardrobes
+* Costume Continuity
+* Fittings
+* Inventory
+
+Navigation:
+
+Home
+Costumes
+Characters
+
+---
+
+EDITOR
+
+Homepage:
+
+* Scene Metadata
+* Takes
+* Continuity Notes
+* VFX Flags
+
+Navigation:
+
+Home
+Scenes
+Post Production
+
+---
+
+SCENE SYSTEM
+
+This is the heart of the application.
+
+Every role should be able to open a Scene Workspace.
+
+Scene Workspace contains:
+
+Overview
+Breakdown
+Schedule
+Budget
+Discussion
+Continuity
+Files
+Approvals
+
+Role permissions determine what can be edited.
+
+---
+
+ROLE SWITCHING
+
+Implement a role-switching system.
+
+When role changes:
+
+* Homepage changes
+* Navigation changes
+* Widgets change
+* Permissions change
+* Quick actions change
+
+Without page reload if possible.
+
+---
+
+NAVIGATION AUDIT
+
+Verify:
+
+Every page is reachable.
+Every page has a back path.
+No dead routes.
+No broken links.
+No orphan screens.
+
+---
+
+DESIGN SYSTEM AUDIT
+
+Ensure:
+
+* Consistent spacing
+* Consistent cards
+* Consistent tables
+* Consistent typography
+* Consistent colors
+* Consistent modals
+* Consistent drawers
+
+Remove duplicate UI patterns.
+
+---
+
+RESPONSIVE REQUIREMENTS
+
+Desktop:
+1440+
+1280+
+1024+
+
+Tablet:
+768+
+
+Mobile:
+390+
+430+
+
+AD and Cashier experiences should be mobile optimized.
+
+---
+
+EMPTY STATES
+
+Create professional empty states for:
+
+Scenes
+Invoices
+Discussions
+Approvals
+Reports
+Schedules
+Budgets
+
+---
+
+LOADING STATES
+
+Implement:
+
+* Skeleton screens
+* Progressive loading
+* Optimistic updates
+
+---
+
+FINAL DELIVERABLE
+
+Before coding provide:
+
+1. Audit Report
+2. Missing Features Report
+3. Missing Role Report
+4. Navigation Map
+5. Route Map
+6. Component Inventory
+7. Implementation Plan
+
+After approval:
+
+Implement all missing role experiences.
+
+Do not overwrite existing working functionality.
+
+Reuse existing components whenever possible.
+
+Prefer extension over replacement.
+
+Maintain backward compatibility throughout implementation.
+
+The final result should feel like a production-ready enterprise operating system for film production where every role has a complete workflow and every screen connects back to the scene-centric architecture.
