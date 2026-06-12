@@ -1,0 +1,685 @@
+You are a Senior Staff Product Engineer, UX Architect, Enterprise SaaS Designer, and React/Next.js Expert.
+
+Your task is to implement the complete Script Breakdown Workspace for Cinamitra.
+
+IMPORTANT:
+
+Do not generate mock screens.
+
+Build production-ready UI architecture, navigation, routing, state management, and interactions.
+
+Audit the existing codebase first.
+
+Reuse existing components.
+
+Do not replace working functionality.
+
+Extend the current architecture.
+
+---
+
+PRODUCT CONTEXT
+
+Cinamitra is a scene-centric film production operating system.
+
+The screenplay is the source of truth.
+
+The scene is the operational unit.
+
+The breakdown module converts screenplay data into:
+
+* Scenes
+* Characters
+* Props
+* Locations
+* Costumes
+* Vehicles
+* Animals
+* VFX
+* Stunts
+* Songs
+* Crowd Requirements
+
+Every extracted entity connects back to scenes.
+
+---
+
+PRIMARY USER
+
+Line Producer
+
+Secondary Users
+
+* Director
+* AD
+* Script Supervisor
+* Production Designer
+* Costume Designer
+* DOP
+
+Read-only Users
+
+* Producer
+* Production Manager
+* Editor
+
+No Access
+
+* Cashier
+* Accountant
+
+---
+
+ROUTING STRUCTURE
+
+/production/:id
+
+```
+dashboard
+
+scenes
+
+planning
+    breakdown
+    scheduling
+    budget
+
+operations
+
+finance
+```
+
+---
+
+NEW BREAKDOWN FLOW
+
+Planning
+↓
+Breakdown
+↓
+Breakdown Overview
+↓
+Open Script
+↓
+Script Breakdown Workspace
+
+---
+
+BREAKDOWN OVERVIEW PAGE
+
+Create:
+
+/planning/breakdown
+
+Purpose:
+
+Single entry point before entering script viewer.
+
+Display:
+
+Breakdown Progress
+
+AI Confidence
+
+Total Scenes
+
+Characters
+
+Locations
+
+Props
+
+Costumes
+
+Vehicles
+
+VFX
+
+Buttons:
+
+Open Script
+
+Regenerate Breakdown
+
+Lock Breakdown
+
+Export
+
+Recent Script Versions
+
+---
+
+SCRIPT BREAKDOWN WORKSPACE
+
+Route:
+
+/planning/breakdown/script
+
+Layout:
+
+┌─────────────────────────────────────────────┐
+│ Header                                      │
+├──────────┬──────────────────┬───────────────┤
+│ Sidebar  │ Script Viewer    │ Intelligence  │
+│          │                  │ Panel         │
+└──────────┴──────────────────┴───────────────┘
+
+---
+
+HEADER
+
+Show:
+
+Production Name
+
+Script Version
+
+Breakdown Status
+
+Search
+
+Filters
+
+Export
+
+Lock Breakdown
+
+Role Context
+
+---
+
+LEFT SIDEBAR
+
+Collapsible Categories
+
+Scenes
+
+Characters
+
+Props
+
+Locations
+
+Costumes
+
+Vehicles
+
+Animals
+
+VFX
+
+Stunts
+
+Songs
+
+Crowd
+
+Each item contains:
+
+Name
+
+Occurrence Count
+
+Status
+
+Department Tag
+
+Search support
+
+Virtualized list for performance
+
+---
+
+CENTER PANEL
+
+SCREENPLAY VIEWER
+
+Display screenplay professionally.
+
+Support:
+
+Scene headings
+
+Character names
+
+Dialogue
+
+Actions
+
+Transitions
+
+Pagination
+
+Zoom
+
+Search
+
+Highlighting
+
+Current scene indicator
+
+---
+
+BIDIRECTIONAL NAVIGATION
+
+When user clicks:
+
+Sidebar Item
+
+Example:
+
+Collector
+
+System:
+
+1. Find all occurrences
+2. Scroll to first occurrence
+3. Highlight all occurrences
+4. Focus first match
+
+Show:
+
+Occurrence 1 of 12
+
+Next
+
+Previous
+
+---
+
+REVERSE FLOW
+
+When user clicks:
+
+Character
+Location
+Prop
+
+inside screenplay
+
+Automatically:
+
+Expand category
+
+Select sidebar item
+
+Scroll sidebar to selected item
+
+Maintain synchronization
+
+---
+
+RIGHT PANEL
+
+SCENE INTELLIGENCE PANEL
+
+Changes dynamically.
+
+If selected item:
+
+Collector
+
+Show:
+
+Name
+
+Category
+
+Scenes Appearing In
+
+Total Pages
+
+Estimated Shoot Days
+
+Related Costumes
+
+Related Props
+
+Department Owner
+
+---
+
+If selected item:
+
+Location
+
+Show:
+
+Location Name
+
+Scenes
+
+Day/Night Split
+
+Permit Required
+
+Shoot Complexity
+
+Related Schedule Days
+
+---
+
+If selected item:
+
+Prop
+
+Show:
+
+Scenes Using Prop
+
+Procurement Status
+
+Assigned Vendor
+
+Cost Estimate
+
+Department
+
+---
+
+MINIMAP
+
+Implement screenplay minimap.
+
+Right edge of screenplay.
+
+Markers:
+
+Character
+
+Location
+
+Prop
+
+Costume
+
+VFX
+
+Stunt
+
+Click marker:
+
+Jump to occurrence.
+
+Like VS Code minimap.
+
+---
+
+SCENE WORKSPACE INTEGRATION
+
+Every scene should contain:
+
+Overview
+
+Breakdown
+
+Schedule
+
+Budget
+
+Discussion
+
+Files
+
+Approvals
+
+Script
+
+---
+
+SCRIPT TAB FLOW
+
+Scenes
+↓
+Scene 34
+↓
+Script Tab
+↓
+
+Open screenplay directly at Scene 34
+
+Auto-scroll
+
+Auto-highlight scene
+
+---
+
+ROLE VISIBILITY
+
+LINE PRODUCER
+
+Full Access
+
+Can edit
+
+Can merge entities
+
+Can add entities
+
+Can regenerate breakdown
+
+Can lock breakdown
+
+---
+
+DIRECTOR
+
+Can view screenplay
+
+Can add creative notes
+
+Can add scene notes
+
+Cannot modify operational breakdown
+
+---
+
+ASSISTANT DIRECTOR
+
+Can view screenplay
+
+Can view breakdown
+
+Can update scene status
+
+Cannot modify extraction
+
+---
+
+SCRIPT SUPERVISOR
+
+Can view screenplay
+
+Can create continuity notes
+
+Can add continuity references
+
+---
+
+PRODUCTION DESIGNER
+
+Sidebar only shows:
+
+Props
+
+Locations
+
+Sets
+
+Can open screenplay directly to usage points
+
+---
+
+COSTUME DESIGNER
+
+Sidebar only shows:
+
+Characters
+
+Costumes
+
+Continuity
+
+Can jump to scene references
+
+---
+
+DOP
+
+Sidebar only shows:
+
+Locations
+
+Day/Night
+
+Equipment references
+
+Read-only
+
+---
+
+PRODUCER
+
+Read-only
+
+Access only through:
+
+Breakdown Summary
+
+No editing
+
+No script editing
+
+---
+
+ACCOUNTANT
+
+No screenplay access
+
+---
+
+CASHIER
+
+No screenplay access
+
+---
+
+PERMISSIONS
+
+Build role-based rendering.
+
+Do not duplicate pages.
+
+Single workspace.
+
+Different visibility based on role.
+
+---
+
+SEARCH
+
+Global screenplay search.
+
+Search:
+
+Scene
+
+Character
+
+Location
+
+Dialogue
+
+Props
+
+Results:
+
+Click result
+
+Jump to location.
+
+---
+
+EMPTY STATES
+
+No Script Uploaded
+
+No Breakdown Generated
+
+No Results
+
+No Matches Found
+
+---
+
+LOADING STATES
+
+Skeleton Viewer
+
+Skeleton Sidebar
+
+Skeleton Intelligence Panel
+
+---
+
+RESPONSIVE
+
+Desktop
+
+Full three-panel layout.
+
+Tablet
+
+Collapsible intelligence panel.
+
+Mobile
+
+Scene-only screenplay view.
+
+AD optimized.
+
+---
+
+TECHNICAL REQUIREMENTS
+
+Use existing design system.
+
+Use existing routing.
+
+Reuse current cards.
+
+Reuse current modals.
+
+Reuse current tables.
+
+No duplicate components.
+
+Use lazy loading.
+
+Use memoization.
+
+Support large screenplays.
+
+Support thousands of extracted entities.
+
+---
+
+BEFORE IMPLEMENTATION
+
+Generate:
+
+1. Current Audit Report
+2. Existing Breakdown Features
+3. Missing Breakdown Features
+4. Route Map
+5. Component Inventory
+6. Permission Matrix
+7. Implementation Plan
+
+Only then begin implementation.
+
+Do not remove existing working functionality.
+
+Extend current architecture.
+
+The final experience should feel comparable to Filmustage, Linear, Notion, and modern enterprise production software while remaining scene-centric and role-aware.

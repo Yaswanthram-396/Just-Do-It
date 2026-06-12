@@ -26,6 +26,7 @@ import CinematographerView from "@/pages/cinematographer";
 import ProductionDesignerView from "@/pages/production-designer";
 import CostumeDesignerView from "@/pages/costume-designer";
 import EditorView from "@/pages/editor";
+import BreakdownScript from "@/pages/breakdown-script";
 import DiscussionsView from "@/pages/discussions";
 import VendorsView from "@/pages/vendors";
 import ReportsView from "@/pages/reports";
@@ -49,6 +50,9 @@ function Router() {
       </Route>
       <Route path="/breakdown">
         <Layout><Breakdown /></Layout>
+      </Route>
+      <Route path="/breakdown/script">
+        <Layout><BreakdownScript /></Layout>
       </Route>
       <Route path="/scheduling">
         <Layout><Scheduling /></Layout>

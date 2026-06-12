@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Filter, ChevronDown } from "lucide-react";
+import { Link } from "wouter";
+import { Sparkles, Filter, ChevronDown, FileText } from "lucide-react";
 
 export default function Breakdown() {
   const items = [
@@ -46,9 +47,16 @@ export default function Breakdown() {
           <h1 className="text-3xl font-display font-bold mb-2">Breakdown Studio</h1>
           <p className="text-muted-foreground">Manage all elements across the script.</p>
         </div>
-        <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-          Add Element
-        </Button>
+        <div className="flex gap-2">
+          <Link href="/breakdown/script">
+            <Button variant="outline" className="border-primary/30 text-primary hover:bg-primary/5 gap-2">
+              <FileText className="w-4 h-4" /> Open Script
+            </Button>
+          </Link>
+          <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+            Add Element
+          </Button>
+        </div>
       </div>
 
       <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 mb-6 flex items-start gap-3">
