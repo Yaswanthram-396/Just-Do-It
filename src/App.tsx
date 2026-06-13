@@ -15,6 +15,7 @@ import Breakdown from "@/pages/breakdown";
 import Scheduling from "@/pages/scheduling";
 import Budget from "@/pages/budget";
 import ProducerView from "@/pages/producer";
+import ApprovalsCenter from "@/pages/approvals";
 import LineProducerView from "@/pages/line-producer";
 import ADMobileView from "@/pages/ad-mobile";
 import DirectorView from "@/pages/director";
@@ -59,6 +60,9 @@ function Router() {
       </Route>
       <Route path="/budget">
         <Layout><Budget /></Layout>
+      </Route>
+      <Route path="/approvals">
+        <Layout><ApprovalsCenter /></Layout>
       </Route>
       
       {/* Role specific views */}

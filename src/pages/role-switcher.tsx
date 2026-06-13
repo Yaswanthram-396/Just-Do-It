@@ -105,9 +105,10 @@ export default function RoleSwitcher() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-[#111111] flex flex-col justify-between font-sans selection:bg-[#eeeeee] relative overflow-hidden">
+    <div className="min-h-screen bg-background text-foreground flex flex-col justify-between font-sans selection:bg-muted relative overflow-hidden">
       {/* Subtle top border accent */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-[#111111]" />
+      <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
+
 
       {/* Main Container */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
@@ -127,7 +128,7 @@ export default function RoleSwitcher() {
           </div>
 
           {/* Form Card */}
-          <div className="bg-white border border-neutral-200/80 rounded-2xl p-8 shadow-sm transition-all duration-300">
+          <div className="bg-card text-card-foreground border border-border rounded-2xl p-8 shadow-sm transition-all duration-300">
             <AnimatePresence mode="wait">
               {step === "phone" ? (
                 <motion.div
@@ -225,10 +226,10 @@ export default function RoleSwitcher() {
                           disabled={isLoading}
                         >
                           <InputOTPGroup className="gap-2">
-                            <InputOTPSlot index={0} className="w-12 h-12 border-neutral-200 text-lg font-semibold rounded-lg bg-neutral-50/20" />
-                            <InputOTPSlot index={1} className="w-12 h-12 border-neutral-200 text-lg font-semibold rounded-lg bg-neutral-50/20" />
-                            <InputOTPSlot index={2} className="w-12 h-12 border-neutral-200 text-lg font-semibold rounded-lg bg-neutral-50/20" />
-                            <InputOTPSlot index={3} className="w-12 h-12 border-neutral-200 text-lg font-semibold rounded-lg bg-neutral-50/20" />
+                            <InputOTPSlot index={0} className="w-12 h-12 border-border text-lg font-semibold rounded-lg bg-muted/20" />
+                            <InputOTPSlot index={1} className="w-12 h-12 border-border text-lg font-semibold rounded-lg bg-muted/20" />
+                            <InputOTPSlot index={2} className="w-12 h-12 border-border text-lg font-semibold rounded-lg bg-muted/20" />
+                            <InputOTPSlot index={3} className="w-12 h-12 border-border text-lg font-semibold rounded-lg bg-muted/20" />
                           </InputOTPGroup>
                         </InputOTP>
                       </div>
@@ -276,10 +277,10 @@ export default function RoleSwitcher() {
           </div>
 
           {/* Demo Accounts Panel */}
-          <div className="border border-neutral-200/80 rounded-xl overflow-hidden shadow-sm bg-white">
+          <div className="border border-border rounded-xl overflow-hidden shadow-sm bg-card text-card-foreground">
             <button
               onClick={() => setShowDemoAccounts(!showDemoAccounts)}
-              className="w-full px-5 py-3.5 flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-neutral-600 hover:bg-neutral-50/50 transition-colors border-b border-neutral-100"
+              className="w-full px-5 py-3.5 flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-muted-foreground hover:bg-muted/50 transition-colors border-b border-border"
             >
               <span className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-neutral-500" />
@@ -297,7 +298,7 @@ export default function RoleSwitcher() {
                   transition={{ duration: 0.25 }}
                   className="overflow-hidden"
                 >
-                  <div className="p-3 bg-neutral-50/30 max-h-[220px] overflow-y-auto divide-y divide-neutral-100">
+                  <div className="p-3 bg-muted/30 max-h-[220px] overflow-y-auto divide-y divide-border/60">
                     {ROLE_MAP.map((item) => {
                       const isSelected = phoneNumber === item.phone;
                       return (
@@ -305,7 +306,7 @@ export default function RoleSwitcher() {
                           key={item.role}
                           onClick={() => selectDemoNumber(item.phone)}
                           className={`w-full px-3 py-2 flex items-center justify-between text-left rounded-lg transition-colors group ${
-                            isSelected ? "bg-black text-white" : "hover:bg-neutral-100/80 text-neutral-700"
+                            isSelected ? "bg-primary text-primary-foreground font-semibold" : "hover:bg-muted/80 text-foreground"
                           }`}
                         >
                           <div>
@@ -335,7 +336,7 @@ export default function RoleSwitcher() {
       </div>
 
       {/* Footer */}
-      <footer className="py-6 border-t border-neutral-100 px-6 text-center text-xs text-neutral-400 font-medium">
+      <footer className="py-6 border-t border-border px-6 text-center text-xs text-muted-foreground font-medium">
         Cinamitra Production Suite &copy; {new Date().getFullYear()} &middot; Prototype Sandbox
       </footer>
     </div>

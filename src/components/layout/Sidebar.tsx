@@ -146,65 +146,77 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar className="border-r border-sidebar-border bg-sidebar">
-      <SidebarHeader className="p-4 border-b border-sidebar-border">
+    <Sidebar className="border-r border-[#E5E7EB] bg-white">
+      <SidebarHeader className="p-4 border-b border-[#E5E7EB] bg-white">
         {!isCollapsed ? (
           <div className="flex flex-col gap-1">
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Roja Entertainment</span>
-            <span className="text-sm font-bold text-foreground font-display">Devara: Part 2</span>
+            <span className="text-xs font-semibold text-neutral-400 uppercase tracking-wider">Roja Entertainment</span>
+            <span className="text-sm font-bold text-[#1A1A1A] font-display">Devara: Part 2</span>
             {role && (
-              <div className="mt-2 inline-flex w-fit items-center rounded-sm border border-primary/20 bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+              <div className="mt-2 inline-flex w-fit items-center rounded-md border border-[#FF7A00]/20 bg-[#FFF4E8] px-2 py-0.5 text-[10px] font-semibold text-[#FF7A00] transition-colors focus:outline-none">
                 Viewing as: {role}
               </div>
             )}
           </div>
         ) : (
           <div className="flex items-center justify-center w-full">
-            <div className="w-8 h-8 rounded bg-primary flex items-center justify-center font-display font-bold text-primary-foreground">
+            <div className="w-8 h-8 rounded bg-[#FF7A00] flex items-center justify-center font-display font-bold text-white">
               D2
             </div>
           </div>
         )}
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="bg-white">
         <SidebarGroup>
-          <SidebarGroupLabel>Production</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-neutral-400 font-semibold px-3 uppercase tracking-wider text-[10px]">Production</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {getPrimaryNav().map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={location === item.url || (item.url !== "/" && location.startsWith(item.url))}>
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {getPrimaryNav().map((item) => {
+                const isActive = location === item.url || (item.url !== "/" && location.startsWith(item.url));
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton 
+                      asChild 
+                      isActive={isActive}
+                      className={cn(
+                        "transition-all duration-200 pl-3 h-9 font-medium text-xs",
+                        isActive 
+                          ? "bg-[#FFF4E8]! text-[#FF7A00]! border-l-4 border-[#FF7A00]! rounded-r-md rounded-l-none font-bold" 
+                          : "text-neutral-600 hover:bg-[#FFF4E8]/40 hover:text-[#FF7A00] rounded-md"
+                      )}
+                    >
+                      <Link href={item.url}>
+                        <item.icon className={cn("w-4 h-4", isActive ? "text-[#FF7A00]" : "text-neutral-500")} />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-4 border-t border-sidebar-border">
+      <SidebarFooter className="p-4 border-t border-[#E5E7EB] bg-white">
         {!isCollapsed ? (
           <div className="flex items-center gap-3">
-            <Avatar className="h-9 w-9 border border-border">
+            <Avatar className="h-9 w-9 border border-[#E5E7EB]">
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>KJ</AvatarFallback>
             </Avatar>
             <div className="flex flex-col flex-1 overflow-hidden">
-              <span className="text-sm font-medium leading-none truncate">Karan Johar</span>
-              <span className="text-xs text-muted-foreground truncate">karan@roja.com</span>
+              <span className="text-sm font-medium leading-none truncate text-[#1A1A1A]">Karan Johar</span>
+              <span className="text-xs text-neutral-400 truncate">karan@roja.com</span>
             </div>
-            <button className="text-muted-foreground hover:text-foreground transition-colors ml-auto">
+            <button className="text-neutral-400 hover:text-[#1A1A1A] transition-colors ml-auto">
               <Settings className="w-4 h-4" />
             </button>
           </div>
         ) : (
           <div className="flex justify-center w-full">
-            <Avatar className="h-8 w-8 border border-border">
+            <Avatar className="h-8 w-8 border border-[#E5E7EB]">
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>KJ</AvatarFallback>
             </Avatar>
@@ -214,3 +226,4 @@ export function AppSidebar() {
     </Sidebar>
   );
 }
+

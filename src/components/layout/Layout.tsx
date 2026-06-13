@@ -7,13 +7,27 @@ import { useLocation } from "wouter";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const { role } = useRole();
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
 
   useEffect(() => {
     if (!role) {
       setLocation("/");
     }
   }, [role, setLocation]);
+
+  // Reset scroll position of main content on page navigation
+  useEffect(() => {
+    const resetScroll = () => {
+      window.scrollTo(0, 0);
+      const mainEl = document.querySelector("main");
+      if (mainEl) {
+        mainEl.scrollTop = 0;
+      }
+    };
+    resetScroll();
+    const timer = setTimeout(resetScroll, 100);
+    return () => clearTimeout(timer);
+  }, [location]);
 
   if (!role) {
     return null;
