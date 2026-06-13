@@ -1,0 +1,313 @@
+You are a Senior Product Designer, Staff UX Designer, and Frontend Architect.
+
+Audit the current Cinamitra UI and implement the following improvements.
+
+IMPORTANT:
+Do not redesign randomly.
+Do not break existing functionality.
+Keep the current architecture and workflows.
+Focus on premium visual quality, role-based experiences, and realistic demo-ready interactions.
+
+---
+
+1. PREMIUM UI OVERHAUL
+
+Current UI feels functional but not memorable.
+
+The UI should create a "wow" effect within the first 5 seconds.
+
+Goal:
+
+When a film producer, director, or investor sees the product, they should immediately feel:
+
+"This looks like a premium production operating system."
+
+Design inspiration:
+
+* Linear
+* Notion
+* Stripe
+* Arc Browser
+* Figma
+* Motion
+* Vercel
+* Bloomberg Terminal
+
+Requirements:
+
+* Improve visual hierarchy
+* Better spacing
+* Better typography
+* Better color system
+* Better shadows
+* Better cards
+* Better hover states
+* Better animations
+* Better loading states
+* Better empty states
+* Better transitions
+
+Create a cinematic premium aesthetic.
+
+Suggestions:
+
+* Dark mode as primary
+* Deep navy / charcoal backgrounds
+* Gold cinematic accent color
+* Glassmorphism only where useful
+* Rich gradients
+* Professional data visualizations
+
+Avoid generic Tailwind admin dashboard styling.
+
+---
+
+2. ROLE-BASED LOGIN EXPERIENCE
+
+Current issue:
+
+All roles appear inside one account.
+
+This does not reflect actual production workflows.
+
+Implement role-based login simulation.
+
+For MVP demo purposes, support only:
+
+1. Producer
+2. Director
+3. Line Producer
+4. Assistant Director
+
+---
+
+LOGIN SCREEN
+
+Create beautiful role selection experience.
+
+Options:
+
+○ Producer
+○ Director
+○ Line Producer
+○ Assistant Director
+
+Each card should contain:
+
+* Role icon
+* Role description
+* Responsibilities
+* Preview of dashboard
+
+User selects role before entering platform.
+
+---
+
+ROLE EXPERIENCE
+
+Producer Login:
+
+* Executive Dashboard
+* Budget Health
+* Production Health
+* Approvals
+* Variance Reports
+
+Director Login:
+
+* Creative Dashboard
+* Scene Status
+* References
+* Continuity Alerts
+
+Line Producer Login:
+
+* Full Operational Dashboard
+* Breakdown
+* Scheduling
+* Resources
+* Vendors
+
+Assistant Director Login:
+
+* Mobile-first dashboard
+* Today's Scenes
+* Call Times
+* Open Issues
+
+Navigation should dynamically change per role.
+
+Different homepage.
+
+Different widgets.
+
+Different KPIs.
+
+Different quick actions.
+
+The platform should feel like different products for different roles.
+
+---
+
+3. CHAT EXPERIENCE IMPROVEMENT
+
+Current chat UI feels basic.
+
+Rebuild the chat experience to feel modern and production-ready.
+
+Inspiration:
+
+* Slack
+* Discord
+* Linear
+* WhatsApp Business
+* Notion Comments
+
+---
+
+CHAT REQUIREMENTS
+
+Create:
+
+Left Sidebar
+
+* All Discussions
+* Scene Discussions
+* Department Discussions
+* Direct Messages
+
+---
+
+MAIN CHAT AREA
+
+Messages should support:
+
+* Text
+* Voice Note UI
+* Images
+* Documents
+* Scene References
+* Mentions (@user)
+* Reactions
+
+---
+
+MESSAGE DESIGN
+
+Improve:
+
+* Message bubbles
+* Sender information
+* Timestamps
+* Read indicators
+* Reply threads
+* Hover actions
+
+---
+
+SCENE CHAT
+
+Example:
+
+Scene 34
+
+Discussion belongs to Scene 34.
+
+Messages:
+
+Director:
+Need wider establishing shot.
+
+Art Department:
+Prop delivery tomorrow.
+
+Producer:
+Approved.
+
+This should look realistic.
+
+---
+
+DUMMY DATA SYSTEM
+
+Create frontend-only mock data.
+
+No backend needed.
+
+Store messages locally.
+
+Allow:
+
+* Sending messages
+* Creating conversations
+* Switching chats
+* Replying
+
+Persist using:
+
+localStorage
+
+for demo purposes.
+
+---
+
+DUMMY USERS
+
+Producer
+Director
+Line Producer
+AD
+Art Department
+Costume Department
+
+Generate realistic film-production conversations.
+
+---
+
+CHAT UX ENHANCEMENTS
+
+Typing Indicator
+
+"Director is typing..."
+
+Unread Count
+
+Online Status
+
+Pinned Messages
+
+Search Messages
+
+Filter by Scene
+
+Filter by Department
+
+Attachment Preview
+
+Voice Note Preview
+
+---
+
+MICRO INTERACTIONS
+
+Message sent animation
+
+Typing animation
+
+Unread badge animation
+
+Hover actions
+
+Smooth scrolling
+
+Auto-scroll to latest message
+
+---
+
+FINAL GOAL
+
+The application should look investor-demo ready.
+
+The UI should feel like a premium film production operating system rather than a typical dashboard.
+
+Focus heavily on visual polish, role-specific experiences, and a realistic collaboration experience with high-quality dummy data.
