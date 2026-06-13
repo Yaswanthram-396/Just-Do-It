@@ -22,7 +22,8 @@ import {
   Camera,
   Layers,
   Shirt,
-  Scissors
+  Scissors,
+  LogOut
 } from "lucide-react";
 import {
   Sidebar,
@@ -40,7 +41,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function AppSidebar() {
-  const { role } = useRole();
+  const { role, setRole } = useRole();
   const [location] = useLocation();
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
@@ -187,27 +188,45 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-4 border-t border-sidebar-border">
+      <SidebarFooter className="p-4 border-t border-sidebar-border space-y-3">
         {!isCollapsed ? (
-          <div className="flex items-center gap-3">
-            <Avatar className="h-9 w-9 border border-border">
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>KJ</AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col flex-1 overflow-hidden">
-              <span className="text-sm font-medium leading-none truncate">Karan Johar</span>
-              <span className="text-xs text-muted-foreground truncate">karan@roja.com</span>
+          <>
+            <div className="flex items-center gap-3">
+              <Avatar className="h-9 w-9 border border-border">
+                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback>KJ</AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col flex-1 overflow-hidden">
+                <span className="text-sm font-medium leading-none truncate">Karan Johar</span>
+                <span className="text-xs text-muted-foreground truncate">karan@roja.com</span>
+              </div>
+              <button className="text-muted-foreground hover:text-foreground transition-colors ml-auto">
+                <Settings className="w-4 h-4" />
+              </button>
             </div>
-            <button className="text-muted-foreground hover:text-foreground transition-colors ml-auto">
-              <Settings className="w-4 h-4" />
-            </button>
-          </div>
+            <Link
+              href="/"
+              onClick={() => setRole(null)}
+              className="flex items-center gap-2 w-full px-2.5 py-2 rounded-md text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-sidebar-accent transition-colors"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              Switch Role
+            </Link>
+          </>
         ) : (
-          <div className="flex justify-center w-full">
+          <div className="flex flex-col items-center gap-3 w-full">
             <Avatar className="h-8 w-8 border border-border">
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>KJ</AvatarFallback>
             </Avatar>
+            <Link
+              href="/"
+              onClick={() => setRole(null)}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+              title="Switch Role"
+            >
+              <LogOut className="w-4 h-4" />
+            </Link>
           </div>
         )}
       </SidebarFooter>
