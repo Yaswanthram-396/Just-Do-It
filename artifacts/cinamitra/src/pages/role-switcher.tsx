@@ -5,10 +5,18 @@ import { motion } from "framer-motion";
 import { ChevronDown, ArrowRight, Clapperboard } from "lucide-react";
 
 const ROLES = [
-  { id: "Producer",      label: "Producer",           path: "/producer"      },
-  { id: "Director",      label: "Director",           path: "/director"      },
-  { id: "Line Producer", label: "Line Producer",      path: "/line-producer" },
-  { id: "AD",            label: "Assistant Director", path: "/ad"            },
+  { id: "Producer",           label: "Producer",           path: "/producer"           },
+  { id: "Director",           label: "Director",           path: "/director"           },
+  { id: "Line Producer",      label: "Line Producer",      path: "/line-producer"      },
+  { id: "AD",                 label: "Assistant Director", path: "/ad"                 },
+  { id: "Accountant",         label: "Accountant",         path: "/accountant"         },
+  { id: "Continuity",         label: "Continuity",         path: "/continuity"         },
+  { id: "Cashier",            label: "Cashier",            path: "/cashier"            },
+  { id: "Production Manager", label: "Production Manager", path: "/production-manager" },
+  { id: "Cinematographer",    label: "Cinematographer",    path: "/cinematographer"    },
+  { id: "Production Designer",label: "Production Designer",path: "/production-designer"},
+  { id: "Costume Designer",   label: "Costume Designer",   path: "/costume-designer"  },
+  { id: "Editor",             label: "Editor",             path: "/editor"             },
 ];
 
 export default function RoleSwitcher() {
