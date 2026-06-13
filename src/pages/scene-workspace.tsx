@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { Link } from "wouter";
+import { useState, useEffect, useRef } from "react";
+import { Link, useRoute } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useRole } from "@/components/layout/RoleContext";
 import {
   FileText, Users, Shirt, Monitor, Car, Box, Paperclip, Send,
   Clock, CheckCircle2, ChevronDown, ChevronRight, AlertTriangle,
@@ -13,10 +14,36 @@ import {
   ExternalLink, MoreHorizontal
 } from "lucide-react";
 
+
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 type Status = "ready" | "pending" | "progress" | "scheduled";
 type FileCategory = "all" | "reference" | "costumes" | "location" | "callsheet" | "permits" | "notes" | "video";
+
+interface Message {
+  name: string;
+  dept: string;
+  color: string;
+  time: string;
+  text: string;
+  hasFile?: boolean;
+}
+
+const roleNameMap: Record<string, { name: string; dept: string; color: string }> = {
+  "Producer": { name: "Yaswanthram", dept: "Producer", color: "red" },
+  "Director": { name: "Koratala Siva", dept: "Director", color: "yellow" },
+  "Line Producer": { name: "Line Producer", dept: "Production", color: "orange" },
+  "AD": { name: "King Solomon", dept: "AD", color: "blue" },
+  "Accountant": { name: "Accountant", dept: "Finance", color: "teal" },
+  "Continuity": { name: "Continuity", dept: "Script", color: "purple" },
+  "Cashier": { name: "Cashier", dept: "Finance", color: "teal" },
+  "Production Manager": { name: "Production Manager", dept: "Logistics", color: "orange" },
+  "Cinematographer": { name: "Rathnavelu", dept: "Camera", color: "blue" },
+  "Production Designer": { name: "Sabu Cyril", dept: "Art", color: "teal" },
+  "Costume Designer": { name: "Rama Rajamouli", dept: "Costume", color: "purple" },
+  "Editor": { name: "Editor", dept: "Post-Prod", color: "purple" },
+};
+
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
@@ -134,10 +161,65 @@ const SCROLL_CLS = "overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrol
 // ─── Main Component ──────────────────────────────────────────────────────────
 
 export default function SceneWorkspace() {
+  const [match, params] = useRoute("/scenes/:id");
+  const sceneId = params?.id || "34";
+  const { role } = useRole();
+
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(["Cast", "Props"]));
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [fileCategory, setFileCategory] = useState<FileCategory>("all");
   const [isDragging, setIsDragging] = useState(false);
+
+  const [messageText, setMessageText] = useState("");
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  const defaultMessages = [
+    { name: "Sabu Cyril", dept: "Art", color: "teal", time: "Yesterday 10:45 AM", text: "Market set is 80% complete. The wooden crates have arrived but we need 6 more fish boxes. Sourcing them locally today." },
+    { name: "Rathnavelu", dept: "Production", color: "orange", time: "Yesterday 11:20 AM", text: "Permits for the river side extension are clear. We have access from 6 AM to 6 PM on Day 31." },
+    { name: "Rama Rajamouli", dept: "Costume", color: "purple", time: "Yesterday 2:15 PM", text: "Attached the final sketches for the merchant extras. Need director's sign off before we start stitching.", hasFile: true },
+    { name: "Koratala Siva", dept: "Director", color: "yellow", time: "Today 9:00 AM", text: "Sketches look good. Make sure the colors are muted so NTR stands out in the white kurta." },
+    { name: "King Solomon", dept: "AD", color: "blue", time: "Today 9:30 AM", text: "Noted sir. Updating the call sheet. Saif sir's arrival is pushed by 1 hour due to flight delay, but we'll shoot the wide crowd shots first." },
+  ];
+
+  const [messages, setMessages] = useState<Message[]>(() => {
+    const saved = localStorage.getItem(`cinamitra-messages-scene-${sceneId}`);
+    return saved ? JSON.parse(saved) : defaultMessages;
+  });
+
+  useEffect(() => {
+    localStorage.setItem(`cinamitra-messages-scene-${sceneId}`, JSON.stringify(messages));
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [messages, sceneId]);
+
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, []);
+
+  const handleSendMessage = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!messageText.trim()) return;
+
+    const defaultUser = { name: "Crew Member", dept: "Production", color: "orange" };
+    const userRoleInfo = role ? (roleNameMap[role] || { name: role, dept: role, color: "orange" }) : defaultUser;
+
+    // Get current time formatted beautifully
+    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    const newMessage: Message = {
+      name: userRoleInfo.name,
+      dept: userRoleInfo.dept,
+      color: userRoleInfo.color,
+      time: `Today ${timeStr}`,
+      text: messageText.trim()
+    };
+
+    setMessages(prev => [...prev, newMessage]);
+    setMessageText("");
+  };
 
   const toggleSection = (id: string) =>
     setExpandedSections(prev => {
@@ -147,6 +229,7 @@ export default function SceneWorkspace() {
     });
 
   const visibleFiles = fileCategory === "all" ? FILES : FILES.filter(f => f.cat === fileCategory);
+
 
   return (
     <div className="flex h-[calc(100vh-3.5rem)] overflow-hidden">
@@ -208,42 +291,61 @@ export default function SceneWorkspace() {
       </div>
 
       {/* ── CENTER PANEL: Discussion ─────────────────────────────── */}
-      <div className="flex-1 flex flex-col min-w-0 bg-background relative">
-        <div className={`flex-1 p-4 md:p-6 space-y-6 ${SCROLL_CLS}`}>
+      <div className="flex-1 flex flex-col min-w-0 bg-[#efeae2]/30 relative">
+        <div ref={chatContainerRef} className={`flex-1 p-4 md:p-6 space-y-4 ${SCROLL_CLS}`}>
 
-          <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 flex gap-3 text-sm">
+          <div className="bg-white/90 border border-border/60 rounded-xl p-3 flex gap-3 text-sm mb-4 shadow-sm">
             <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
             <div>
               <p className="font-bold text-foreground">PINNED APPROVAL</p>
-              <p className="text-muted-foreground">NTR's costume — white kurta with gold trim approved by Director Koratala Siva</p>
+              <p className="text-muted-foreground text-xs">NTR's costume — white kurta with gold trim approved by Director Koratala Siva</p>
             </div>
           </div>
 
-          <ChatMessage name="Sabu Cyril"       dept="Art"        color="teal"   time="Yesterday 10:45 AM"
-            text="Market set is 80% complete. The wooden crates have arrived but we need 6 more fish boxes. Sourcing them locally today." />
-          <ChatMessage name="Rathnavelu"        dept="Production" color="orange" time="Yesterday 11:20 AM"
-            text="Permits for the river side extension are clear. We have access from 6 AM to 6 PM on Day 31." />
-          <ChatMessage name="Rama Rajamouli"   dept="Costume"    color="purple" time="Yesterday 2:15 PM"
-            text="Attached the final sketches for the merchant extras. Need director's sign off before we start stitching."
-            hasFile />
-          <ChatMessage name="Koratala Siva"    dept="Director"   color="yellow" time="Today 9:00 AM"
-            text="Sketches look good. Make sure the colors are muted so NTR stands out in the white kurta." />
-          <ChatMessage name="King Solomon"     dept="AD"         color="blue"   time="Today 9:30 AM"
-            text="Noted sir. Updating the call sheet. Saif sir's arrival is pushed by 1 hour due to flight delay, but we'll shoot the wide crowd shots first." />
-        </div>
-
-        <div className="p-4 border-t border-border bg-card/50 shrink-0">
-          <div className="relative flex items-center">
-            <Button variant="ghost" size="icon" className="absolute left-1 text-muted-foreground hover:text-foreground z-10">
-              <Paperclip className="w-4 h-4" />
-            </Button>
-            <Input placeholder="Message Scene 34 thread…" className="pl-10 pr-12 bg-background border-border" />
-            <Button size="sm" className="absolute right-1 bg-primary text-primary-foreground hover:bg-primary/90 h-7 w-7 p-0 z-10">
-              <Send className="w-3 h-3" />
-            </Button>
+          <div className="space-y-2 flex flex-col">
+            {messages.map((msg, idx) => {
+              const defaultUser = { name: "Crew Member", dept: "Production", color: "orange" };
+              const currentUserInfo = role ? (roleNameMap[role] || { name: role, dept: role, color: "orange" }) : defaultUser;
+              const isSelf = msg.name === currentUserInfo.name;
+              return (
+                <ChatMessage
+                  key={idx}
+                  name={msg.name}
+                  dept={msg.dept}
+                  color={msg.color}
+                  time={msg.time}
+                  text={msg.text}
+                  hasFile={msg.hasFile}
+                  isSelf={isSelf}
+                />
+              );
+            })}
           </div>
         </div>
+
+
+        <div className="p-4 border-t border-border bg-card/50 shrink-0">
+          <form onSubmit={handleSendMessage} className="relative flex items-center">
+            <Button type="button" variant="ghost" size="icon" className="absolute left-1 text-muted-foreground hover:text-foreground z-10">
+              <Paperclip className="w-4 h-4" />
+            </Button>
+            <Input 
+              placeholder={`Message Scene ${sceneId} thread…`}
+              value={messageText}
+              onChange={(e) => setMessageText(e.target.value)}
+              className="pl-10 pr-12 bg-background border-border h-10 text-sm focus-visible:ring-1 focus-visible:ring-neutral-400" 
+            />
+            <Button 
+              type="submit"
+              size="sm" 
+              className="absolute right-1.5 bg-black text-white hover:bg-neutral-800 h-7 w-7 p-0 z-10 rounded-md transition-colors"
+            >
+              <Send className="w-3.5 h-3.5" />
+            </Button>
+          </form>
+        </div>
       </div>
+
 
       {/* ── RIGHT PANEL: Contextual Workspace ───────────────────── */}
       <div className="w-[320px] shrink-0 border-l border-border bg-card/30 flex flex-col hidden lg:flex">
@@ -591,39 +693,58 @@ function Section({ title, icon: Icon, children }: { title: string; icon: React.E
   );
 }
 
-function ChatMessage({ name, dept, color, time, text, hasFile }: {
-  name: string; dept: string; color: string; time: string; text: string; hasFile?: boolean;
+function ChatMessage({ name, dept, color, time, text, hasFile, isSelf }: {
+  name: string; dept: string; color: string; time: string; text: string; hasFile?: boolean; isSelf?: boolean;
 }) {
   const colorMap: Record<string, string> = {
-    teal:   "text-teal-600 bg-teal-500/10",
-    orange: "text-orange-600 bg-orange-500/10",
-    purple: "text-purple-600 bg-purple-500/10",
-    yellow: "text-primary bg-primary/10",
-    blue:   "text-blue-600 bg-blue-500/10",
-    red:    "text-red-500 bg-red-500/10",
+    teal:   "text-emerald-600",
+    orange: "text-amber-600",
+    purple: "text-purple-600",
+    yellow: "text-yellow-600",
+    blue:   "text-blue-600",
+    red:    "text-red-600",
   };
 
   return (
-    <div className="flex gap-4">
-      <Avatar className="w-8 h-8 border border-border mt-1 shrink-0">
-        <AvatarFallback className="bg-muted text-xs">{name.substring(0, 2).toUpperCase()}</AvatarFallback>
-      </Avatar>
-      <div className="flex-1 space-y-1.5">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-bold text-sm">{name}</span>
-          <span className={`text-[9px] uppercase font-bold px-1.5 py-0.5 rounded ${colorMap[color]}`}>{dept}</span>
-          <span className="text-xs text-muted-foreground ml-auto">{time}</span>
-        </div>
-        <p className="text-sm text-foreground/90 leading-relaxed bg-card border border-border/50 p-3 rounded-lg rounded-tl-none">
+    <div className={`flex w-full ${isSelf ? "justify-end" : "justify-start"} mb-1`}>
+      <div 
+        className={`max-w-[80%] md:max-w-[70%] rounded-xl px-3 py-2 shadow-[0_1px_0.5px_rgba(0,0,0,0.1)] relative flex flex-col ${
+          isSelf 
+            ? "bg-[#d9fdd3] text-neutral-900 rounded-tr-none border border-[#c1ebd0]/30" 
+            : "bg-white text-neutral-900 rounded-tl-none border border-neutral-100"
+        }`}
+      >
+        {/* Sender name for other users */}
+        {!isSelf && (
+          <div className="flex items-center gap-1.5 mb-0.5">
+            <span className={`text-[10px] font-bold ${colorMap[color] || "text-neutral-600"}`}>
+              {name}
+            </span>
+            <span className="text-[8px] font-bold text-neutral-400 bg-neutral-100/80 px-1 py-0.2 rounded uppercase tracking-wide">
+              {dept}
+            </span>
+          </div>
+        )}
+
+        {/* Message Text */}
+        <div className="text-xs leading-relaxed break-words pb-3 pr-12 text-neutral-800">
           {text}
-        </p>
+        </div>
+
         {hasFile && (
-          <div className="inline-flex items-center gap-2 bg-muted/50 border border-border p-2 rounded-md text-xs font-medium cursor-pointer hover:bg-muted transition-colors">
-            <FileText className="w-4 h-4 text-primary" />
+          <div className="mb-1 mt-1 inline-flex items-center gap-2 bg-neutral-50/90 hover:bg-neutral-100 border border-neutral-200/60 px-2 py-1 rounded-md text-[9px] font-semibold text-neutral-800 cursor-pointer transition-colors shadow-xs w-fit">
+            <FileText className="w-3 h-3 text-neutral-500" />
             costume_sketches_v2.pdf
           </div>
         )}
+
+        {/* Timestamp nested inside bottom-right */}
+        <span className="absolute bottom-0.5 right-1.5 text-[8px] text-neutral-400 font-medium select-none">
+          {time.replace(/^(Today|Yesterday)\s+/, "")}
+        </span>
       </div>
     </div>
   );
 }
+
+
