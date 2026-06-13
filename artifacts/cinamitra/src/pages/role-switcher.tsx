@@ -105,7 +105,8 @@ export default function RoleSwitcher() {
                   initial={{ opacity: 0, y: -6, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ duration: 0.14, ease: [0.22, 1, 0.36, 1] }}
-                  className="absolute z-50 top-[calc(100%+6px)] left-0 right-0 bg-white border border-border rounded-xl shadow-lg shadow-black/8 overflow-hidden py-1"
+                  className="absolute z-50 top-[calc(100%+6px)] left-0 right-0 bg-white border border-border rounded-xl shadow-lg shadow-black/8 py-1 overflow-y-scroll"
+                  style={{ maxHeight: "28vh" }}
                 >
                   {ROLES.map(role => (
                     <button
