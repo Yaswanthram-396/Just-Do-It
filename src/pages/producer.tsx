@@ -3,9 +3,11 @@ import {
   Film, Calendar, TrendingUp, Users, AlertTriangle, 
   Clock, CheckCircle2, AlertCircle, DollarSign, Activity, 
   MapPin, ShieldCheck, ShieldAlert, ArrowRight, Check, X,
-  TrendingDown, FileText, ChevronRight, BarChart3, HelpCircle
+  TrendingDown, FileText, ChevronRight, BarChart3, HelpCircle, ArrowLeft
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Link } from "wouter";
+import { motion } from "framer-motion";
 
 export default function ProducerView() {
   const [approvals, setApprovals] = useState([
@@ -41,64 +43,41 @@ export default function ProducerView() {
   };
 
   return (
-    <div className="p-4 md:p-8 max-w-[1600px] mx-auto min-h-screen bg-background text-foreground flex flex-col gap-6 md:gap-8">
-      
-      {/* Executive Welcome Header */}
-      <header className="relative overflow-hidden rounded-[20px] border border-border bg-card p-6 shadow-md">
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/10 to-transparent opacity-80 pointer-events-none" />
-        <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-          <div className="space-y-1">
-            <h1 className="text-2xl md:text-3xl font-display font-extrabold tracking-tight text-foreground">Good morning, Rana Ji.</h1>
-            <p className="text-sm text-muted-foreground font-medium">
-              Here is the executive overview for <strong className="text-primary">Devara: Part 2</strong>. Budget and Schedule are stable.
-            </p>
-          </div>
-          <div className="flex gap-3">
-            <div className="px-4 py-2 bg-primary/10 rounded-xl border border-primary/20 text-primary text-xs font-bold flex items-center gap-2">
-              <Film className="w-3.5 h-3.5" /> ₹165Cr Project Scope
-            </div>
-            <div className="px-4 py-2 bg-card rounded-xl border border-border text-muted-foreground text-xs font-bold flex items-center gap-2">
-              <Calendar className="w-3.5 h-3.5" /> Day 23 of 45
-            </div>
-          </div>
-        </div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="p-4 md:p-8 max-w-[1400px] mx-auto space-y-8 bg-background text-foreground min-h-screen"
+    >
+      <header className="py-6 border-b border-border/50 relative">
+        <Link href="/" className="absolute -top-4 text-xs text-muted-foreground flex items-center gap-1 hover:text-primary transition-colors">
+          <ArrowLeft className="w-3 h-3" /> Back to Role Switcher
+        </Link>
+        <h1 className="text-4xl font-display font-bold tracking-tight">Executive Dashboard</h1>
+        <p className="text-xl text-muted-foreground mt-2">Devara: Part 2 — Producer's Command View</p>
       </header>
 
-      {/* Executive KPI Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
-          { label: "Schedule Health", value: "87%", status: "On Track", icon: Activity, color: "text-success", bg: "bg-success/5 border-success/10" },
-          { label: "Budget Usage", value: "₹142Cr", status: "of ₹165Cr (86%)", icon: DollarSign, color: "text-primary", bg: "bg-primary/5 border-primary/10" },
-          { label: "Days Buffer", value: "+2 Days", status: "Available Buffer", icon: ShieldCheck, color: "text-primary", bg: "bg-primary/5 border-primary/10" },
-          { label: "Pending Approvals", value: approvals.filter(a => a.status === "Pending").length.toString(), status: "Actions Required", icon: FileText, color: "text-destructive", bg: "bg-destructive/5 border-destructive/10" },
-          { label: "Production Risk", value: "Medium", status: "2 Critical Risks", icon: AlertTriangle, color: "text-primary", bg: "bg-card border-border" }
-        ].map((kpi, idx) => (
-          <div key={idx} className={`border border-border rounded-[20px] p-5 bg-card shadow-sm flex flex-col justify-between hover:translate-y-[-2px] transition-transform duration-200 ${kpi.bg}`}>
-            <div className="flex justify-between items-start">
-              <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">{kpi.label}</span>
-              <div className="p-1.5 rounded-lg bg-background border border-border shadow-xs">
-                <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
-              </div>
-            </div>
-            <div className="mt-4 space-y-0.5">
-              <span className="text-2xl font-display font-extrabold tracking-tight text-foreground">{kpi.value}</span>
-              <p className="text-[10px] font-semibold text-muted-foreground">{kpi.status}</p>
-            </div>
-          </div>
+          { label: "Total Budget Used", value: "₹142Cr / ₹165Cr", sub: "86% of total film budget spent" },
+          { label: "Schedule Progress", value: "Day 23 of 45", sub: "51% of principal photography done" },
+          { label: "Sign-offs Awaiting", value: `${approvals.filter(a => a.status === "Pending").length} Requests`, sub: "Require immediate executive decision" },
+        ].map((k, i) => (
+          <Card key={i} className="bg-card border-border hover:border-primary/50 transition-colors">
+            <CardContent className="p-6">
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">{k.label}</p>
+              <p className="text-4xl font-display font-bold">{k.value}</p>
+              <p className="text-xs text-muted-foreground mt-2">{k.sub}</p>
+            </CardContent>
+          </Card>
         ))}
       </div>
 
-      {/* Main Grid: 2 Columns */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        
-        {/* Left Column (col-span-7) */}
-        <div className="lg:col-span-7 space-y-8">
-          
-          {/* Budget Analytics widget */}
-          <div className="border border-border rounded-[20px] bg-card p-6 shadow-sm">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="md:col-span-2 space-y-8">
+          <div className="border border-border rounded-lg bg-card p-6 shadow-sm">
             <div className="flex justify-between items-center mb-6">
               <div>
-                <h2 className="text-base font-bold text-foreground">Budget Analytics</h2>
+                <h2 className="text-xl font-display font-bold text-foreground">Budget Spend Analytics</h2>
                 <p className="text-xs text-muted-foreground">Planned vs Actual Spend (Cr)</p>
               </div>
               <div className="flex gap-4 text-xs font-semibold">
@@ -134,7 +113,7 @@ export default function ProducerView() {
               </div>
               <div>
                 <p className="text-[10px] text-muted-foreground font-bold uppercase">Forecast at Completion</p>
-                <p className="text-lg font-extrabold text-success">₹164.8Cr</p>
+                <p className="text-lg font-extrabold text-green-600">₹164.8Cr</p>
               </div>
               <div>
                 <p className="text-[10px] text-muted-foreground font-bold uppercase">Project Variance</p>
@@ -143,29 +122,19 @@ export default function ProducerView() {
             </div>
           </div>
 
-          {/* Approval Decision Center */}
-          <div className="border border-border rounded-[20px] bg-card p-6 shadow-sm">
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h2 className="text-base font-bold text-foreground">Approval Decision Center</h2>
-                <p className="text-xs text-muted-foreground">Decisions impacting project budget & timelines</p>
-              </div>
-              <span className="text-xs font-bold text-destructive bg-destructive/10 px-2.5 py-1 rounded-full">
-                {approvals.filter(a => a.status === "Pending").length} Actions Required
-              </span>
-            </div>
-
+          <div className="border border-border rounded-lg bg-card p-6 shadow-sm space-y-4">
+            <h2 className="text-xl font-display font-bold text-foreground">Approval Decision Center</h2>
             <div className="space-y-4">
               {approvals.map((a) => (
                 <div key={a.id} className="p-4 rounded-xl border border-border bg-background hover:border-primary/20 transition-all flex flex-col gap-3">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h4 className="text-sm font-extrabold text-foreground">{a.item}</h4>
-                      <p className="text-xs text-muted-foreground font-semibold">Requested by {a.req}</p>
+                      <h4 className="text-sm font-bold text-foreground">{a.item}</h4>
+                      <p className="text-xs text-muted-foreground">Requested by {a.req}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-base font-extrabold text-foreground">{a.amt}</p>
-                      <span className={`text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase ${
+                      <p className="text-base font-bold text-foreground">{a.amt}</p>
+                      <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase ${
                         a.priority === 'High' ? 'bg-destructive/10 text-destructive' : 'bg-primary/10 text-primary'
                       }`}>
                         {a.priority} Priority
@@ -173,13 +142,13 @@ export default function ProducerView() {
                     </div>
                   </div>
 
-                  <p className="text-xs text-muted-foreground font-medium bg-card p-2.5 rounded-lg border border-border">
+                  <p className="text-xs text-muted-foreground leading-relaxed bg-card p-2.5 rounded-lg border border-border">
                     <span className="font-bold text-foreground">Justification:</span> {a.justification}
                   </p>
 
                   <div className="flex justify-between items-center pt-2">
                     <span className={`text-xs font-bold uppercase ${
-                      a.status === 'Approved' ? 'text-success' :
+                      a.status === 'Approved' ? 'text-green-600' :
                       a.status === 'Rejected' ? 'text-destructive' :
                       'text-muted-foreground'
                     }`}>
@@ -208,69 +177,11 @@ export default function ProducerView() {
               ))}
             </div>
           </div>
-
-          {/* Producer Read-Only Call Sheet Overview */}
-          <div className="border border-border rounded-[20px] bg-card p-6 shadow-sm space-y-4">
-            <div className="flex justify-between items-center">
-              <h2 className="text-base font-bold text-foreground">Today's Call Sheet Overview (Read-Only)</h2>
-              <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">Day {dummyCallSheet.shootDayNum}</span>
-            </div>
-            
-            <div className="p-4 rounded-xl border border-border bg-background space-y-4 text-xs">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-muted-foreground">
-                <div>
-                  <span className="font-bold text-foreground block">Production Name</span>
-                  {dummyCallSheet.productionName}
-                </div>
-                <div>
-                  <span className="font-bold text-foreground block">Date</span>
-                  {dummyCallSheet.date}
-                </div>
-                <div>
-                  <span className="font-bold text-foreground block">Location</span>
-                  {dummyCallSheet.location}
-                </div>
-                <div>
-                  <span className="font-bold text-foreground block">Weather</span>
-                  {dummyCallSheet.weather}
-                </div>
-              </div>
-
-              <div className="border-t border-border pt-3">
-                <span className="font-bold text-foreground block mb-2">Scenes Scheduled Today</span>
-                {dummyCallSheet.todayScenes.map((s, idx) => (
-                  <div key={idx} className="flex justify-between items-start bg-card/45 border border-border rounded-lg p-2.5">
-                    <div>
-                      <p className="font-bold text-primary">{s.scene}: {s.desc}</p>
-                      <p className="text-[10px] text-muted-foreground">Cast: {s.cast}</p>
-                    </div>
-                    <span className="font-semibold text-foreground shrink-0">{s.pages} pgs</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="border-t border-border pt-3">
-                <span className="font-bold text-foreground block mb-2">Key Cast Set Call Times</span>
-                <div className="space-y-1.5">
-                  {dummyCallSheet.castCallTimes.map((c, idx) => (
-                    <div key={idx} className="flex justify-between text-muted-foreground">
-                      <span>{c.role} ({c.actor})</span>
-                      <span className="font-bold text-foreground">{c.onSet}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
         </div>
 
-        {/* Right Column (col-span-5) */}
-        <div className="lg:col-span-5 space-y-8">
-          
-          {/* Executive Alerts Center */}
-          <div className="border border-border rounded-[20px] bg-card p-6 shadow-sm">
-            <h2 className="text-base font-bold text-foreground mb-4 flex items-center gap-2">
+        <div className="space-y-6">
+          <div className="border border-border rounded-lg bg-card p-5 shadow-sm space-y-4">
+            <h2 className="text-xl font-display font-bold flex items-center gap-2">
               <ShieldAlert className="w-5 h-5 text-destructive" /> Executive Escalations
             </h2>
             <div className="space-y-3">
@@ -282,8 +193,8 @@ export default function ProducerView() {
               ].map((alert, idx) => (
                 <div key={idx} className="p-3 border border-border rounded-xl bg-background flex flex-col gap-1 hover:border-destructive/20 transition-all">
                   <div className="flex justify-between items-center">
-                    <span className="text-xs font-extrabold text-foreground">{alert.type}</span>
-                    <span className={`text-[9px] font-extrabold px-2 py-0.5 rounded ${
+                    <span className="text-xs font-bold text-foreground">{alert.type}</span>
+                    <span className={`text-[9px] font-bold px-2 py-0.5 rounded ${
                       alert.status === 'Critical' ? 'bg-destructive/20 text-destructive' :
                       alert.status === 'Urgent' ? 'bg-primary/20 text-primary' :
                       'bg-primary/10 text-primary'
@@ -291,15 +202,14 @@ export default function ProducerView() {
                       {alert.status}
                     </span>
                   </div>
-                  <p className="text-xs text-muted-foreground font-medium leading-relaxed">{alert.desc}</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{alert.desc}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Major Cost Drivers */}
-          <div className="border border-border rounded-[20px] bg-card p-6 shadow-sm">
-            <h2 className="text-base font-bold text-foreground mb-4">Major Cost Drivers</h2>
+          <div className="border border-border rounded-lg bg-card p-5 shadow-sm space-y-4">
+            <h2 className="text-xl font-display font-bold">Major Cost Drivers</h2>
             <div className="space-y-3.5">
               {[
                 { label: "Cast & Talents", allocated: "₹65Cr", spent: "₹60Cr", pct: 92 },
@@ -321,29 +231,25 @@ export default function ProducerView() {
             </div>
           </div>
 
-          {/* Risk Heatmap */}
-          <div className="border border-border rounded-[20px] bg-card p-6 shadow-sm">
-            <h2 className="text-base font-bold text-foreground mb-3">Risk Heatmap</h2>
-            <div className="grid grid-cols-3 gap-2.5 text-center text-xs font-bold">
-              <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-xl text-destructive">
-                <p className="text-[10px] uppercase font-bold text-destructive/80">High Risk</p>
-                <p className="text-xs font-extrabold mt-1">VFX & Cast Dates</p>
+          <div className="border border-border rounded-lg bg-card p-5 shadow-sm space-y-3">
+            <h2 className="text-xl font-display font-bold">Risk Heatmap</h2>
+            <div className="grid grid-cols-3 gap-2 text-center text-[10px] font-bold">
+              <div className="p-2.5 bg-destructive/10 border border-destructive/20 rounded-xl text-destructive flex flex-col justify-between h-20">
+                <span className="uppercase font-bold opacity-80">High Risk</span>
+                <span className="font-bold leading-tight">VFX & Cast Dates</span>
               </div>
-              <div className="p-3 bg-primary/10 border border-primary/20 rounded-xl text-primary">
-                <p className="text-[10px] uppercase font-bold text-primary/80">Med Risk</p>
-                <p className="text-xs font-extrabold mt-1">Weather & Location</p>
+              <div className="p-2.5 bg-primary/10 border border-primary/20 rounded-xl text-primary flex flex-col justify-between h-20">
+                <span className="uppercase font-bold opacity-80">Med Risk</span>
+                <span className="font-bold leading-tight">Weather & Location</span>
               </div>
-              <div className="p-3 bg-success/10 border border-success/20 rounded-xl text-success">
-                <p className="text-[10px] uppercase font-bold text-success/80">Low Risk</p>
-                <p className="text-xs font-extrabold mt-1">Catering & Logistics</p>
+              <div className="p-2.5 bg-green-500/10 border border-green-500/20 rounded-xl text-green-600 flex flex-col justify-between h-20">
+                <span className="uppercase font-bold opacity-80">Low Risk</span>
+                <span className="font-bold leading-tight">Catering & Logistics</span>
               </div>
             </div>
           </div>
-
         </div>
-
       </div>
-
-    </div>
+    </motion.div>
   );
 }

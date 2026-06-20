@@ -19,7 +19,6 @@ const ROLE_MAP = [
   { phone: "9000000009", role: "Cinematographer", label: "Cinematographer", path: "/cinematographer" },
   { phone: "9000000010", role: "Production Designer", label: "Production Designer", path: "/production-designer" },
   { phone: "9000000011", role: "Costume Designer", label: "Costume Designer", path: "/costume-designer" },
-  { phone: "9000000012", role: "Editor", label: "Editor", path: "/editor" },
 ];
 
 export default function RoleSwitcher() {

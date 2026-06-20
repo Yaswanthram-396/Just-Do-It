@@ -1,9 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
-import { motion } from "framer-motion";
-import { ArrowLeft, AlertTriangle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, AlertTriangle, Plus, X, Check } from "lucide-react";
+import { useState, useEffect } from "react";
 
-const wardrobes = [
+const INITIAL_WARDROBES = [
   { char: "NTR Jr.", actor: "N.T. Rama Rao Jr.", scenes: "12, 23, 34, 41, 55, 67, 78, 89, 103", costume: "White kurta + gold trim (hero look)", continuity: "Locked", fittings: 3 },
   { char: "Saif Ali Khan", actor: "Saif Ali Khan", scenes: "23, 41, 50, 55, 67, 103", costume: "Dark wool coat + villain accessories", continuity: "Alert", fittings: 2 },
   { char: "Female Lead", actor: "Janhvi Kapoor", scenes: "12, 55, 89", costume: "Silk saree — 3 variations", continuity: "Locked", fittings: 4 },
@@ -14,7 +15,7 @@ const wardrobes = [
   { char: "Market Crowd (x30)", actor: "Extras", scenes: "34, 35", costume: "Period casual — 1920s Telugu town", continuity: "In Review", fittings: 0 },
 ];
 
-const fittings = [
+const INITIAL_FITTINGS = [
   { char: "NTR Jr.", actor: "N.T. Rama Rao Jr.", date: "Oct 18", time: "10:00 AM", status: "Confirmed" },
   { char: "Saif Ali Khan", actor: "Saif Ali Khan", date: "Oct 19", time: "02:00 PM", status: "Confirmed" },
   { char: "Female Lead", actor: "Janhvi Kapoor", date: "Oct 20", time: "11:00 AM", status: "Pending" },
@@ -22,32 +23,106 @@ const fittings = [
   { char: "Market Extras (sample)", actor: "5 selected extras", date: "Oct 22", time: "03:00 PM", status: "Pending" },
 ];
 
-const alerts = [
+const INITIAL_ALERTS = [
   { scene: "41", note: "NTR costume must exactly match Scene 34 — 2-day gap in shooting", urgent: true },
   { scene: "55", note: "Saif costume revision request — collar detail changed by Director Oct 15", urgent: true },
   { scene: "103", note: "NTR torn-shirt state must match Scene 98 exit — verify tears placement", urgent: false },
 ];
 
 export default function CostumeDesignerView() {
+  const [wardrobes, setWardrobes] = useState<typeof INITIAL_WARDROBES>(() => {
+    const saved = localStorage.getItem("cinamitra-wardrobes");
+    return saved ? JSON.parse(saved) : INITIAL_WARDROBES;
+  });
+  const [fittings, setFittings] = useState<typeof INITIAL_FITTINGS>(() => {
+    const saved = localStorage.getItem("cinamitra-fittings");
+    return saved ? JSON.parse(saved) : INITIAL_FITTINGS;
+  });
+  const [alerts, setAlerts] = useState(INITIAL_ALERTS);
+
+  // Save to localStorage
+  useEffect(() => {
+    localStorage.setItem("cinamitra-wardrobes", JSON.stringify(wardrobes));
+  }, [wardrobes]);
+
+  useEffect(() => {
+    localStorage.setItem("cinamitra-fittings", JSON.stringify(fittings));
+  }, [fittings]);
+
+  // Form states
+  const [showFittingForm, setShowFittingForm] = useState(false);
+  const [newChar, setNewChar] = useState("");
+  const [newActor, setNewActor] = useState("");
+  const [newDate, setNewDate] = useState("Oct 23");
+  const [newTime, setNewTime] = useState("12:00 PM");
+
+  // Cycle Continuity Status
+  const cycleContinuity = (charName: string) => {
+    const statuses = ["Locked", "Alert", "In Review"];
+    setWardrobes((prev: typeof INITIAL_WARDROBES) => prev.map((w) => {
+      if (w.char === charName) {
+        const nextIndex = (statuses.indexOf(w.continuity) + 1) % statuses.length;
+        return { ...w, continuity: nextIndex === 0 ? "Locked" : nextIndex === 1 ? "Alert" : "In Review" };
+      }
+      return w;
+    }));
+  };
+
+  // Cycle Fitting Status
+  const cycleFittingStatus = (index: number) => {
+    setFittings((prev: typeof INITIAL_FITTINGS) => prev.map((f, i) => {
+      if (i === index) {
+        return { ...f, status: f.status === "Confirmed" ? "Pending" : "Confirmed" };
+      }
+      return f;
+    }));
+  };
+
+  // Add a new fitting
+  const handleAddFitting = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newChar.trim() && newActor.trim()) {
+      setFittings((prev: typeof INITIAL_FITTINGS) => [
+        { char: newChar.trim(), actor: newActor.trim(), date: newDate, time: newTime, status: "Pending" },
+        ...prev
+      ]);
+      setNewChar("");
+      setNewActor("");
+      setShowFittingForm(false);
+      
+      // Also increment fittings count in wardrobes if character matches
+      setWardrobes((prev: typeof INITIAL_WARDROBES) => prev.map((w) => {
+        if (w.char.toLowerCase() === newChar.toLowerCase() || w.actor.toLowerCase() === newActor.toLowerCase()) {
+          return { ...w, fittings: w.fittings + 1 };
+        }
+        return w;
+      }));
+    }
+  };
+
+  // Calculate fitting statistics
+  const confirmedFittings = fittings.filter(f => f.status === "Confirmed").length;
+  const pendingFittings = fittings.filter(f => f.status === "Pending").length;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="p-8 max-w-[1400px] mx-auto space-y-8"
+      className="p-4 md:p-8 max-w-[1400px] mx-auto space-y-8 bg-background text-foreground min-h-screen"
     >
       <header className="py-6 border-b border-border/50 relative">
         <Link href="/" className="absolute -top-4 text-xs text-muted-foreground flex items-center gap-1 hover:text-primary transition-colors">
           <ArrowLeft className="w-3 h-3" /> Back to Role Switcher
         </Link>
         <h1 className="text-4xl font-display font-bold tracking-tight">Costume Department</h1>
-        <p className="text-xl text-muted-foreground mt-2">Devara: Part 2</p>
+        <p className="text-xl text-muted-foreground mt-2">Devara: Part 2 — Wardrobe & Continuity Command</p>
       </header>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
-          { label: "Characters", value: "12", sub: "with costume sheets" },
+          { label: "Characters", value: wardrobes.length.toString(), sub: "with active costume sheets" },
           { label: "Costume Sets", value: "47", sub: "total variations" },
-          { label: "Fittings This Week", value: "8", sub: "5 confirmed, 3 pending" },
+          { label: "Fittings This Week", value: fittings.length.toString(), sub: `${confirmedFittings} confirmed, ${pendingFittings} pending` },
         ].map((k, i) => (
           <Card key={i} className="bg-card border-border hover:border-primary/50 transition-colors">
             <CardContent className="p-6">
@@ -61,56 +136,143 @@ export default function CostumeDesignerView() {
 
       <div className="grid md:grid-cols-3 gap-8">
         <div className="md:col-span-2 space-y-3">
-          <h2 className="text-xl font-display font-bold">Character Wardrobe</h2>
-          <div className="bg-card border border-border rounded-lg overflow-hidden">
-            <table className="w-full text-sm">
-              <thead className="bg-muted/50 border-b border-border text-left">
-                <tr>
-                  <th className="p-3 text-muted-foreground font-medium">Character</th>
-                  <th className="p-3 text-muted-foreground font-medium">Scenes</th>
-                  <th className="p-3 text-muted-foreground font-medium">Key Costume</th>
-                  <th className="p-3 text-muted-foreground font-medium">Continuity</th>
-                  <th className="p-3 text-muted-foreground font-medium">Fittings</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {wardrobes.map((w, i) => (
-                  <tr key={i} className="hover:bg-muted/30 transition-colors">
-                    <td className="p-3">
-                      <p className="font-medium">{w.char}</p>
-                      <p className="text-xs text-muted-foreground">{w.actor}</p>
-                    </td>
-                    <td className="p-3 font-display font-bold text-primary text-xs">{w.scenes}</td>
-                    <td className="p-3 text-xs text-muted-foreground max-w-[160px]">{w.costume}</td>
-                    <td className="p-3">
-                      <span className={`px-2 py-0.5 rounded text-xs font-bold ${
-                        w.continuity === "Locked" ? "bg-green-500/10 text-green-600" :
-                        w.continuity === "Alert" ? "bg-destructive/10 text-destructive" :
-                        "bg-amber-500/10 text-amber-600"
-                      }`}>{w.continuity}</span>
-                    </td>
-                    <td className="p-3 text-sm font-medium text-center">{w.fittings}</td>
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-display font-bold">Character Wardrobe</h2>
+            <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Click Continuity to cycle</span>
+          </div>
+          <div className="bg-card border border-border rounded-lg overflow-hidden shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-muted/50 border-b border-border text-left">
+                  <tr>
+                    <th className="p-3 text-muted-foreground font-medium">Character</th>
+                    <th className="p-3 text-muted-foreground font-medium">Scenes</th>
+                    <th className="p-3 text-muted-foreground font-medium">Key Costume</th>
+                    <th className="p-3 text-muted-foreground font-medium">Continuity</th>
+                    <th className="p-3 text-muted-foreground font-medium text-center">Fittings</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {wardrobes.map((w, i) => (
+                    <tr key={i} className="hover:bg-muted/30 transition-colors">
+                      <td className="p-3">
+                        <p className="font-medium text-foreground">{w.char}</p>
+                        <p className="text-xs text-muted-foreground">{w.actor}</p>
+                      </td>
+                      <td className="p-3 font-display font-bold text-primary text-xs">{w.scenes}</td>
+                      <td className="p-3 text-xs text-muted-foreground max-w-[160px]">{w.costume}</td>
+                      <td className="p-3">
+                        <button
+                          onClick={() => cycleContinuity(w.char)}
+                          className={`px-2 py-0.5 rounded text-xs font-bold transition-colors cursor-pointer border ${
+                            w.continuity === "Locked" ? "bg-green-500/10 text-green-500 border-green-500/20" :
+                            w.continuity === "Alert" ? "bg-destructive/10 text-destructive border-destructive/20" :
+                            "bg-amber-500/10 text-amber-500 border-amber-500/20"
+                          }`}
+                        >
+                          {w.continuity}
+                        </button>
+                      </td>
+                      <td className="p-3 text-sm font-medium text-center text-foreground">{w.fittings}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 
         <div className="space-y-6">
           <div className="space-y-3">
-            <h2 className="text-xl font-display font-bold">Fitting Schedule</h2>
-            <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-display font-bold">Fitting Schedule</h2>
+              <button 
+                onClick={() => setShowFittingForm(!showFittingForm)}
+                className="p-1.5 rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-xs font-bold flex items-center gap-1 cursor-pointer"
+              >
+                {showFittingForm ? <X className="w-3 h-3" /> : <Plus className="w-3 h-3" />} Fitting
+              </button>
+            </div>
+
+            <AnimatePresence>
+              {showFittingForm && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="overflow-hidden"
+                >
+                  <Card className="bg-muted/15 border-border p-4">
+                    <form onSubmit={handleAddFitting} className="space-y-3">
+                      <div>
+                        <label className="text-[10px] uppercase font-bold text-muted-foreground block mb-1">Character Name</label>
+                        <input 
+                          type="text" 
+                          placeholder="e.g. NTR Jr." 
+                          value={newChar} 
+                          onChange={(e) => setNewChar(e.target.value)}
+                          className="w-full bg-background border border-border p-2 rounded text-xs text-foreground focus:outline-none focus:border-primary"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] uppercase font-bold text-muted-foreground block mb-1">Actor Name</label>
+                        <input 
+                          type="text" 
+                          placeholder="e.g. N.T. Rama Rao Jr." 
+                          value={newActor} 
+                          onChange={(e) => setNewActor(e.target.value)}
+                          className="w-full bg-background border border-border p-2 rounded text-xs text-foreground focus:outline-none focus:border-primary"
+                          required
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[10px] uppercase font-bold text-muted-foreground block mb-1">Date</label>
+                          <input 
+                            type="text" 
+                            value={newDate} 
+                            onChange={(e) => setNewDate(e.target.value)}
+                            className="w-full bg-background border border-border p-2 rounded text-xs text-foreground focus:outline-none focus:border-primary"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] uppercase font-bold text-muted-foreground block mb-1">Time</label>
+                          <input 
+                            type="text" 
+                            value={newTime} 
+                            onChange={(e) => setNewTime(e.target.value)}
+                            className="w-full bg-background border border-border p-2 rounded text-xs text-foreground focus:outline-none focus:border-primary"
+                          />
+                        </div>
+                      </div>
+                      <button type="submit" className="w-full bg-primary text-primary-foreground text-xs font-bold py-2 rounded hover:bg-primary/90 transition-colors cursor-pointer">
+                        Add Fitting Schedule
+                      </button>
+                    </form>
+                  </Card>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
               {fittings.map((f, i) => (
-                <div key={i} className="bg-card border border-border rounded-lg p-3">
+                <div key={i} className="bg-card border border-border rounded-lg p-3 hover:border-primary/30 transition-all">
                   <div className="flex justify-between items-start mb-1">
                     <div>
-                      <p className="font-medium text-sm">{f.char}</p>
+                      <p className="font-medium text-sm text-foreground">{f.char}</p>
                       <p className="text-xs text-muted-foreground">{f.actor}</p>
                     </div>
-                    <span className={`px-2 py-0.5 rounded text-xs font-bold ${
-                      f.status === "Confirmed" ? "bg-green-500/10 text-green-600" : "bg-amber-500/10 text-amber-600"
-                    }`}>{f.status}</span>
+                    <button
+                      onClick={() => cycleFittingStatus(i)}
+                      className={`px-2 py-0.5 rounded text-xs font-bold cursor-pointer transition-colors border ${
+                        f.status === "Confirmed" 
+                          ? "bg-green-500/10 text-green-500 border-green-500/20" 
+                          : "bg-amber-500/10 text-amber-500 border-amber-500/20"
+                      }`}
+                    >
+                      {f.status}
+                    </button>
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">{f.date} at {f.time}</p>
                 </div>
@@ -120,7 +282,7 @@ export default function CostumeDesignerView() {
 
           <div className="space-y-3">
             <h2 className="text-xl font-display font-bold flex items-center gap-2">
-              <AlertTriangle className="w-5 h-5 text-destructive" />
+              <AlertTriangle className="w-5 h-5 text-destructive animate-pulse" />
               Continuity Alerts
             </h2>
             <div className="space-y-2">
@@ -128,7 +290,7 @@ export default function CostumeDesignerView() {
                 <Card key={i} className={`border ${a.urgent ? "bg-destructive/5 border-destructive/30" : "bg-card border-border"}`}>
                   <CardContent className="p-3">
                     <div className="flex gap-2 items-baseline mb-1">
-                      <Link href="/scenes/34" className="font-bold font-display text-primary text-sm hover:underline">Scene {a.scene}</Link>
+                      <Link href={`/scenes/${a.scene}`} className="font-bold font-display text-primary text-sm hover:underline">Scene {a.scene}</Link>
                     </div>
                     <p className="text-xs text-muted-foreground leading-relaxed">{a.note}</p>
                   </CardContent>

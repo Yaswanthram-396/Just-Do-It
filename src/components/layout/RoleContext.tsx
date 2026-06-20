@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 type Role = 
   | "Producer" | "Director" | "Line Producer" | "AD" | "Accountant"
   | "Continuity" | "Cashier" | "Production Manager" | "Cinematographer"
-  | "Production Designer" | "Costume Designer" | "Editor" | null;
+  | "Production Designer" | "Costume Designer" | null;
 
 interface RoleContextType {
   role: Role;

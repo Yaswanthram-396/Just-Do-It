@@ -26,7 +26,6 @@ import ProductionManagerView from "@/pages/production-manager";
 import CinematographerView from "@/pages/cinematographer";
 import ProductionDesignerView from "@/pages/production-designer";
 import CostumeDesignerView from "@/pages/costume-designer";
-import EditorView from "@/pages/editor";
 import BreakdownScript from "@/pages/breakdown-script";
 import DiscussionsView from "@/pages/discussions";
 import VendorsView from "@/pages/vendors";
@@ -99,9 +98,7 @@ function Router() {
       <Route path="/costume-designer">
         <Layout><CostumeDesignerView /></Layout>
       </Route>
-      <Route path="/editor">
-        <Layout><EditorView /></Layout>
-      </Route>
+
 
       <Route path="/discussions"><Layout><DiscussionsView /></Layout></Route>
       <Route path="/vendors"><Layout><VendorsView /></Layout></Route>

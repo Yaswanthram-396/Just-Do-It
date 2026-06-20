@@ -57,7 +57,7 @@ export default function ContinuityView() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="p-8 max-w-[1400px] mx-auto space-y-8"
+      className="p-4 md:p-8 max-w-[1400px] mx-auto space-y-8"
     >
       <header className="py-6 border-b border-border/50 relative">
         <Link href="/" className="absolute -top-4 text-xs text-muted-foreground flex items-center gap-1 hover:text-primary transition-colors">
@@ -67,7 +67,7 @@ export default function ContinuityView() {
         <p className="text-xl text-muted-foreground mt-2">Devara: Part 2</p>
       </header>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
           { label: "Continuity Warnings", value: "4", sub: "require action", urgent: true },
           { label: "Scenes Logged", value: "89", sub: "of 312 total", urgent: false },
@@ -100,7 +100,8 @@ export default function ContinuityView() {
             </div>
           </div>
           <div className="bg-card border border-border rounded-lg overflow-hidden">
-            <table className="w-full text-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
               <thead className="bg-muted/50 border-b border-border text-left">
                 <tr>
                   <th className="p-3 text-muted-foreground font-medium">Scene</th>
@@ -133,6 +134,7 @@ export default function ContinuityView() {
               </tbody>
             </table>
           </div>
+        </div>
         </div>
 
         <div className="space-y-4">

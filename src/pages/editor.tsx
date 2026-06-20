@@ -39,7 +39,7 @@ export default function EditorView() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="p-8 max-w-[1400px] mx-auto space-y-8"
+      className="p-4 md:p-8 max-w-[1400px] mx-auto space-y-8"
     >
       <header className="py-6 border-b border-border/50 relative">
         <Link href="/" className="absolute -top-4 text-xs text-muted-foreground flex items-center gap-1 hover:text-primary transition-colors">
@@ -49,7 +49,7 @@ export default function EditorView() {
         <p className="text-xl text-muted-foreground mt-2">Devara: Part 2 — Editor View</p>
       </header>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
           { label: "Scenes Received", value: "23 / 89", sub: "shot and delivered" },
           { label: "VFX Flags", value: "14", sub: "scenes requiring VFX" },
@@ -69,7 +69,8 @@ export default function EditorView() {
         <div className="md:col-span-2 space-y-3">
           <h2 className="text-xl font-display font-bold">Scene Material Log</h2>
           <div className="bg-card border border-border rounded-lg overflow-hidden">
-            <table className="w-full text-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
               <thead className="bg-muted/50 border-b border-border text-left">
                 <tr>
                   <th className="p-3 text-muted-foreground font-medium">Scene</th>
@@ -99,6 +100,7 @@ export default function EditorView() {
               </tbody>
             </table>
           </div>
+        </div>
         </div>
 
         <div className="space-y-6">

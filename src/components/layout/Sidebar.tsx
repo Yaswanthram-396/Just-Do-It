@@ -124,12 +124,6 @@ export function AppSidebar() {
           { title: "Costumes", icon: ListChecks, url: "/breakdown" },
           { title: "Characters", icon: Film, url: "/scenes" },
         ];
-      case "Editor":
-        return [
-          { title: "Home", icon: Scissors, url: "/editor" },
-          { title: "Scenes", icon: Film, url: "/scenes" },
-          { title: "Post Production", icon: FileText, url: "/reports" },
-        ];
       default:
         return [
           { title: "Command Center", icon: LayoutDashboard, url: "/dashboard" },

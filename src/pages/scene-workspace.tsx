@@ -41,7 +41,6 @@ const roleNameMap: Record<string, { name: string; dept: string; color: string }>
   "Cinematographer": { name: "Rathnavelu", dept: "Camera", color: "blue" },
   "Production Designer": { name: "Sabu Cyril", dept: "Art", color: "teal" },
   "Costume Designer": { name: "Rama Rajamouli", dept: "Costume", color: "purple" },
-  "Editor": { name: "Editor", dept: "Post-Prod", color: "purple" },
 };
 
 
@@ -747,7 +746,7 @@ function ChatMessage({ name, dept, color, time, text, hasFile, isSelf }: {
         )}
 
         {/* Message Text */}
-        <div className="text-xs leading-relaxed break-words pb-3 pr-12 text-neutral-800">
+        <div className="text-xs leading-relaxed break-words pb-3 pr-12 text-foreground/95">
           {text}
         </div>
 

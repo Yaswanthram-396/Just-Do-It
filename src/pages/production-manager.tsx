@@ -44,51 +44,48 @@ export default function ProductionManagerView() {
           <ArrowLeft className="w-3 h-3" /> Back to Role Switcher
         </Link>
         <h1 className="text-4xl font-display font-bold tracking-tight">Logistics Command</h1>
-        <p className="text-xl text-muted-foreground mt-2">Devara: Part 2 — Day 23</p>
+        <p className="text-xl text-muted-foreground mt-2">Devara: Part 2 — Production Manager View</p>
       </header>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
           { label: "Vehicles Active", value: "14", sub: "on deployment today" },
           { label: "Drivers Available", value: "9 / 14", sub: "5 assigned, 9 free" },
-          { label: "Pending Pickups", value: "6", sub: "scheduled this afternoon" },
-          { label: "Accommodation", value: "47 / 52", sub: "crew confirmed" },
+          { label: "Crew Accommodation", value: "47 / 52", sub: "Novotel bookings" },
         ].map((k, i) => (
           <Card key={i} className="bg-card border-border hover:border-primary/50 transition-colors">
             <CardContent className="p-6">
               <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">{k.label}</p>
-              <p className="text-3xl font-display font-bold text-foreground">{k.value}</p>
-              <p className="text-xs text-muted-foreground mt-1">{k.sub}</p>
+              <p className="text-4xl font-display font-bold text-foreground">{k.value}</p>
+              <p className="text-xs text-muted-foreground mt-2">{k.sub}</p>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* Vehicles */}
-        <div className="space-y-3">
-          <h2 className="text-xl font-display font-bold">Vehicle Fleet</h2>
-          <div className="bg-card border border-border rounded-lg overflow-hidden">
-            {/* Desktop Table View */}
-            <div className="hidden sm:block overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="bg-background border-b border-border text-left">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="md:col-span-2 space-y-8">
+          <div className="space-y-3">
+            <h2 className="text-xl font-display font-bold">Vehicle Fleet Assignments</h2>
+            <div className="bg-card border border-border rounded-lg overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                <thead className="bg-muted/50 border-b border-border text-left">
                   <tr>
                     <th className="p-3 text-muted-foreground font-medium">Vehicle</th>
                     <th className="p-3 text-muted-foreground font-medium">Assignment</th>
-                    <th className="p-3 text-muted-foreground font-medium">Status</th>
+                    <th className="p-3 text-muted-foreground font-medium text-right">Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border text-foreground">
                   {vehicles.map((v, i) => (
                     <tr key={i} className="hover:bg-muted/30 transition-colors">
                       <td className="p-3">
-                        <p className="font-medium text-xs">{v.vehicle}</p>
+                        <p className="font-semibold text-xs text-foreground">{v.vehicle}</p>
                         <p className="text-xs text-muted-foreground">{v.driver}</p>
                       </td>
                       <td className="p-3 text-xs text-muted-foreground">{v.assignment}</td>
-                      <td className="p-3">
+                      <td className="p-3 text-right">
                         <span className={`px-2 py-0.5 rounded text-xs font-bold ${
                           v.status === "Active" ? "bg-success/20 text-success" :
                           v.status === "Maintenance" ? "bg-destructive/20 text-destructive" :
@@ -100,71 +97,53 @@ export default function ProductionManagerView() {
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
 
-            {/* Mobile Stacked Card View */}
-            <div className="block sm:hidden divide-y divide-border">
-              {vehicles.map((v, i) => (
-                <div key={i} className="p-4 space-y-2 bg-card text-xs">
-                  <div className="flex justify-between items-center">
-                    <span className="font-bold text-foreground">{v.vehicle}</span>
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                      v.status === "Active" ? "bg-success/20 text-success" :
-                      v.status === "Maintenance" ? "bg-destructive/20 text-destructive" :
-                      "bg-muted text-muted-foreground"
-                    }`}>{v.status}</span>
+          <div className="space-y-3">
+            <h2 className="text-xl font-display font-bold">Today's Logistics Schedule</h2>
+            <div className="bg-card border border-border rounded-lg p-4 space-y-3">
+              {logistics.map((l, i) => (
+                <div key={i} className="flex gap-3 items-start border-b border-border last:border-0 pb-3 last:pb-0">
+                  <div className="shrink-0 text-left w-16">
+                    <span className="text-xs font-mono text-muted-foreground">{l.time}</span>
                   </div>
-                  <p className="text-muted-foreground">Driver: {v.driver}</p>
-                  <p className="text-muted-foreground">Assignment: {v.assignment}</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground">{l.desc}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{l.driver}</p>
+                  </div>
+                  <div className="shrink-0 pt-0.5">
+                    {l.status === "Completed" && <CheckCircle className="w-4.5 h-4.5 text-success" />}
+                    {l.status === "Active" && <Clock className="w-4.5 h-4.5 text-primary animate-pulse" />}
+                    {l.status === "Pending" && <Clock className="w-4.5 h-4.5 text-muted-foreground" />}
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Logistics */}
-        <div className="space-y-3">
-          <h2 className="text-xl font-display font-bold">Today's Logistics</h2>
-          <div className="space-y-2">
-            {logistics.map((l, i) => (
-              <div key={i} className="flex gap-3 bg-card border border-border rounded-lg p-3 items-start">
-                <div className="shrink-0 text-right w-16">
-                  <span className="text-xs font-mono text-muted-foreground">{l.time}</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground">{l.desc}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{l.driver}</p>
-                </div>
-                <div className="shrink-0">
-                  {l.status === "Completed" && <CheckCircle className="w-4 h-4 text-success" />}
-                  {l.status === "Active" && <Clock className="w-4 h-4 text-primary animate-pulse" />}
-                  {l.status === "Pending" && <Clock className="w-4 h-4 text-muted-foreground" />}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Resource Status */}
-        <div className="space-y-3">
-          <h2 className="text-xl font-display font-bold">Resource Status</h2>
+        <div className="space-y-6">
           <div className="space-y-3">
-            {resources.map((r, i) => (
-              <Card key={i} className={`border ${r.ok ? "bg-card border-border" : "bg-destructive/10 border-destructive/20"}`}>
-                <CardContent className="p-4 flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-sm text-foreground">{r.label}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{r.total}</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className={`font-bold font-display ${r.ok ? "text-foreground" : "text-destructive"}`}>{r.value}</span>
-                    {r.ok ? <CheckCircle className="w-4 h-4 text-success" /> : <AlertCircle className="w-4 h-4 text-destructive" />}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+            <h2 className="text-xl font-display font-bold">Resource Status</h2>
+            <div className="space-y-3">
+              {resources.map((r, i) => (
+                <Card key={i} className={`border ${r.ok ? "bg-card border-border" : "bg-destructive/10 border-destructive/20"}`}>
+                  <CardContent className="p-4 flex items-center justify-between">
+                    <div>
+                      <p className="font-semibold text-sm text-foreground">{r.label}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{r.total}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className={`font-bold font-display ${r.ok ? "text-foreground" : "text-destructive"}`}>{r.value}</span>
+                      {r.ok ? <CheckCircle className="w-4 h-4 text-success" /> : <AlertCircle className="w-4 h-4 text-destructive" />}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
         </div>
-
       </div>
     </motion.div>
   );

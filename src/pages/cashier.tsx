@@ -1,115 +1,262 @@
-import { motion } from "framer-motion";
-import { Plus, Home, Receipt, Wallet } from "lucide-react";
-import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, Plus, Home, Receipt, Wallet, FileText, X } from "lucide-react";
+import { useState, useEffect } from "react";
 
-const todayExpenses = [
-  { cat: "Catering", desc: "Lunch for 45 crew", amount: "₹18,500", time: "12:30 PM", color: "bg-amber-500" },
-  { cat: "Transport", desc: "Cab fares — 6 pickups", amount: "₹4,200", time: "09:15 AM", color: "bg-blue-500" },
-  { cat: "Props", desc: "Emergency foam board", amount: "₹650", time: "10:45 AM", color: "bg-purple-500" },
-  { cat: "Petrol", desc: "Generator refuel", amount: "₹3,800", time: "08:00 AM", color: "bg-green-500" },
-  { cat: "Misc", desc: "Stationery", amount: "₹420", time: "11:20 AM", color: "bg-gray-400" },
+const INITIAL_EXPENSES = [
+  { cat: "Catering", desc: "Lunch for 45 crew", amount: 18500, time: "12:30 PM", color: "bg-amber-500" },
+  { cat: "Transport", desc: "Cab fares — 6 pickups", amount: 4200, time: "09:15 AM", color: "bg-blue-500" },
+  { cat: "Props", desc: "Emergency foam board", amount: 650, time: "10:45 AM", color: "bg-purple-500" },
+  { cat: "Petrol", desc: "Generator refuel", amount: 3800, time: "08:00 AM", color: "bg-green-500" },
+  { cat: "Misc", desc: "Stationery", amount: 420, time: "11:20 AM", color: "bg-gray-400" },
 ];
 
 export default function CashierView() {
   const [activeTab, setActiveTab] = useState("home");
+  const [expenses, setExpenses] = useState<typeof INITIAL_EXPENSES>(() => {
+    const saved = localStorage.getItem("cinamitra-cashier-expenses");
+    return saved ? JSON.parse(saved) : INITIAL_EXPENSES;
+  });
+  const [showAddForm, setShowAddForm] = useState(false);
+
+  // Save to localStorage
+  useEffect(() => {
+    localStorage.setItem("cinamitra-cashier-expenses", JSON.stringify(expenses));
+  }, [expenses]);
+
+  // Form states
+  const [desc, setDesc] = useState("");
+  const [cat, setCat] = useState("Catering");
+  const [amountVal, setAmountVal] = useState("");
+
+  const handleAddExpense = (e: React.FormEvent) => {
+    e.preventDefault();
+    const numericAmount = parseInt(amountVal.replace(/\D/g, ""), 10);
+    if (desc.trim() && !isNaN(numericAmount) && numericAmount > 0) {
+      const now = new Date();
+      let timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      
+      const colorsMap: Record<string, string> = {
+        Catering: "bg-amber-500",
+        Transport: "bg-blue-500",
+        Props: "bg-purple-500",
+        Petrol: "bg-green-500",
+        Misc: "bg-gray-400"
+      };
+
+      setExpenses((prev: typeof INITIAL_EXPENSES) => [
+        { 
+          cat, 
+          desc: desc.trim(), 
+          amount: numericAmount, 
+          time: timeStr, 
+          color: colorsMap[cat] || "bg-gray-400" 
+        },
+        ...prev
+      ]);
+
+      setDesc("");
+      setAmountVal("");
+      setShowAddForm(false);
+    }
+  };
+
+  // Calculations
+  const todaySpent = expenses.reduce((sum, e) => sum + e.amount, 0);
+  const initialAvailableCash = 152070; // Set a mock total starting petty cash pool
+  const availableCash = Math.max(0, initialAvailableCash - todaySpent);
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-3.5rem)] bg-background p-4">
-      <div className="relative w-[390px] bg-card rounded-[2.5rem] border-2 border-border shadow-2xl overflow-hidden flex flex-col" style={{ height: "780px" }}>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="p-4 md:p-8 max-w-[1400px] mx-auto space-y-8 bg-background text-foreground min-h-screen"
+    >
+      <header className="py-6 border-b border-border/50 relative">
+        <Link href="/" className="absolute -top-4 text-xs text-muted-foreground flex items-center gap-1 hover:text-primary transition-colors">
+          <ArrowLeft className="w-3 h-3" /> Back to Role Switcher
+        </Link>
+        <h1 className="text-4xl font-display font-bold tracking-tight">Cash Operations</h1>
+        <p className="text-xl text-muted-foreground mt-2">Devara: Part 2 — Cashier View</p>
+      </header>
+
+      {/* Metrics Header */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {[
+          { label: "Available Cash Balance", value: `₹${availableCash.toLocaleString()}`, sub: "petty cash in bag" },
+          { label: "Today Spent", value: `₹${todaySpent.toLocaleString()}`, sub: `across ${expenses.length} categories` },
+          { label: "Pending Claims", value: "8 Claims", sub: "awaiting voucher upload" },
+        ].map((k, i) => (
+          <Card key={i} className="bg-card border-border hover:border-primary/50 transition-colors">
+            <CardContent className="p-6">
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">{k.label}</p>
+              <p className="text-4xl font-display font-bold">{k.value}</p>
+              <p className="text-xs text-muted-foreground mt-2">{k.sub}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="grid md:grid-cols-3 gap-8">
         
-        {/* Phone notch */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-6 bg-border rounded-b-2xl z-10" />
-        
-        {/* Status bar */}
-        <div className="pt-8 px-6 pb-2 bg-card shrink-0">
-          <p className="text-xs text-muted-foreground font-medium">9:41 AM</p>
+        {/* Left Column - Today's Expenses */}
+        <div className="md:col-span-2 space-y-3">
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-display font-bold">Today's Expenses</h2>
+            <span className="text-xs text-muted-foreground">June 20</span>
+          </div>
+          <div className="bg-card border border-border rounded-lg overflow-hidden shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="bg-muted/50 border-b border-border text-muted-foreground font-medium">
+                  <tr>
+                    <th className="p-3">Description</th>
+                    <th className="p-3">Category</th>
+                    <th className="p-3">Time</th>
+                    <th className="p-3 text-right">Amount</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {expenses.map((exp, i) => (
+                    <tr key={i} className="hover:bg-muted/30 transition-colors">
+                      <td className="p-3 font-medium text-foreground">{exp.desc}</td>
+                      <td className="p-3">
+                        <span className={`px-2 py-0.5 rounded text-white text-xs font-medium ${exp.color}`}>
+                          {exp.cat}
+                        </span>
+                      </td>
+                      <td className="p-3 text-xs text-muted-foreground">{exp.time}</td>
+                      <td className="p-3 text-sm font-semibold text-right text-foreground">
+                        ₹{exp.amount.toLocaleString()}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
-        {/* Scrollable content */}
-        <div className="flex-1 overflow-y-auto px-5 pb-24 space-y-5">
+        {/* Right Column - Actions & Uploads */}
+        <div className="space-y-6">
           
-          <div>
-            <h1 className="text-2xl font-display font-bold tracking-tight">Cash Operations</h1>
-            <p className="text-sm text-muted-foreground">Day 23 — Principal Photography</p>
-          </div>
-
-          {/* Cash Balance Hero */}
-          <div className="rounded-2xl bg-primary p-5 text-primary-foreground">
-            <p className="text-xs font-semibold uppercase tracking-widest opacity-80 mb-1">Available Cash Balance</p>
-            <p className="text-4xl font-display font-bold">₹1,24,500</p>
-            <div className="flex justify-between mt-4 pt-3 border-t border-primary-foreground/20">
-              <div>
-                <p className="text-xs opacity-70">Today Spent</p>
-                <p className="font-bold text-sm">₹27,570</p>
-              </div>
-              <div>
-                <p className="text-xs opacity-70">Pending Claims</p>
-                <p className="font-bold text-sm">₹8,400</p>
-              </div>
-              <div>
-                <p className="text-xs opacity-70">Approved</p>
-                <p className="font-bold text-sm">₹19,170</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Today's Expenses */}
-          <div>
-            <div className="flex justify-between items-center mb-3">
-              <h2 className="font-display font-bold">Today's Expenses</h2>
-              <span className="text-xs text-muted-foreground">June 11</span>
-            </div>
-            <div className="space-y-2">
-              {todayExpenses.map((exp, i) => (
-                <div key={i} className="flex items-center gap-3 bg-card border border-border rounded-xl p-3">
-                  <div className={`w-2 h-2 rounded-full shrink-0 ${exp.color}`} />
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm truncate">{exp.desc}</p>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-xs bg-muted px-1.5 py-0.5 rounded text-muted-foreground">{exp.cat}</span>
-                      <span className="text-xs text-muted-foreground">{exp.time}</span>
-                    </div>
-                  </div>
-                  <span className="font-display font-bold text-sm shrink-0">{exp.amount}</span>
-                </div>
+          {/* Quick Nav */}
+          <div className="space-y-3">
+            <h2 className="text-xl font-display font-bold">Quick Navigation</h2>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { icon: Home, label: "Home", id: "home", href: "/cashier" },
+                { icon: Wallet, label: "Expenses", id: "expenses", href: "/budget" },
+                { icon: Receipt, label: "Receipts", id: "receipts", href: "/reports" },
+              ].map((tab) => (
+                <Link key={tab.id} href={tab.href}>
+                  <button
+                    data-testid={`button-nav-${tab.id}`}
+                    onClick={() => setActiveTab(tab.id)}
+                    className="w-full py-2 px-1 rounded-lg border border-border bg-card text-muted-foreground hover:text-foreground hover:border-primary/50 flex flex-col items-center gap-1 text-[10px] font-semibold transition-colors cursor-pointer"
+                  >
+                    <tab.icon className="w-4.5 h-4.5 text-primary" />
+                    <span>{tab.label}</span>
+                  </button>
+                </Link>
               ))}
             </div>
           </div>
 
-          <div className="bg-muted/50 rounded-xl p-4 text-center">
-            <p className="text-xs text-muted-foreground">Total expenses today: <span className="font-bold text-foreground">₹27,570</span></p>
+          {/* Add Expense Form / Receipt Upload */}
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-display font-bold">Receipt Upload Zone</h2>
+              <button
+                onClick={() => setShowAddForm(!showAddForm)}
+                className="p-1.5 rounded bg-primary text-primary-foreground hover:bg-primary/95 transition-colors text-xs font-bold flex items-center gap-1 cursor-pointer"
+              >
+                {showAddForm ? <X className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />} Add Expense
+              </button>
+            </div>
+
+            <AnimatePresence>
+              {showAddForm && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="overflow-hidden"
+                >
+                  <Card className="bg-muted/15 border-border p-4">
+                    <form onSubmit={handleAddExpense} className="space-y-3">
+                      <div>
+                        <label className="text-[10px] uppercase font-bold text-muted-foreground block mb-1">Expense Description</label>
+                        <input 
+                          type="text" 
+                          placeholder="e.g. Lunch boxes for stunts crew" 
+                          value={desc} 
+                          onChange={(e) => setDesc(e.target.value)}
+                          className="w-full bg-background border border-border p-2 rounded text-xs text-foreground focus:outline-none focus:border-primary"
+                          required
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[10px] uppercase font-bold text-muted-foreground block mb-1">Category</label>
+                          <select 
+                            value={cat} 
+                            onChange={(e) => setCat(e.target.value)}
+                            className="w-full bg-background border border-border p-2 rounded text-xs text-foreground focus:outline-none focus:border-primary"
+                          >
+                            <option value="Catering">Catering</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Props">Props</option>
+                            <option value="Petrol">Petrol</option>
+                            <option value="Misc">Misc</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="text-[10px] uppercase font-bold text-muted-foreground block mb-1">Amount (₹)</label>
+                          <input 
+                            type="text" 
+                            placeholder="e.g. 5000" 
+                            value={amountVal} 
+                            onChange={(e) => setAmountVal(e.target.value)}
+                            className="w-full bg-background border border-border p-2 rounded text-xs text-foreground focus:outline-none focus:border-primary"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <button type="submit" className="w-full bg-primary text-primary-foreground text-xs font-bold py-2 rounded hover:bg-primary/90 transition-colors cursor-pointer">
+                        Disburse Cash & Record
+                      </button>
+                    </form>
+                  </Card>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <Card className="bg-card border-border border-dashed border-2 hover:border-primary/50 transition-colors cursor-pointer">
+              <CardContent className="p-6 flex flex-col items-center justify-center text-center space-y-2">
+                <FileText className="w-8 h-8 text-muted-foreground" />
+                <p className="text-sm font-medium text-foreground">Upload Expense Receipt</p>
+                <p className="text-xs text-muted-foreground">Drag & drop or click to select image/PDF</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="space-y-3">
+            <h2 className="text-xl font-display font-bold">Cashier Guidelines</h2>
+            <Card className="bg-card border-border">
+              <CardContent className="p-4 space-y-2">
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  <strong>Daily Limit:</strong> Single transaction limit is ₹20,000. Any larger request must be processed by the Accountant.
+                </p>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  <strong>Receipts:</strong> All cash disbursements must have matching digital receipts uploaded within 24 hours of payment.
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </div>
-
-        {/* FAB */}
-        <button 
-          data-testid="button-add-expense"
-          className="absolute bottom-20 right-5 w-14 h-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg hover:scale-105 transition-transform"
-        >
-          <Plus className="w-6 h-6" />
-        </button>
-
-        {/* Bottom Nav */}
-        <div className="absolute bottom-0 left-0 right-0 bg-background border-t border-border flex justify-around items-center py-3 px-2">
-          {[
-            { icon: Home, label: "Home", id: "home", href: "/cashier" },
-            { icon: Wallet, label: "Expenses", id: "expenses", href: "/budget" },
-            { icon: Receipt, label: "Receipts", id: "receipts", href: "/reports" },
-          ].map((tab) => (
-            <Link key={tab.id} href={tab.href}>
-              <button
-                data-testid={`button-nav-${tab.id}`}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex flex-col items-center gap-1 px-4 py-1 rounded-lg transition-colors ${activeTab === tab.id ? "text-primary" : "text-muted-foreground"}`}
-              >
-                <tab.icon className="w-5 h-5" />
-                <span className="text-[10px] font-semibold">{tab.label}</span>
-              </button>
-            </Link>
-          ))}
-        </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
