@@ -1,5 +1,28 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { ResponsiveTable, type ResponsiveTableColumn } from "@/components/patterns/ResponsiveTable";
+
+interface DeptAllocation {
+  d: string;
+  s: string;
+  v: string;
+  over: boolean;
+}
+
+const deptAllocations: DeptAllocation[] = [
+  { d: "Talent", s: "45.0", v: "+0.5", over: true },
+  { d: "Production", s: "35.0", v: "-1.2", over: false },
+  { d: "Art", s: "25.0", v: "+3.4", over: true },
+  { d: "VFX", s: "18.0", v: "+0.0", over: false },
+  { d: "Locations", s: "12.0", v: "-0.5", over: false },
+  { d: "Costume", s: "7.0", v: "+2.0", over: true },
+];
+
+const deptColumns: ResponsiveTableColumn<DeptAllocation>[] = [
+  { key: "d", header: "Dept", primary: true, render: r => <span className="font-medium">{r.d}</span> },
+  { key: "s", header: "Spent", render: r => <span>₹{r.s}</span> },
+  { key: "v", header: "Var", render: r => <span className={`font-bold ${r.over ? "text-destructive" : "text-green-400"}`}>{r.v}</span> },
+];
 
 const data = [
   { day: 'Day 10', actual: 20, plan: 22 },
@@ -55,35 +78,9 @@ export default function Budget() {
       <div className="grid lg:grid-cols-3 gap-6">
         
         {/* LEFT: Dept Table */}
-        <div className="bg-card border border-border rounded-lg overflow-hidden lg:col-span-1">
-          <div className="p-4 border-b border-border bg-muted/20">
-            <h3 className="font-display font-bold">Department Allocation</h3>
-          </div>
-          <table className="w-full text-sm">
-            <thead className="text-xs text-muted-foreground uppercase bg-muted/10">
-              <tr>
-                <th className="px-4 py-2 text-left">Dept</th>
-                <th className="px-4 py-2 text-right">Spent</th>
-                <th className="px-4 py-2 text-right">Var</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border/50">
-              {[
-                { d: "Talent", s: "45.0", v: "+0.5", over: true },
-                { d: "Production", s: "35.0", v: "-1.2", over: false },
-                { d: "Art", s: "25.0", v: "+3.4", over: true },
-                { d: "VFX", s: "18.0", v: "+0.0", over: false },
-                { d: "Locations", s: "12.0", v: "-0.5", over: false },
-                { d: "Costume", s: "7.0", v: "+2.0", over: true },
-              ].map(r => (
-                <tr key={r.d} className="hover:bg-muted/30">
-                  <td className="px-4 py-3 font-medium">{r.d}</td>
-                  <td className="px-4 py-3 text-right">₹{r.s}</td>
-                  <td className={`px-4 py-3 text-right font-bold ${r.over ? 'text-destructive' : 'text-green-400'}`}>{r.v}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="lg:col-span-1 space-y-3">
+          <h3 className="font-display font-bold">Department Allocation</h3>
+          <ResponsiveTable columns={deptColumns} rows={deptAllocations} rowKey={r => r.d} />
         </div>
 
         {/* CENTER: Charts */}

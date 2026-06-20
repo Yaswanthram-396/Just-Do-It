@@ -1,10 +1,12 @@
 import { PageHeader } from "@/components/patterns/PageHeader";
 import { KpiGrid } from "@/components/patterns/KpiGrid";
+import { DetailCard } from "@/components/patterns/DetailCard";
+import { StatusBadge } from "@/components/patterns/StatusBadge";
 
-const approvals = [
-  { item: "Market Set Extension (Art Dept)", req: "Sabu Cyril", amt: "₹12.5L" },
-  { item: "Extra Vanity Vans (2) for Day 31-35", req: "Production", amt: "₹3.2L" },
-  { item: "VFX Pre-viz Render Farm scaling", req: "Kamal", amt: "₹8.0L" },
+const riskFlags = [
+  { item: "Overseas distribution deal (APAC)", owner: "Legal & Biz Affairs", status: "In Negotiation", tone: "warning" as const },
+  { item: "Star cast date clash — Schedule risk Days 40-45", owner: "Line Producer", status: "Escalated", tone: "destructive" as const },
+  { item: "Insurance renewal for VFX heavy shoot block", owner: "Production", status: "On Track", tone: "success" as const },
 ];
 
 export default function ProducerView() {
@@ -16,7 +18,7 @@ export default function ProducerView() {
         { label: "Schedule Health", value: "87%", sub: "On Track" },
         { label: "Budget Health", value: "₹142Cr", sub: "of ₹165Cr (86%)" },
         { label: "Days Buffer", value: "+2", sub: "Available" },
-        { label: "Pending Approvals", value: "7", sub: "Items requiring signature", tone: "destructive" },
+        { label: "Greenlight Risk", value: "Medium", sub: "1 escalated risk flag", tone: "destructive" },
       ]} />
 
       <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
@@ -29,22 +31,16 @@ export default function ProducerView() {
       </div>
 
       <div>
-        <h2 className="text-xl sm:text-2xl font-display font-bold mb-4 sm:mb-6">Approval Queue</h2>
-        <div className="grid gap-4">
-          {approvals.map((a, i) => (
-            <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-card border border-border rounded-lg">
-              <div className="min-w-0">
-                <p className="text-base sm:text-lg font-medium">{a.item}</p>
-                <p className="text-sm text-muted-foreground">Requested by {a.req}</p>
-              </div>
-              <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-6">
-                <span className="text-lg sm:text-xl font-display font-bold">{a.amt}</span>
-                <div className="flex gap-2">
-                  <button className="px-4 sm:px-6 py-2 bg-primary text-primary-foreground font-bold rounded hover:bg-primary/90 transition-colors text-sm">Approve</button>
-                  <button className="px-4 sm:px-6 py-2 bg-muted text-muted-foreground font-bold rounded hover:bg-destructive hover:text-destructive-foreground transition-colors text-sm">Reject</button>
-                </div>
-              </div>
-            </div>
+        <h2 className="text-xl sm:text-2xl font-display font-bold mb-4 sm:mb-6">Production Risk &amp; Deal Status</h2>
+        <div className="grid gap-3">
+          {riskFlags.map((r, i) => (
+            <DetailCard
+              key={i}
+              title={r.item}
+              subtitle={`Owner: ${r.owner}`}
+              urgent={r.tone === "destructive"}
+              badge={<StatusBadge tone={r.tone}>{r.status}</StatusBadge>}
+            />
           ))}
         </div>
       </div>

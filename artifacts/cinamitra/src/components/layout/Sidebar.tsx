@@ -52,7 +52,7 @@ export function AppSidebar() {
         return [
           { title: "Home", icon: UserCircle, url: "/producer" },
           { title: "Scenes", icon: Film, url: "/scenes" },
-          { title: "Approvals", icon: ListChecks, url: "/approvals" }, // Fallback to breakdown or just leave
+          { title: "Risk & Deals", icon: ListChecks, url: "/producer" },
           { title: "Finance", icon: Wallet, url: "/budget" },
           { title: "Reports", icon: FileText, url: "/reports" },
         ];

@@ -55,7 +55,22 @@ const continuityNotes = [
   { scene: "41", from: "Script Supervisor", note: "Dialogue line change on set — Take 7 onwards uses revised script. Disregard takes 1–6 for final cut." },
 ];
 
+interface CutVersion {
+  name: string;
+  reels: string;
+  status: "In Progress" | "Awaiting Review" | "Approved";
+  updated: string;
+}
+
+const cutVersions: CutVersion[] = [
+  { name: "Assembly Cut", reels: "Reels 1–4 (of 6)", status: "Approved", updated: "Oct 18" },
+  { name: "Director's Cut v1", reels: "Reels 1–3 (of 6)", status: "Approved", updated: "Oct 20" },
+  { name: "Director's Cut v2", reels: "Reels 1–2 (of 6)", status: "Awaiting Review", updated: "Oct 22" },
+  { name: "Action Block Re-cut (Sc 67)", reels: "Reel 4", status: "In Progress", updated: "Oct 23" },
+];
+
 const vfxTone = { "In Progress": "primary", Briefed: "warning", "Not Started": "neutral" } as const;
+const cutTone = { Approved: "success", "Awaiting Review": "warning", "In Progress": "primary" } as const;
 
 const sceneColumns: ResponsiveTableColumn<SceneMaterial>[] = [
   { key: "num", header: "Scene", primary: true, render: s => <Link href="/scenes/34" className="font-bold font-display text-primary hover:underline">{s.num}</Link> },
@@ -80,6 +95,20 @@ export default function EditorView() {
         { label: "VFX Flags", value: "14", sub: "scenes requiring VFX" },
         { label: "Takes Logged", value: "312", sub: "total across all scenes" },
       ]} />
+
+      <div className="space-y-3">
+        <h2 className="text-lg sm:text-xl font-display font-bold">Cut Versions &amp; Timeline Review</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {cutVersions.map((c, i) => (
+            <DetailCard
+              key={i}
+              title={c.name}
+              subtitle={`${c.reels} · Updated ${c.updated}`}
+              badge={<StatusBadge tone={cutTone[c.status]}>{c.status}</StatusBadge>}
+            />
+          ))}
+        </div>
+      </div>
 
       <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
         <div className="md:col-span-2 space-y-3">

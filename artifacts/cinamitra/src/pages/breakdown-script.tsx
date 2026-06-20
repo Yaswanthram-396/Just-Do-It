@@ -4,9 +4,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Users, Box, MapPin, Shirt, Car, Zap, Swords, ArrowLeft,
   ChevronDown, ChevronRight, ChevronUp, Search, X, Lock,
-  Download, RotateCcw, Activity
+  Download, RotateCcw, Activity, ListTree, Sparkles
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -318,6 +320,36 @@ export default function BreakdownScript() {
             <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <Input className="h-7 pl-8 text-xs w-48 bg-muted/50 border-border" placeholder="Search script..." />
           </div>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="sm" className="lg:hidden h-7 px-2.5 gap-1.5 text-xs">
+                <ListTree className="w-3.5 h-3.5" /> Elements
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[260px] p-0 flex flex-col">
+              <SheetHeader className="px-3 pt-3"><SheetTitle className="sr-only">Elements</SheetTitle></SheetHeader>
+              <ElementSidebar
+                search={search} setSearch={setSearch} groupedElements={groupedElements}
+                expandedCats={expandedCats} setExpandedCats={setExpandedCats}
+                selectedId={selectedId} selectElement={selectElement} occurrenceIdx={occurrenceIdx}
+                sidebarItemRefs={sidebarItemRefs} sidebarScrollRef={sidebarScrollRef}
+              />
+            </SheetContent>
+          </Sheet>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="sm" className="xl:hidden h-7 px-2.5 gap-1.5 text-xs">
+                <Sparkles className="w-3.5 h-3.5" /> Intelligence
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[268px] p-0 flex flex-col">
+              <SheetHeader className="px-4 pt-4"><SheetTitle className="sr-only">Scene Intelligence</SheetTitle></SheetHeader>
+              <IntelligencePanel
+                selectedElement={selectedElement} occurrenceIdx={occurrenceIdx} setOccurrenceIdx={setOccurrenceIdx}
+                scrollToBlock={scrollToBlock} selectElement={selectElement} statusColor={statusColor}
+              />
+            </SheetContent>
+          </Sheet>
           <button className="h-7 px-2.5 rounded border border-border text-xs font-medium text-muted-foreground hover:text-foreground hover:border-border/80 transition-colors flex items-center gap-1.5 shrink-0">
             <RotateCcw className="w-3 h-3" /> <span className="hidden sm:inline">Regenerate</span>
           </button>
@@ -334,93 +366,12 @@ export default function BreakdownScript() {
 
         {/* ── LEFT SIDEBAR ─────────────────────────────────────────── */}
         <div className="w-[260px] shrink-0 border-r border-border flex-col bg-card/40 hidden lg:flex">
-          <div className="p-3 border-b border-border">
-            <div className="relative">
-              <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                className="h-7 pl-8 text-xs bg-background border-border"
-                placeholder="Filter elements…"
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div ref={sidebarScrollRef} className="flex-1 overflow-y-auto py-1">
-            {CAT_ORDER.map(cat => {
-              const items = groupedElements.get(cat) ?? [];
-              if (items.length === 0) return null;
-              const cfg = CAT_CFG[cat];
-              const isExpanded = expandedCats.has(cat);
-              const Icon = cfg.icon;
-
-              return (
-                <div key={cat}>
-                  <button
-                    className="w-full flex items-center justify-between px-3 py-2 hover:bg-muted/40 transition-colors group"
-                    onClick={() =>
-                      setExpandedCats(prev => {
-                        const next = new Set(prev);
-                        next.has(cat) ? next.delete(cat) : next.add(cat);
-                        return next;
-                      })
-                    }
-                  >
-                    <div className="flex items-center gap-2">
-                      <Icon className="w-3.5 h-3.5" style={{ color: cfg.color }} />
-                      <span className="text-xs font-bold uppercase tracking-wider" style={{ color: cfg.color }}>{cat}</span>
-                      <span className="text-[10px] font-bold text-muted-foreground">{items.length}</span>
-                    </div>
-                    {isExpanded ? <ChevronDown className="w-3 h-3 text-muted-foreground" /> : <ChevronRight className="w-3 h-3 text-muted-foreground" />}
-                  </button>
-
-                  <AnimatePresence>
-                    {isExpanded && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="overflow-hidden"
-                      >
-                        {items.map(el => {
-                          const isSelected = el.id === selectedId;
-                          return (
-                            <div
-                              key={el.id}
-                              ref={node => { if (node) sidebarItemRefs.current.set(el.id, node); }}
-                              onClick={() => selectElement(el.id)}
-                              className={`flex items-center justify-between px-3 py-2 cursor-pointer transition-all border-l-2 ${
-                                isSelected
-                                  ? "border-l-current bg-current/5"
-                                  : "border-l-transparent hover:bg-muted/40 hover:border-l-current/30"
-                              }`}
-                              style={{ ["--tw-border-opacity" as string]: 1, borderLeftColor: isSelected ? cfg.color : undefined } as React.CSSProperties}
-                            >
-                              <div className="flex items-center gap-2 min-w-0">
-                                <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: cfg.color, opacity: isSelected ? 1 : 0.5 }} />
-                                <span className={`text-xs truncate ${isSelected ? "font-semibold text-foreground" : "text-muted-foreground"}`} style={isSelected ? { color: cfg.color } : {}}>
-                                  {el.name}
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-1.5 shrink-0 ml-2">
-                                {isSelected && (
-                                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ backgroundColor: `${cfg.color}20`, color: cfg.color }}>
-                                    {occurrenceIdx + 1}/{el.occurrences.length}
-                                  </span>
-                                )}
-                                <span className="text-[10px] font-bold text-muted-foreground">{el.occurrences.length}</span>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              );
-            })}
-          </div>
+          <ElementSidebar
+            search={search} setSearch={setSearch} groupedElements={groupedElements}
+            expandedCats={expandedCats} setExpandedCats={setExpandedCats}
+            selectedId={selectedId} selectElement={selectElement} occurrenceIdx={occurrenceIdx}
+            sidebarItemRefs={sidebarItemRefs} sidebarScrollRef={sidebarScrollRef}
+          />
         </div>
 
         {/* ── CENTER: SCRIPT VIEWER ─────────────────────────────────── */}
@@ -578,6 +529,30 @@ export default function BreakdownScript() {
 
         {/* ── RIGHT: INTELLIGENCE PANEL ─────────────────────────────── */}
         <div className="w-[268px] shrink-0 border-l border-border bg-card/40 flex-col hidden xl:flex">
+          <IntelligencePanel
+            selectedElement={selectedElement} occurrenceIdx={occurrenceIdx} setOccurrenceIdx={setOccurrenceIdx}
+            scrollToBlock={scrollToBlock} selectElement={selectElement} statusColor={statusColor}
+          />
+        </div>
+
+        {/* ── CENTER/RIGHT moved below — placeholder removed ─────────── */}
+      </div>
+    </div>
+  );
+}
+
+interface IntelligencePanelProps {
+  selectedElement: BreakdownElement | null;
+  occurrenceIdx: number;
+  setOccurrenceIdx: (i: number) => void;
+  scrollToBlock: (blockId: string) => void;
+  selectElement: (elementId: string, blockId?: string) => void;
+  statusColor: (s: string) => string;
+}
+
+function IntelligencePanel({ selectedElement, occurrenceIdx, setOccurrenceIdx, scrollToBlock, selectElement, statusColor }: IntelligencePanelProps) {
+  return (
+    <>
           <div className="px-4 pt-4 pb-3 border-b border-border shrink-0">
             <div className="flex items-center gap-2">
               <Activity className="w-4 h-4 text-primary" />
@@ -682,9 +657,117 @@ export default function BreakdownScript() {
               </div>
             )}
           </div>
-        </div>
-      </div>
-    </div>
+    </>
+  );
+}
+
+interface ElementSidebarProps {
+  search: string;
+  setSearch: (s: string) => void;
+  groupedElements: Map<Category, BreakdownElement[]>;
+  expandedCats: Set<string>;
+  setExpandedCats: React.Dispatch<React.SetStateAction<Set<string>>>;
+  selectedId: string | null;
+  selectElement: (elementId: string, blockId?: string) => void;
+  occurrenceIdx: number;
+  sidebarItemRefs: React.MutableRefObject<Map<string, HTMLElement>>;
+  sidebarScrollRef: React.RefObject<HTMLDivElement | null>;
+}
+
+function ElementSidebar({
+  search, setSearch, groupedElements, expandedCats, setExpandedCats,
+  selectedId, selectElement, occurrenceIdx, sidebarItemRefs, sidebarScrollRef,
+}: ElementSidebarProps) {
+  return (
+    <>
+          <div className="p-3 border-b border-border">
+            <div className="relative">
+              <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                className="h-7 pl-8 text-xs bg-background border-border"
+                placeholder="Filter elements…"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div ref={sidebarScrollRef} className="flex-1 overflow-y-auto py-1">
+            {CAT_ORDER.map(cat => {
+              const items = groupedElements.get(cat) ?? [];
+              if (items.length === 0) return null;
+              const cfg = CAT_CFG[cat];
+              const isExpanded = expandedCats.has(cat);
+              const Icon = cfg.icon;
+
+              return (
+                <div key={cat}>
+                  <button
+                    className="w-full flex items-center justify-between px-3 py-2 hover:bg-muted/40 transition-colors group"
+                    onClick={() =>
+                      setExpandedCats(prev => {
+                        const next = new Set(prev);
+                        next.has(cat) ? next.delete(cat) : next.add(cat);
+                        return next;
+                      })
+                    }
+                  >
+                    <div className="flex items-center gap-2">
+                      <Icon className="w-3.5 h-3.5" style={{ color: cfg.color }} />
+                      <span className="text-xs font-bold uppercase tracking-wider" style={{ color: cfg.color }}>{cat}</span>
+                      <span className="text-[10px] font-bold text-muted-foreground">{items.length}</span>
+                    </div>
+                    {isExpanded ? <ChevronDown className="w-3 h-3 text-muted-foreground" /> : <ChevronRight className="w-3 h-3 text-muted-foreground" />}
+                  </button>
+
+                  <AnimatePresence>
+                    {isExpanded && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="overflow-hidden"
+                      >
+                        {items.map(el => {
+                          const isSelected = el.id === selectedId;
+                          return (
+                            <div
+                              key={el.id}
+                              ref={node => { if (node) sidebarItemRefs.current.set(el.id, node); }}
+                              onClick={() => selectElement(el.id)}
+                              className={`flex items-center justify-between px-3 py-2 cursor-pointer transition-all border-l-2 ${
+                                isSelected
+                                  ? "border-l-current bg-current/5"
+                                  : "border-l-transparent hover:bg-muted/40 hover:border-l-current/30"
+                              }`}
+                              style={{ ["--tw-border-opacity" as string]: 1, borderLeftColor: isSelected ? cfg.color : undefined } as React.CSSProperties}
+                            >
+                              <div className="flex items-center gap-2 min-w-0">
+                                <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: cfg.color, opacity: isSelected ? 1 : 0.5 }} />
+                                <span className={`text-xs truncate ${isSelected ? "font-semibold text-foreground" : "text-muted-foreground"}`} style={isSelected ? { color: cfg.color } : {}}>
+                                  {el.name}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                                {isSelected && (
+                                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ backgroundColor: `${cfg.color}20`, color: cfg.color }}>
+                                    {occurrenceIdx + 1}/{el.occurrences.length}
+                                  </span>
+                                )}
+                                <span className="text-[10px] font-bold text-muted-foreground">{el.occurrences.length}</span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            })}
+          </div>
+    </>
   );
 }
 

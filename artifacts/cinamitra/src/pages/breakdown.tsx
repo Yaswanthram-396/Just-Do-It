@@ -2,9 +2,20 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { Sparkles, Filter, ChevronDown, FileText } from "lucide-react";
+import { ResponsiveTable, type ResponsiveTableColumn } from "@/components/patterns/ResponsiveTable";
+
+interface BreakdownItem {
+  el: string;
+  cat: string;
+  scenes: string;
+  dept: string;
+  status: string;
+  owner: string;
+  risk: string;
+}
 
 export default function Breakdown() {
-  const items = [
+  const items: BreakdownItem[] = [
     { el: "Merchant cart", cat: "Props", scenes: "34", dept: "Art", status: "Ready", owner: "Sabu", risk: "Low" },
     { el: "NTR white kurta", cat: "Costume", scenes: "34, 35, 41", dept: "Costume", status: "Ready", owner: "Rama", risk: "Low" },
     { el: "Saif villain outfit", cat: "Costume", scenes: "34, 67", dept: "Costume", status: "In Progress", owner: "Rama", risk: "Medium" },
@@ -39,6 +50,28 @@ export default function Breakdown() {
       default: return "";
     }
   }
+
+  const columns: ResponsiveTableColumn<BreakdownItem>[] = [
+    {
+      key: "el", header: "Element", primary: true,
+      render: item => (
+        <div className="flex items-center gap-2">
+          <input type="checkbox" className="rounded border-border bg-background" onClick={e => e.stopPropagation()} />
+          <span className="font-medium">{item.el}</span>
+        </div>
+      ),
+    },
+    { key: "cat", header: "Category", render: item => (
+      <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${getCatColor(item.cat)}`}>
+        {item.cat}
+      </span>
+    ) },
+    { key: "scenes", header: "Scene(s)", render: item => <span className="font-display font-medium text-muted-foreground">{item.scenes}</span> },
+    { key: "dept", header: "Dept", render: item => <span className="text-muted-foreground">{item.dept}</span> },
+    { key: "status", header: "Status", render: item => <span className="text-muted-foreground">{item.status}</span> },
+    { key: "owner", header: "Assigned", render: item => <span className="text-muted-foreground">{item.owner}</span> },
+    { key: "risk", header: "Risk", render: item => <span className={getRiskColor(item.risk)}>{item.risk}</span> },
+  ];
 
   return (
     <div className="p-6 md:p-8 h-full flex flex-col">
@@ -81,41 +114,8 @@ export default function Breakdown() {
       <div className="flex-1 flex gap-6 min-h-0">
         
         {/* Main Table */}
-        <div className="flex-1 bg-card border border-border rounded-lg overflow-hidden flex flex-col">
-          <div className="overflow-auto flex-1">
-            <table className="w-full text-sm text-left">
-              <thead className="bg-muted/50 text-muted-foreground text-xs uppercase font-semibold sticky top-0 z-10">
-                <tr>
-                  <th className="px-4 py-3 border-b border-border w-8"><input type="checkbox" className="rounded border-border bg-background" /></th>
-                  <th className="px-4 py-3 border-b border-border">Element</th>
-                  <th className="px-4 py-3 border-b border-border">Category</th>
-                  <th className="px-4 py-3 border-b border-border">Scene(s)</th>
-                  <th className="px-4 py-3 border-b border-border">Dept</th>
-                  <th className="px-4 py-3 border-b border-border">Status</th>
-                  <th className="px-4 py-3 border-b border-border">Assigned</th>
-                  <th className="px-4 py-3 border-b border-border">Risk</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {items.map((item, i) => (
-                  <tr key={i} className="hover:bg-muted/30 transition-colors group">
-                    <td className="px-4 py-3"><input type="checkbox" className="rounded border-border bg-background" /></td>
-                    <td className="px-4 py-3 font-medium">{item.el}</td>
-                    <td className="px-4 py-3">
-                      <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${getCatColor(item.cat)}`}>
-                        {item.cat}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 font-display font-medium text-muted-foreground">{item.scenes}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{item.dept}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{item.status}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{item.owner}</td>
-                    <td className={`px-4 py-3 ${getRiskColor(item.risk)}`}>{item.risk}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <div className="flex-1 overflow-auto">
+          <ResponsiveTable columns={columns} rows={items} rowKey={(item, i) => `${item.el}-${i}`} />
         </div>
 
         {/* Sidebar Stats */}

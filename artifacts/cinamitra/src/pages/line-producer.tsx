@@ -1,3 +1,40 @@
+import { ResponsiveTable, type ResponsiveTableColumn } from "@/components/patterns/ResponsiveTable";
+import { StatusBadge } from "@/components/patterns/StatusBadge";
+
+interface VendorPayment {
+  vendor: string;
+  dept: string;
+  amount: string;
+  dueDate: string;
+  status: "Paid" | "Due" | "Overdue";
+}
+
+const paymentQueue: VendorPayment[] = [
+  { vendor: "Sri Sai Catering", dept: "Catering", amount: "₹3.2L", dueDate: "Day 24", status: "Due" },
+  { vendor: "Apex Generators", dept: "Equipment", amount: "₹1.8L", dueDate: "Day 24", status: "Overdue" },
+  { vendor: "Crane Shots Rentals", dept: "Camera", amount: "₹5.4L", dueDate: "Day 26", status: "Due" },
+  { vendor: "City Hospital Location", dept: "Locations", amount: "₹2.0L", dueDate: "Day 29", status: "Due" },
+  { vendor: "Junior Artist Union", dept: "Cast", amount: "₹0.9L", dueDate: "Day 23", status: "Paid" },
+];
+
+const paymentStatusTone: Record<VendorPayment["status"], "success" | "warning" | "destructive"> = {
+  Paid: "success",
+  Due: "warning",
+  Overdue: "destructive",
+};
+
+const paymentColumns: ResponsiveTableColumn<VendorPayment>[] = [
+  { key: "vendor", header: "Vendor / Dept", primary: true, render: (r) => (
+    <div>
+      <div className="font-medium">{r.vendor}</div>
+      <div className="text-xs text-muted-foreground">{r.dept}</div>
+    </div>
+  ) },
+  { key: "amount", header: "Amount", render: (r) => r.amount },
+  { key: "dueDate", header: "Due", render: (r) => r.dueDate },
+  { key: "status", header: "Status", render: (r) => <StatusBadge tone={paymentStatusTone[r.status]}>{r.status}</StatusBadge> },
+];
+
 export default function LineProducerView() {
   return (
     <div className="p-3 sm:p-4 h-full flex flex-col gap-3 sm:gap-4 bg-background overflow-y-auto">
@@ -35,9 +72,9 @@ export default function LineProducerView() {
         </div>
 
         <div className="order-1 lg:order-none lg:col-span-6 bg-card border border-border rounded overflow-hidden flex flex-col min-h-[220px]">
-          <div className="bg-muted/50 p-2 border-b border-border text-xs font-bold uppercase text-amber-500">Resource Conflicts</div>
-          <div className="p-4 flex-1 flex items-center justify-center">
-            <p className="text-muted-foreground font-mono text-sm text-center">[ Complex Resource Allocation Matrix ]</p>
+          <div className="bg-muted/50 p-2 border-b border-border text-xs font-bold uppercase text-amber-500">Vendor Payment Queue</div>
+          <div className="p-2 flex-1 overflow-y-auto">
+            <ResponsiveTable columns={paymentColumns} rows={paymentQueue} rowKey={(r) => r.vendor} />
           </div>
         </div>
 

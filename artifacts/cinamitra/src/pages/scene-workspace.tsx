@@ -5,12 +5,13 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import {
   FileText, Users, Shirt, Monitor, Car, Box, Paperclip, Send,
   Clock, CheckCircle2, ChevronDown, ChevronRight, AlertTriangle,
   MapPin, Upload, Image, FileImage, Mic, Video, ArrowRight,
   CalendarDays, AlertCircle, MessageSquare, Shield, Zap, Activity,
-  ExternalLink, MoreHorizontal
+  ExternalLink, MoreHorizontal, Info, PanelRight
 } from "lucide-react";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -146,14 +147,8 @@ export default function SceneWorkspace() {
       return next;
     });
 
-  const visibleFiles = fileCategory === "all" ? FILES : FILES.filter(f => f.cat === fileCategory);
-
-  return (
-    <div className="flex h-[calc(100vh-3.5rem)] overflow-hidden">
-
-      {/* ── LEFT PANEL: Metadata ────────────────────────────────── */}
-      <div className={`w-[280px] shrink-0 border-r border-border bg-card/30 flex flex-col hidden md:flex ${SCROLL_CLS}`}>
-        <div className="p-6">
+  const sceneMetadata = (
+    <>
           <div className="text-5xl font-display font-bold text-primary mb-2">34</div>
           <h2 className="text-xl font-bold leading-tight mb-4">Rajahmundry Market Chase</h2>
 
@@ -204,11 +199,55 @@ export default function SceneWorkspace() {
               </div>
             ))}
           </div>
-        </div>
+    </>
+  );
+
+  return (
+    <div className="flex h-[calc(100vh-3.5rem)] overflow-hidden">
+
+      {/* ── LEFT PANEL: Metadata ────────────────────────────────── */}
+      <div className={`w-[280px] shrink-0 border-r border-border bg-card/30 flex flex-col hidden md:flex ${SCROLL_CLS}`}>
+        <div className="p-6">{sceneMetadata}</div>
       </div>
 
       {/* ── CENTER PANEL: Discussion ─────────────────────────────── */}
       <div className="flex-1 flex flex-col min-w-0 bg-background relative">
+
+        {/* Mobile panel triggers (shown when side panels are hidden) */}
+        <div className="flex items-center gap-2 p-2 border-b border-border lg:hidden">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="sm" className="md:hidden gap-1.5 text-xs">
+                <Info className="w-3.5 h-3.5" /> Scene Info
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className={`w-[280px] p-6 overflow-y-auto ${SCROLL_CLS}`}>
+              <SheetHeader className="mb-2"><SheetTitle className="sr-only">Scene Info</SheetTitle></SheetHeader>
+              {sceneMetadata}
+            </SheetContent>
+          </Sheet>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-1.5 text-xs">
+                <PanelRight className="w-3.5 h-3.5" /> Elements / Schedule / Files
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[320px] p-0 flex flex-col">
+              <SheetHeader className="px-4 pt-4"><SheetTitle className="sr-only">Scene Workspace</SheetTitle></SheetHeader>
+              <ElementsWorkspaceTabs
+                expandedSections={expandedSections}
+                toggleSection={toggleSection}
+                selectedItem={selectedItem}
+                setSelectedItem={setSelectedItem}
+                fileCategory={fileCategory}
+                setFileCategory={setFileCategory}
+                isDragging={isDragging}
+                setIsDragging={setIsDragging}
+              />
+            </SheetContent>
+          </Sheet>
+        </div>
+
         <div className={`flex-1 p-4 md:p-6 space-y-6 ${SCROLL_CLS}`}>
 
           <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 flex gap-3 text-sm">
@@ -247,6 +286,40 @@ export default function SceneWorkspace() {
 
       {/* ── RIGHT PANEL: Contextual Workspace ───────────────────── */}
       <div className="w-[320px] shrink-0 border-l border-border bg-card/30 flex flex-col hidden lg:flex">
+        <ElementsWorkspaceTabs
+          expandedSections={expandedSections}
+          toggleSection={toggleSection}
+          selectedItem={selectedItem}
+          setSelectedItem={setSelectedItem}
+          fileCategory={fileCategory}
+          setFileCategory={setFileCategory}
+          isDragging={isDragging}
+          setIsDragging={setIsDragging}
+        />
+      </div>
+
+    </div>
+  );
+}
+
+interface ElementsWorkspaceTabsProps {
+  expandedSections: Set<string>;
+  toggleSection: (id: string) => void;
+  selectedItem: string | null;
+  setSelectedItem: (v: string | null) => void;
+  fileCategory: FileCategory;
+  setFileCategory: (c: FileCategory) => void;
+  isDragging: boolean;
+  setIsDragging: (v: boolean) => void;
+}
+
+function ElementsWorkspaceTabs({
+  expandedSections, toggleSection, selectedItem, setSelectedItem,
+  fileCategory, setFileCategory, isDragging, setIsDragging,
+}: ElementsWorkspaceTabsProps) {
+  const visibleFiles = fileCategory === "all" ? FILES : FILES.filter(f => f.cat === fileCategory);
+
+  return (
         <Tabs defaultValue="elements" className="w-full h-full flex flex-col min-h-0">
 
           {/* Tab strip */}
@@ -571,9 +644,6 @@ export default function SceneWorkspace() {
           </TabsContent>
 
         </Tabs>
-      </div>
-
-    </div>
   );
 }
 
@@ -595,12 +665,12 @@ function ChatMessage({ name, dept, color, time, text, hasFile }: {
   name: string; dept: string; color: string; time: string; text: string; hasFile?: boolean;
 }) {
   const colorMap: Record<string, string> = {
-    teal:   "text-teal-600 bg-teal-500/10",
-    orange: "text-orange-600 bg-orange-500/10",
-    purple: "text-purple-600 bg-purple-500/10",
+    teal:   "text-teal-600 dark:text-teal-400 bg-teal-500/10",
+    orange: "text-orange-600 dark:text-orange-400 bg-orange-500/10",
+    purple: "text-purple-600 dark:text-purple-400 bg-purple-500/10",
     yellow: "text-primary bg-primary/10",
-    blue:   "text-blue-600 bg-blue-500/10",
-    red:    "text-red-500 bg-red-500/10",
+    blue:   "text-blue-600 dark:text-blue-400 bg-blue-500/10",
+    red:    "text-red-500 dark:text-red-400 bg-red-500/10",
   };
 
   return (
@@ -614,7 +684,7 @@ function ChatMessage({ name, dept, color, time, text, hasFile }: {
           <span className={`text-[9px] uppercase font-bold px-1.5 py-0.5 rounded ${colorMap[color]}`}>{dept}</span>
           <span className="text-xs text-muted-foreground ml-auto">{time}</span>
         </div>
-        <p className="text-sm text-foreground/90 leading-relaxed bg-card border border-border/50 p-3 rounded-lg rounded-tl-none">
+        <p className="text-sm text-foreground leading-relaxed bg-card border border-border p-3 rounded-lg rounded-tl-none">
           {text}
         </p>
         {hasFile && (

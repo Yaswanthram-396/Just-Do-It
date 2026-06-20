@@ -41,6 +41,13 @@ const alerts = [
   { scene: "103", note: "NTR torn-shirt state must match Scene 98 exit — verify tears placement", urgent: false },
 ];
 
+const moodBoard = [
+  { char: "NTR Jr.", palette: ["#e8d9b5", "#b8860b", "#3a2e1f"] },
+  { char: "Saif Ali Khan", palette: ["#2b2b2b", "#5c4033", "#7a7a7a"] },
+  { char: "Female Lead", palette: ["#a8324a", "#d4af37", "#f4e9d8"] },
+  { char: "Antagonist 2", palette: ["#3d4a3d", "#6b6b6b", "#1c1c1c"] },
+];
+
 const continuityTone = { Locked: "success", Alert: "destructive", "In Review": "warning" } as const;
 
 const wardrobeColumns: ResponsiveTableColumn<Wardrobe>[] = [
@@ -81,6 +88,22 @@ export default function CostumeDesignerView() {
         </div>
 
         <div className="space-y-6">
+          <div className="space-y-3">
+            <h2 className="text-lg sm:text-xl font-display font-bold">Costume Mood &amp; Sketch Board</h2>
+            <div className="grid grid-cols-2 gap-3">
+              {moodBoard.map((m, i) => (
+                <div key={i} className="bg-card border border-border rounded-lg p-3">
+                  <p className="text-xs font-medium truncate mb-2">{m.char}</p>
+                  <div className="flex h-8 rounded overflow-hidden">
+                    {m.palette.map((color, j) => (
+                      <div key={j} className="flex-1" style={{ backgroundColor: color }} />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="space-y-3">
             <h2 className="text-lg sm:text-xl font-display font-bold">Fitting Schedule</h2>
             <div className="space-y-2">

@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { Progress } from "@/components/ui/progress";
+import { LayoutTemplate } from "lucide-react";
 import { PageHeader } from "@/components/patterns/PageHeader";
 import { KpiGrid } from "@/components/patterns/KpiGrid";
 import { StatusBadge } from "@/components/patterns/StatusBadge";
@@ -45,14 +45,21 @@ const locations: LocationStatus[] = [
   { name: "River Ghat (Practical)", dressing: "Pending", shoot: "Day 30", scene: "78" },
 ];
 
-const construction = [
-  { set: "Palace Throne Room", progress: 88, deadline: "Oct 14" },
-  { set: "Villain's Hideout Interior", progress: 62, deadline: "Oct 18" },
-  { set: "Climax Cliff Facade", progress: 35, deadline: "Oct 22" },
+interface SetReference {
+  set: string;
+  stage: "Floor Plan Approved" | "Under Construction" | "Dressing" | "Ready for Shoot";
+  deadline: string;
+}
+
+const setReferences: SetReference[] = [
+  { set: "Palace Throne Room", stage: "Ready for Shoot", deadline: "Oct 14" },
+  { set: "Villain's Hideout Interior", stage: "Dressing", deadline: "Oct 18" },
+  { set: "Climax Cliff Facade", stage: "Under Construction", deadline: "Oct 22" },
 ];
 
 const propTone = { Confirmed: "success", "In Progress": "primary", Missing: "destructive", Sourcing: "warning" } as const;
 const dressingTone = { Complete: "success", "In Progress": "primary", Pending: "warning" } as const;
+const stageTone = { "Floor Plan Approved": "info", "Under Construction": "warning", Dressing: "primary", "Ready for Shoot": "success" } as const;
 
 const propColumns: ResponsiveTableColumn<Prop>[] = [
   { key: "item", header: "Item", primary: true, render: p => <span className="font-medium">{p.item}</span> },
@@ -107,17 +114,17 @@ export default function ProductionDesignerView() {
           </div>
 
           <div className="space-y-3">
-            <h2 className="text-lg sm:text-xl font-display font-bold">Set Construction</h2>
-            <div className="space-y-3">
-              {construction.map((c, i) => (
-                <div key={i} className="bg-card border border-border rounded-lg p-4">
-                  <div className="flex justify-between items-baseline mb-2 gap-2">
-                    <p className="font-medium text-sm">{c.set}</p>
-                    <span className="text-xs text-muted-foreground shrink-0">Due {c.deadline}</span>
+            <h2 className="text-lg sm:text-xl font-display font-bold">Set References &amp; Floor Plans</h2>
+            <div className="grid grid-cols-2 gap-3">
+              {setReferences.map((s, i) => (
+                <div key={i} className="bg-card border border-border rounded-lg overflow-hidden">
+                  <div className="aspect-video bg-muted/50 flex items-center justify-center">
+                    <LayoutTemplate className="w-8 h-8 text-muted-foreground/50" />
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Progress value={c.progress} className="flex-1 h-2" />
-                    <span className="text-sm font-bold font-display">{c.progress}%</span>
+                  <div className="p-3 space-y-1.5">
+                    <p className="font-medium text-sm truncate">{s.set}</p>
+                    <StatusBadge tone={stageTone[s.stage]}>{s.stage}</StatusBadge>
+                    <p className="text-xs text-muted-foreground">Due {s.deadline}</p>
                   </div>
                 </div>
               ))}

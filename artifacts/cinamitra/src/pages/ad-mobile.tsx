@@ -1,6 +1,22 @@
 import { Mic, AlertCircle, RefreshCw, FileText } from "lucide-react";
 import { MobileShell } from "@/components/patterns/MobileShell";
 import { StatusBadge } from "@/components/patterns/StatusBadge";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+
+const callSheetCrew = [
+  { dept: "Cast Call", time: "06:00 AM" },
+  { dept: "Crew Call", time: "06:30 AM" },
+  { dept: "Camera & Lighting Ready", time: "07:30 AM" },
+  { dept: "First Shot", time: "08:30 AM" },
+  { dept: "Lunch", time: "01:00 PM" },
+  { dept: "Wrap (Est.)", time: "08:00 PM" },
+];
+
+const callSheetContacts = [
+  { name: "Line Producer — Venkat Rao", phone: "+91 98480 11223" },
+  { name: "Unit Manager — Srinivas", phone: "+91 90000 44556" },
+  { name: "Location Contact — Palace Set", phone: "+91 99888 77665" },
+];
 
 const scenes = [
   { sc: "12", location: "Palace Interior", status: "Now Shooting", active: true, cast: [
@@ -76,19 +92,68 @@ export default function ADMobileView() {
 
       <section>
         <div className="grid grid-cols-2 gap-2">
-          {quickActions.map(a => (
-            <button
-              key={a.label}
-              className={`min-h-[64px] border p-3 rounded-lg flex flex-col items-center justify-center gap-2 transition-colors active:scale-[0.98] ${
-                a.tone === "destructive"
-                  ? "bg-destructive/10 border-destructive/20 hover:bg-destructive/20"
-                  : "bg-card border-border hover:bg-muted"
-              }`}
-            >
-              <a.icon className={`w-5 h-5 ${a.tone === "destructive" ? "text-destructive" : "text-primary"}`} />
-              <span className={`text-xs font-semibold ${a.tone === "destructive" ? "text-destructive" : ""}`}>{a.label}</span>
-            </button>
-          ))}
+          {quickActions.map(a => {
+            const actionClass = `min-h-[64px] border p-3 rounded-lg flex flex-col items-center justify-center gap-2 transition-colors active:scale-[0.98] w-full ${
+              a.tone === "destructive"
+                ? "bg-destructive/10 border-destructive/20 hover:bg-destructive/20"
+                : "bg-card border-border hover:bg-muted"
+            }`;
+            const content = (
+              <>
+                <a.icon className={`w-5 h-5 ${a.tone === "destructive" ? "text-destructive" : "text-primary"}`} />
+                <span className={`text-xs font-semibold ${a.tone === "destructive" ? "text-destructive" : ""}`}>{a.label}</span>
+              </>
+            );
+
+            if (a.label === "Call Sheet") {
+              return (
+                <Sheet key={a.label}>
+                  <SheetTrigger asChild>
+                    <button className={actionClass}>{content}</button>
+                  </SheetTrigger>
+                  <SheetContent side="bottom" className="max-h-[80vh] overflow-y-auto">
+                    <SheetHeader>
+                      <SheetTitle>Day 23 Call Sheet</SheetTitle>
+                    </SheetHeader>
+                    <div className="mt-4 space-y-4">
+                      <div>
+                        <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">Schedule</h3>
+                        <div className="space-y-1.5">
+                          {callSheetCrew.map(c => (
+                            <div key={c.dept} className="flex justify-between text-sm border-b border-border/50 pb-1.5">
+                              <span className="text-muted-foreground">{c.dept}</span>
+                              <span className="font-medium font-display">{c.time}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">Location</h3>
+                        <p className="text-sm font-medium">Palace Interior, Annapurna Studios, Hyderabad</p>
+                      </div>
+                      <div>
+                        <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">Key Contacts</h3>
+                        <div className="space-y-1.5">
+                          {callSheetContacts.map(c => (
+                            <div key={c.name} className="flex justify-between text-sm">
+                              <span>{c.name}</span>
+                              <span className="text-muted-foreground">{c.phone}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </SheetContent>
+                </Sheet>
+              );
+            }
+
+            return (
+              <button key={a.label} className={actionClass}>
+                {content}
+              </button>
+            );
+          })}
         </div>
       </section>
 
