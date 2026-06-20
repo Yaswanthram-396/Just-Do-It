@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Users, Box, MapPin, Shirt, Car, Zap, Swords, ArrowLeft,
   ChevronDown, ChevronRight, ChevronUp, Search, X, Lock,
-  Download, RotateCcw, Activity, Sparkles, CheckCircle2, Calendar
+  Download, RotateCcw, Activity, Sparkles, CheckCircle2, Calendar, HelpCircle
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
@@ -38,13 +38,13 @@ interface BreakdownElement extends ElementDef {
 // ─── Category Config ─────────────────────────────────────────────────────────
 
 const CAT_CFG: Record<Category, { color: string; bg: string; icon: React.ElementType; label: string }> = {
-  Characters: { color: "#F59E0B", bg: "rgba(245,158,11,0.12)", icon: Users, label: "Characters" },
-  Props: { color: "#14B8A6", bg: "rgba(20,184,166,0.12)", icon: Box, label: "Props" },
-  Locations: { color: "#F97316", bg: "rgba(249,115,22,0.12)", icon: MapPin, label: "Locations" },
-  Costumes: { color: "#8B5CF6", bg: "rgba(139,92,246,0.12)", icon: Shirt, label: "Costumes" },
-  Vehicles: { color: "#EC4899", bg: "rgba(236,72,153,0.12)", icon: Car, label: "Vehicles" },
-  VFX: { color: "#3B82F6", bg: "rgba(59,130,246,0.12)", icon: Zap, label: "VFX" },
-  Stunts: { color: "#EF4444", bg: "rgba(239,68,68,0.12)", icon: Swords, label: "Stunts" },
+  Characters: { color: "#FBBF24", bg: "rgba(245,158,11,0.15)", icon: Users, label: "Characters" },
+  Props: { color: "#2DD4BF", bg: "rgba(20,184,166,0.15)", icon: Box, label: "Props" },
+  Locations: { color: "#FB923C", bg: "rgba(249,115,22,0.15)", icon: MapPin, label: "Locations" },
+  Costumes: { color: "#A78BFA", bg: "rgba(139,92,246,0.15)", icon: Shirt, label: "Costumes" },
+  Vehicles: { color: "#F472B6", bg: "rgba(236,72,153,0.15)", icon: Car, label: "Vehicles" },
+  VFX: { color: "#60A5FA", bg: "rgba(59,130,246,0.15)", icon: Zap, label: "VFX" },
+  Stunts: { color: "#F87171", bg: "rgba(239,68,68,0.15)", icon: Swords, label: "Stunts" },
 };
 
 const CAT_ORDER: Category[] = ["Characters", "Props", "Locations", "Costumes", "Vehicles", "VFX", "Stunts"];
@@ -104,7 +104,7 @@ const SCRIPT_BLOCKS: ScriptBlock[] = [
   { id: "b47", type: "character", text: "VIKRAM SHETTY", elements: ["char-saif"] },
   { id: "b48", type: "dialogue", text: "That sword... it cannot be. The palace was burned.", elements: ["char-saif"] },
   { id: "b49", type: "character", text: "KARNA", elements: ["char-ntr"] },
-  { id: "b50", type: "dialogue", text: "The sword survives. As I survived. Let's finish this.", elements: ["char-ntr", "prop-sword"] },
+  { id: "b50", text: "The sword survives. As I survived. Let's finish this.", type: "dialogue", elements: ["char-ntr", "prop-sword"] },
   { id: "b51", type: "action", text: "STUNT SEQUENCE: KARNA vs. SIX GUARDS — high-intensity palace combat. KARNA's WHITE KURTA tears at the sleeve.", elements: ["char-ntr", "cos-kurta", "stunt-combat", "loc-palace"] },
   { id: "b52", type: "action", text: "VIKRAM SHETTY retreats toward the rear PALACE archway. The VILLAIN'S COAT catches the torchlight dramatically.", elements: ["char-saif", "cos-coat", "loc-palace"] },
   { id: "b53", type: "transition", text: "FADE TO BLACK.", elements: [] },
@@ -168,13 +168,13 @@ function renderHighlightedText(
   const parts = text.split(regex);
 
   const highlights: Record<Category, { text: string; bg: string }> = {
-    Characters: { text: "#D97706", bg: "rgba(245,158,11,0.12)" },
-    Props: { text: "#0F766E", bg: "rgba(20,184,166,0.12)" },
-    Locations: { text: "#EA580C", bg: "rgba(249,115,22,0.12)" },
-    Costumes: { text: "#7C3AED", bg: "rgba(139,92,246,0.12)" },
-    Vehicles: { text: "#EC4899", bg: "rgba(236,72,153,0.12)" },
-    VFX: { text: "#2563EB", bg: "rgba(59,130,246,0.12)" },
-    Stunts: { text: "#DC2626", bg: "rgba(239,68,68,0.12)" },
+    Characters: { text: "#FBBF24", bg: "rgba(245,158,11,0.18)" },
+    Props: { text: "#2DD4BF", bg: "rgba(20,184,166,0.18)" },
+    Locations: { text: "#FB923C", bg: "rgba(249,115,22,0.18)" },
+    Costumes: { text: "#A78BFA", bg: "rgba(139,92,246,0.18)" },
+    Vehicles: { text: "#F472B6", bg: "rgba(236,72,153,0.18)" },
+    VFX: { text: "#60A5FA", bg: "rgba(59,130,246,0.18)" },
+    Stunts: { text: "#F87171", bg: "rgba(239,68,68,0.18)" },
   };
 
   return parts.map((part, i) => {
@@ -275,14 +275,14 @@ export default function BreakdownScript() {
   const minimapMarkers = useMemo(
     () =>
       BREAKDOWN_ELEMENTS.flatMap(el =>
-        el.occurrences.map((blockId, oIdx) => ({
-          elementId: el.id,
-          blockId,
-          oIdx,
-          y: (SCRIPT_BLOCKS.findIndex(b => b.id === blockId) / (SCRIPT_BLOCKS.length - 1)) * 100,
-          color: CAT_CFG[el.category].color,
-          name: el.name,
-        }))
+          el.occurrences.map((blockId, oIdx) => ({
+            elementId: el.id,
+            blockId,
+            oIdx,
+            y: (SCRIPT_BLOCKS.findIndex(b => b.id === blockId) / (SCRIPT_BLOCKS.length - 1)) * 100,
+            color: CAT_CFG[el.category].color,
+            name: el.name,
+          }))
       ),
     []
   );
@@ -300,50 +300,43 @@ export default function BreakdownScript() {
     return map;
   }, [filteredElements]);
 
-  const statusColor = (s: string) => {
-    if (s === "Ready" || s === "Built" || s === "Locked" || s === "Rehearsed") return "#22c55e";
-    if (s === "In Progress" || s === "Scheduled" || s === "Sourced" || s === "Scouted" || s === "In Rehearsal") return "#f59e0b";
-    if (s === "Pending" || s === "Sourcing" || s === "Planned") return "#ef4444";
-    return "#6b7280";
-  };
-
   const statusBadgeBg = (s: string) => {
-    if (s === "Ready" || s === "Built" || s === "Locked" || s === "Rehearsed") return "bg-[#ECFDF3] text-[#16A34A]";
-    if (s === "In Progress" || s === "Scheduled" || s === "Sourced" || s === "Scouted" || s === "In Rehearsal") return "bg-[#FFF3E8] text-[#FF7A00]";
-    if (s === "Pending" || s === "Sourcing" || s === "Planned") return "bg-[#FEF2F2] text-[#EF4444]";
-    return "bg-[#F3F4F6] text-[#6B7280]";
+    if (s === "Ready" || s === "Built" || s === "Locked" || s === "Rehearsed") return "bg-green-500/10 text-green-400 border border-green-500/20";
+    if (s === "In Progress" || s === "Scheduled" || s === "Sourced" || s === "Scouted" || s === "In Rehearsal") return "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20";
+    if (s === "Pending" || s === "Sourcing" || s === "Planned") return "bg-red-500/10 text-red-400 border border-red-500/20";
+    return "bg-muted text-muted-foreground border border-transparent";
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-3.5rem)] bg-[#FAFAFC] text-[#1A1A1A] font-sans">
+    <div className="flex flex-col h-[calc(100vh-3.5rem)] bg-background text-foreground font-sans">
 
       {/* ── Header ──────────────────────────────────────────────────── */}
-      <header className="h-16 border-b border-[#E5E7EB] flex items-center justify-between px-6 shrink-0 bg-white/95 backdrop-blur z-20 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+      <header className="h-16 border-b border-border flex items-center justify-between px-6 shrink-0 bg-card/95 backdrop-blur z-20 shadow-lg">
         <div className="flex items-center gap-4">
-          <Link href="/breakdown" className="text-[#6B7280] hover:text-[#1A1A1A] transition-colors">
+          <Link href="/breakdown" className="text-muted-foreground hover:text-white transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div className="flex flex-col">
-            <span className="text-xs font-bold text-[#FF7A00] uppercase tracking-wider">DEVARA PART 2</span>
-            <span className="text-[10px] text-[#6B7280] font-medium leading-none">Script v1.2</span>
+            <span className="text-xs font-bold text-primary uppercase tracking-wider">DEVARA PART 2</span>
+            <span className="text-[10px] text-muted-foreground font-medium leading-none">Script v1.2</span>
           </div>
-          <span className="text-[#E5E7EB]">|</span>
-          <span className="px-2.5 py-0.5 bg-[#FFF4E8] text-[#FF7A00] text-[10px] font-bold rounded-full uppercase tracking-wider">
-            Breakdown Active
+          <span className="text-border">|</span>
+          <span className="px-2.5 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded-full uppercase tracking-wider border border-primary/20">
+            Breakdown Studio Active
           </span>
 
           {/* Header KPI Chips */}
           <div className="hidden lg:flex items-center gap-2.5 ml-6">
-            <div className="flex items-center gap-1.5 bg-[#F3F4F6] px-2.5 py-1 rounded-lg text-xs font-semibold text-[#6B7280]">
-              <Users className="w-3.5 h-3.5 text-[#F59E0B]" />
+            <div className="flex items-center gap-1.5 bg-background border border-border px-2.5 py-1 rounded-lg text-xs font-semibold text-muted-foreground">
+              <Users className="w-3.5 h-3.5 text-amber-400" />
               <span>Characters: {BREAKDOWN_ELEMENTS.filter(e => e.category === "Characters").length}</span>
             </div>
-            <div className="flex items-center gap-1.5 bg-[#F3F4F6] px-2.5 py-1 rounded-lg text-xs font-semibold text-[#6B7280]">
-              <Box className="w-3.5 h-3.5 text-[#14B8A6]" />
+            <div className="flex items-center gap-1.5 bg-background border border-border px-2.5 py-1 rounded-lg text-xs font-semibold text-muted-foreground">
+              <Box className="w-3.5 h-3.5 text-teal-400" />
               <span>Props: {BREAKDOWN_ELEMENTS.filter(e => e.category === "Props").length}</span>
             </div>
-            <div className="flex items-center gap-1.5 bg-[#F3F4F6] px-2.5 py-1 rounded-lg text-xs font-semibold text-[#6B7280]">
-              <MapPin className="w-3.5 h-3.5 text-[#F97316]" />
+            <div className="flex items-center gap-1.5 bg-background border border-border px-2.5 py-1 rounded-lg text-xs font-semibold text-muted-foreground">
+              <MapPin className="w-3.5 h-3.5 text-orange-400" />
               <span>Locations: {BREAKDOWN_ELEMENTS.filter(e => e.category === "Locations").length}</span>
             </div>
           </div>
@@ -351,32 +344,39 @@ export default function BreakdownScript() {
 
         <div className="flex items-center gap-3">
           <div className="relative hidden md:block">
-            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
-            <Input className="h-9 pl-9 text-xs w-48 bg-[#F3F4F6] border-none focus-visible:ring-1 focus-visible:ring-[#FF7A00] rounded-xl font-medium" placeholder="Search script..." />
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Input className="h-9 pl-9 text-xs w-48 bg-background border-border focus-visible:ring-1 focus-visible:ring-primary rounded-xl font-medium" placeholder="Search script..." />
           </div>
 
           <div className="flex items-center gap-2">
-
-            <button className="h-9 px-3.5 rounded-xl border border-[#E5E7EB] bg-white text-xs font-semibold text-[#6B7280] hover:text-[#1A1A1A] hover:bg-neutral-50 transition-all flex items-center gap-1.5">
-              <Download className="w-3.5 h-3.5 text-[#9CA3AF]" /> Export
+            <button className="h-9 px-3.5 rounded-xl border border-border bg-card text-xs font-semibold text-muted-foreground hover:text-white hover:bg-neutral-800 transition-all flex items-center gap-1.5">
+              <Download className="w-3.5 h-3.5 text-muted-foreground" /> Export
             </button>
-            <button className="h-9 px-3.5 rounded-xl bg-[#FF7A00] text-white text-xs font-bold hover:bg-[#FF922B] transition-all flex items-center gap-1.5 shadow-sm">
+            <button className="h-9 px-3.5 rounded-xl bg-primary text-primary-foreground text-xs font-bold hover:bg-primary/95 transition-all flex items-center gap-1.5 shadow-sm">
               <Lock className="w-3.5 h-3.5" /> Lock Breakdown
             </button>
           </div>
         </div>
       </header>
 
+      {/* Helper Guide Banner */}
+      <div className="shrink-0 bg-[#0B1728] border-b border-border py-2 px-6 flex items-center gap-2 text-xs text-muted-foreground select-none">
+        <HelpCircle className="w-4 h-4 text-primary shrink-0" />
+        <span>
+          <strong className="text-white">Interactive Studio Guide:</strong> Click any highlighted word inside the screenplay to inspect element metadata, navigate its occurrences, or modify assignments.
+        </span>
+      </div>
+
       {/* 16% Left Panel | 64% Screenplay Canvas | 20% Right Intelligence */}
       <div className="flex flex-1 min-h-0">
 
         {/* ── LEFT SIDEBAR (16% Width) ─────────────────────────────── */}
-        <div className="w-[16%] min-w-[200px] shrink-0 border-r border-[#E5E7EB] flex flex-col bg-white">
-          <div className="p-4 border-b border-[#E5E7EB]">
+        <div className="w-[18%] min-w-[220px] shrink-0 border-r border-border flex flex-col bg-card">
+          <div className="p-4 border-b border-border">
             <div className="relative">
-              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
+              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <Input
-                className="h-9 pl-9 text-xs bg-[#F3F4F6] border-none rounded-xl focus-visible:ring-1 focus-visible:ring-[#FF7A00] font-medium"
+                className="h-9 pl-9 text-xs bg-background border-border rounded-xl focus-visible:ring-1 focus-visible:ring-primary font-medium"
                 placeholder="Filter elements…"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
@@ -396,15 +396,15 @@ export default function BreakdownScript() {
                 <div key={cat} className="border border-transparent rounded-xl overflow-hidden transition-all duration-200">
                   <button
                     className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-200 group ${isExpanded
-                        ? "bg-[#FFF4E8] text-[#FF7A00]"
-                        : "hover:bg-[#F3F4F6]/50 text-[#6B7280] hover:text-[#1A1A1A]"
+                        ? "bg-primary/10 text-primary border border-primary/20"
+                        : "hover:bg-background/40 text-muted-foreground hover:text-white"
                       }`}
                     onClick={() => setActiveCat(isExpanded ? null : cat)}
                   >
                     <div className="flex items-center gap-2.5">
-                      <Icon className="w-4 h-4 shrink-0" style={{ color: isExpanded ? "#FF7A00" : cfg.color }} />
+                      <Icon className="w-4 h-4 shrink-0" style={{ color: isExpanded ? "#D4A64A" : cfg.color }} />
                       <span className="text-xs font-bold tracking-wide">{cfg.label}</span>
-                      <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded-full ${isExpanded ? "bg-[#FF7A00]/20 text-[#FF7A00]" : "bg-neutral-100 text-neutral-500"}`}>
+                      <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded-full ${isExpanded ? "bg-primary/20 text-primary" : "bg-background text-muted-foreground border border-border"}`}>
                         {items.length}
                       </span>
                     </div>
@@ -418,7 +418,7 @@ export default function BreakdownScript() {
                         animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.2, ease: "easeInOut" }}
-                        className="overflow-hidden bg-white/50"
+                        className="overflow-hidden bg-background/20"
                       >
                         <div className="py-1.5 pl-2 pr-1 space-y-0.5">
                           {items.map(el => {
@@ -429,8 +429,8 @@ export default function BreakdownScript() {
                                 ref={node => { if (node) sidebarItemRefs.current.set(el.id, node); }}
                                 onClick={() => selectElement(el.id)}
                                 className={`flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer transition-all duration-150 ${isSelected
-                                    ? "bg-[#FFF4E8] text-[#FF7A00] font-semibold"
-                                    : "hover:bg-[#F3F4F6]/30 text-[#6B7280] hover:text-[#1A1A1A]"
+                                    ? "bg-primary/20 text-primary font-semibold border border-primary/30"
+                                    : "hover:bg-background/50 text-muted-foreground hover:text-white"
                                   }`}
                               >
                                 <div className="flex items-center gap-2 min-w-0">
@@ -439,11 +439,11 @@ export default function BreakdownScript() {
                                 </div>
                                 <div className="flex items-center gap-1.5 shrink-0 ml-2">
                                   {isSelected && (
-                                    <span className="text-[9px] font-extrabold px-1 rounded bg-[#FF7A00]/10 text-[#FF7A00]">
+                                    <span className="text-[9px] font-extrabold px-1.5 rounded bg-primary/30 text-primary">
                                       {occurrenceIdx + 1}/{el.occurrences.length}
                                     </span>
                                   )}
-                                  <span className="text-[9px] font-bold text-neutral-400">{el.occurrences.length}</span>
+                                  <span className="text-[9px] font-bold text-muted-foreground">{el.occurrences.length}</span>
                                 </div>
                               </div>
                             );
@@ -459,7 +459,7 @@ export default function BreakdownScript() {
         </div>
 
         {/* ── CENTER: SCREENPLAY CANVAS (64% Width) ────────────────── */}
-        <div className="w-[64%] flex-1 flex flex-col min-w-0 bg-[#FAFAFC] relative overflow-hidden">
+        <div className="w-[62%] flex-1 flex flex-col min-w-0 bg-background/50 relative overflow-hidden">
 
           {/* Active occurrence navigation slider */}
           <AnimatePresence>
@@ -469,16 +469,16 @@ export default function BreakdownScript() {
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.18 }}
-                className="shrink-0 border-b border-[#E5E7EB] bg-white overflow-hidden z-10 shadow-xs"
+                className="shrink-0 border-b border-border bg-card overflow-hidden z-10 shadow-sm"
               >
                 <div className="flex items-center justify-between px-6 py-2.5">
                   <div className="flex items-center gap-2.5">
                     <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: CAT_CFG[selectedElement.category].color }} />
-                    <span className="text-xs font-bold uppercase tracking-wider text-neutral-500">Currently Editing:</span>
+                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Selected Element:</span>
                     <span className="text-xs font-extrabold" style={{ color: CAT_CFG[selectedElement.category].color }}>
                       {selectedElement.name}
                     </span>
-                    <span className="text-[10px] text-neutral-400 font-semibold bg-neutral-100 px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] text-primary font-semibold bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-full">
                       Occurrence {occurrenceIdx + 1} of {selectedElement.occurrences.length}
                     </span>
                   </div>
@@ -486,20 +486,20 @@ export default function BreakdownScript() {
                     <button
                       onClick={() => navigateOccurrence(-1)}
                       disabled={occurrenceIdx === 0}
-                      className="h-7 w-7 rounded-lg flex items-center justify-center border border-[#E5E7EB] text-neutral-500 hover:text-neutral-900 hover:bg-neutral-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                      className="h-7 w-7 rounded-lg flex items-center justify-center border border-border text-muted-foreground hover:text-white hover:bg-neutral-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                     >
                       <ChevronUp className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => navigateOccurrence(1)}
                       disabled={occurrenceIdx >= selectedElement.occurrences.length - 1}
-                      className="h-7 w-7 rounded-lg flex items-center justify-center border border-[#E5E7EB] text-neutral-500 hover:text-neutral-900 hover:bg-neutral-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                      className="h-7 w-7 rounded-lg flex items-center justify-center border border-border text-muted-foreground hover:text-white hover:bg-neutral-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                     >
                       <ChevronDown className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => { setSelectedId(null); setOccurrenceIdx(0); }}
-                      className="h-7 w-7 rounded-lg flex items-center justify-center text-neutral-400 hover:text-neutral-800 hover:bg-neutral-100 transition-colors ml-1"
+                      className="h-7 w-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-white hover:bg-neutral-800 transition-colors ml-1"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -514,7 +514,7 @@ export default function BreakdownScript() {
             <div ref={scriptScrollRef} className="flex-1 overflow-y-auto px-6 py-10 scroll-smooth">
 
               {/* Screenplay Desk Sheet Container */}
-              <div className="max-w-[840px] mx-auto bg-white border border-[#E5E7EB] rounded-[24px] shadow-[0_10px_40px_rgba(0,0,0,0.03)] p-16 select-text select-none md:select-text">
+              <div className="max-w-[800px] mx-auto bg-[#132238]/90 border border-border rounded-[24px] shadow-2xl p-12 select-text">
                 {SCRIPT_BLOCKS.map(block => {
                   const isActive = block.id === currentBlockId;
                   const hasAnyElement = block.elements.length > 0;
@@ -529,9 +529,9 @@ export default function BreakdownScript() {
                           selectElement(block.elements[0], block.id);
                         }
                       }}
-                      className={`relative transition-all duration-200 group ${hasAnyElement ? "cursor-pointer" : ""
-                        } ${isActive ? "bg-[#FFF4E8]/40 border-l-4 border-l-[#FF7A00] pl-2 -ml-2.5 rounded-r" : ""
-                        }`}
+                      className={`relative transition-all duration-200 group ${hasAnyElement ? "cursor-pointer" : ""} ${
+                        isActive ? "bg-primary/5 border-l-4 border-l-primary pl-4 -ml-4 rounded-r" : ""
+                      }`}
                     >
                       {/* Flash overlay */}
                       <AnimatePresence>
@@ -539,38 +539,38 @@ export default function BreakdownScript() {
                           <motion.div
                             key="flash"
                             className="absolute inset-0 pointer-events-none rounded"
-                            initial={{ backgroundColor: "rgba(255,122,0,0.2)" }}
-                            animate={{ backgroundColor: "rgba(255,122,0,0)" }}
-                            exit={{ backgroundColor: "rgba(255,122,0,0)" }}
+                            initial={{ backgroundColor: "rgba(212,166,74,0.2)" }}
+                            animate={{ backgroundColor: "rgba(212,166,74,0)" }}
+                            exit={{ backgroundColor: "rgba(212,166,74,0)" }}
                             transition={{ duration: 1.2, ease: "easeOut" }}
                           />
                         )}
                       </AnimatePresence>
 
-                      {/* Professional Screenplay Formatting (Flows naturally without container cards) */}
+                      {/* Screenplay Formatting */}
                       {block.type === "scene-heading" ? (
-                        <div className="my-8 py-3.5 px-5 rounded-lg bg-gradient-to-r from-[#FFF4E8] to-transparent border-l-4 border-[#FF7A00] select-none">
-                          <div className="text-[10px] font-bold text-[#FF7A00] tracking-widest uppercase mb-1 font-mono">SCENE {block.sceneNum}</div>
-                          <div className="font-mono font-bold text-sm tracking-widest text-[#1A1A1A] uppercase">{block.text}</div>
+                        <div className="my-8 py-3.5 px-5 rounded-lg bg-gradient-to-r from-primary/10 to-transparent border-l-4 border-primary select-none">
+                          <div className="text-[10px] font-bold text-primary tracking-widest uppercase mb-1 font-mono">SCENE {block.sceneNum}</div>
+                          <div className="font-mono font-bold text-sm tracking-widest text-white uppercase">{block.text}</div>
                         </div>
                       ) : block.type === "character" ? (
-                        <div className="text-center font-bold uppercase tracking-wider text-[#FF7A00] mt-7 mb-1 text-[13px] select-none">
+                        <div className="text-center font-bold uppercase tracking-wider text-primary mt-7 mb-1 text-[13px] select-none font-mono">
                           {renderHighlightedText(block.text, block.id, BREAKDOWN_ELEMENTS, selectedId, selectElement)}
                         </div>
                       ) : block.type === "dialogue" ? (
-                        <div className="mx-auto text-center text-[15px] text-[#1A1A1A] max-w-[420px] leading-relaxed mb-5 font-medium">
+                        <div className="mx-auto text-center text-[15px] text-white max-w-[420px] leading-relaxed mb-5 font-mono">
                           {renderHighlightedText(block.text, block.id, BREAKDOWN_ELEMENTS, selectedId, selectElement)}
                         </div>
                       ) : block.type === "parenthetical" ? (
-                        <div className="text-center text-neutral-400 italic text-[12px] max-w-[260px] mx-auto mb-1 select-none">
+                        <div className="text-center text-muted-foreground italic text-[12px] max-w-[260px] mx-auto mb-1 select-none font-mono">
                           {block.text}
                         </div>
                       ) : block.type === "transition" ? (
-                        <div className="text-right font-mono font-bold text-neutral-400 uppercase tracking-widest text-[10px] my-6 select-none">
+                        <div className="text-right font-mono font-bold text-muted-foreground uppercase tracking-widest text-[10px] my-6 select-none">
                           {block.text}
                         </div>
                       ) : (
-                        <div className="text-[15px] text-[#4B5563] leading-[1.9] max-w-[750px] mx-auto text-justify my-4.5 font-normal">
+                        <div className="text-[15px] text-foreground/90 leading-[1.9] max-w-[700px] mx-auto text-justify my-4.5 font-mono">
                           {renderHighlightedText(block.text, block.id, BREAKDOWN_ELEMENTS, selectedId, selectElement)}
                         </div>
                       )}
@@ -592,8 +592,8 @@ export default function BreakdownScript() {
               </div>
             </div>
 
-            {/* Premium Screenplay Minimap Column */}
-            <div className="w-6 shrink-0 relative border-l border-[#E5E7EB] bg-white select-none">
+            {/* Screenplay Minimap Column */}
+            <div className="w-6 shrink-0 relative border-l border-border bg-card select-none">
               {minimapMarkers.map((m, i) => (
                 <button
                   key={i}
@@ -608,13 +608,13 @@ export default function BreakdownScript() {
         </div>
 
         {/* ── RIGHT PANEL: INTELLIGENCE PANEL (20% Width) ──────────── */}
-        <div className="w-[20%] min-w-[240px] shrink-0 border-l border-[#E5E7EB] flex flex-col bg-white">
-          <div className="px-5 py-4 border-b border-[#E5E7EB] shrink-0 flex items-center justify-between bg-white">
+        <div className="w-[20%] min-w-[250px] shrink-0 border-l border-border flex flex-col bg-card">
+          <div className="px-5 py-4 border-b border-border shrink-0 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-4.5 h-4.5 text-[#FF7A00]" />
-              <span className="text-xs font-bold uppercase tracking-wider text-[#6B7280]">Intelligence</span>
+              <Sparkles className="w-4 h-4 text-primary" />
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Intelligence</span>
             </div>
-            <span className="text-[9px] font-bold text-[#FF7A00] bg-[#FFF4E8] px-2 py-0.5 rounded-full">Pro Mode</span>
+            <span className="text-[9px] font-bold text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-full">Pro Mode</span>
           </div>
 
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -627,7 +627,7 @@ export default function BreakdownScript() {
                 className="space-y-4"
               >
                 {/* CARD 1 - Selected Element */}
-                <div className="border border-[#E5E7EB] rounded-[16px] p-4 bg-white shadow-[0_2px_12px_rgba(0,0,0,0.01)] space-y-3">
+                <div className="border border-border rounded-[16px] p-4 bg-background shadow-sm space-y-3">
                   <div className="flex items-center gap-1.5">
                     {(() => { const I = CAT_CFG[selectedElement.category].icon; return <I className="w-3.5 h-3.5" style={{ color: CAT_CFG[selectedElement.category].color }} />; })()}
                     <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: CAT_CFG[selectedElement.category].color }}>
@@ -636,12 +636,12 @@ export default function BreakdownScript() {
                   </div>
 
                   <div>
-                    <h3 className="text-sm font-bold text-[#1A1A1A] leading-tight">{selectedElement.name}</h3>
-                    <p className="text-[10px] text-neutral-400 font-semibold mt-0.5">{selectedElement.department}</p>
+                    <h3 className="text-sm font-bold text-white leading-tight">{selectedElement.name}</h3>
+                    <p className="text-[10px] text-muted-foreground font-semibold mt-0.5">{selectedElement.department}</p>
                   </div>
 
-                  <div className="flex justify-between items-center pt-2 border-t border-[#E5E7EB]/60">
-                    <span className="text-xs font-bold text-[#6B7280]">Status</span>
+                  <div className="flex justify-between items-center pt-2 border-t border-border/40">
+                    <span className="text-xs font-bold text-muted-foreground">Status</span>
                     <span className={`text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full ${statusBadgeBg(selectedElement.status)}`}>
                       {selectedElement.status}
                     </span>
@@ -649,35 +649,27 @@ export default function BreakdownScript() {
                 </div>
 
                 {/* CARD 2 - AI Insights */}
-                <div className="border border-[#E5E7EB] rounded-[16px] p-4 bg-white shadow-[0_2px_12px_rgba(0,0,0,0.01)] space-y-3.5">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">AI Insights</p>
-                  <div className="space-y-2 text-[11px] font-medium text-[#6B7280]">
+                <div className="border border-border rounded-[16px] p-4 bg-background shadow-sm space-y-3">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">AI Insights</p>
+                  <div className="space-y-2 text-[11px] font-medium text-foreground/80">
                     <div className="flex items-center gap-2">
-                      <span className="text-[#22C55E]">✓</span>
-                      <span>Appears in {selectedElement.occurrences.length} occurrences</span>
+                      <span className="text-green-400">✓</span>
+                      <span>Appears in {selectedElement.occurrences.length} script lines</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-[#22C55E]">✓</span>
+                      <span className="text-green-400">✓</span>
                       <span>Present in {selectedElement.detail?.["Scenes"] ? selectedElement.detail["Scenes"].split(",").length : 3} scenes</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-[#22C55E]">✓</span>
-                      <span>Associated with 4 props</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[#22C55E]">✓</span>
-                      <span>Permit status: Approved</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[#22C55E]">✓</span>
-                      <span>Scheduled for Shoot: Day 31-32</span>
+                      <span className="text-green-400">✓</span>
+                      <span>Shoot status: Confirmed</span>
                     </div>
                   </div>
                 </div>
 
                 {/* CARD 3 - Occurrences */}
-                <div className="border border-[#E5E7EB] rounded-[16px] p-4 bg-white shadow-[0_2px_12px_rgba(0,0,0,0.01)] space-y-3">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Occurrences</p>
+                <div className="border border-border rounded-[16px] p-4 bg-background shadow-sm space-y-3">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Occurrences</p>
                   <div className="flex gap-1.5 flex-wrap">
                     {selectedElement.occurrences.map((blockId, i) => {
                       const block = SCRIPT_BLOCKS.find(b => b.id === blockId);
@@ -688,8 +680,8 @@ export default function BreakdownScript() {
                           key={i}
                           onClick={() => { setOccurrenceIdx(i); scrollToBlock(blockId); }}
                           className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all duration-150 border ${active
-                              ? "bg-[#FFF4E8] border-[#FF7A00] text-[#FF7A00]"
-                              : "bg-white border-[#E5E7EB] text-[#6B7280] hover:bg-neutral-50"
+                              ? "bg-primary text-primary-foreground border-primary"
+                              : "bg-card border-border text-muted-foreground hover:bg-neutral-800"
                             }`}
                         >
                           {sceneBlock ? `Sc ${sceneBlock.sceneNum}` : `#${i + 1}`}
@@ -701,13 +693,13 @@ export default function BreakdownScript() {
 
                 {/* CARD 4 - Production Details */}
                 {selectedElement.detail && (
-                  <div className="border border-[#E5E7EB] rounded-[16px] p-4 bg-white shadow-[0_2px_12px_rgba(0,0,0,0.01)] space-y-3">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Production Details</p>
+                  <div className="border border-border rounded-[16px] p-4 bg-background shadow-sm space-y-3">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Production Details</p>
                     <div className="space-y-2.5">
                       {Object.entries(selectedElement.detail).map(([k, v]) => (
                         <div key={k} className="flex justify-between items-center text-xs">
-                          <span className="text-neutral-400 font-semibold">{k}</span>
-                          <span className="font-semibold text-[#1A1A1A] text-right truncate ml-2 max-w-[120px]">{v}</span>
+                          <span className="text-muted-foreground font-semibold">{k}</span>
+                          <span className="font-semibold text-white text-right truncate ml-2 max-w-[120px]">{v}</span>
                         </div>
                       ))}
                     </div>
@@ -715,8 +707,8 @@ export default function BreakdownScript() {
                 )}
 
                 {/* CARD 5 - Related Elements */}
-                <div className="border border-[#E5E7EB] rounded-[16px] p-4 bg-white shadow-[0_2px_12px_rgba(0,0,0,0.01)] space-y-3">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Related Elements</p>
+                <div className="border border-border rounded-[16px] p-4 bg-background shadow-sm space-y-3">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Related Elements</p>
                   <div className="flex flex-wrap gap-1.5">
                     {BREAKDOWN_ELEMENTS
                       .filter(e => e.id !== selectedElement.id && e.occurrences.some(oId => selectedElement.occurrences.includes(oId)))
@@ -725,7 +717,7 @@ export default function BreakdownScript() {
                         <button
                           key={rel.id}
                           onClick={() => selectElement(rel.id)}
-                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-[#E5E7EB] bg-white text-[10px] font-semibold text-[#6B7280] hover:border-[#FF7A00] hover:text-[#FF7A00] transition-colors"
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-border bg-card text-[10px] font-semibold text-muted-foreground hover:border-primary hover:text-primary transition-colors"
                         >
                           <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: CAT_CFG[rel.category].color }} />
                           <span>{rel.name}</span>
@@ -736,12 +728,12 @@ export default function BreakdownScript() {
               </motion.div>
             ) : (
               <div className="h-full flex flex-col items-center justify-center text-center py-20">
-                <div className="w-12 h-12 rounded-2xl bg-[#FFF4E8] border border-[#FF7A00]/20 flex items-center justify-center mb-4 shadow-sm">
-                  <Sparkles className="w-6 h-6 text-[#FF7A00]" />
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-4 shadow-sm">
+                  <Sparkles className="w-6 h-6 text-primary animate-pulse" />
                 </div>
-                <p className="text-xs font-bold text-[#1A1A1A]">Breakdown intelligence</p>
-                <p className="text-[10px] text-neutral-400 mt-1.5 max-w-[160px] leading-relaxed">
-                  Select an highlighted element in the script to load production insights.
+                <p className="text-xs font-bold text-white">Breakdown Intelligence</p>
+                <p className="text-[10px] text-muted-foreground mt-1.5 max-w-[160px] leading-relaxed">
+                  Select a highlighted element in the script to load production insights, scenes, and occurrences.
                 </p>
               </div>
             )}
