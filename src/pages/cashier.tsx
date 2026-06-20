@@ -15,14 +15,14 @@ export default function CashierView() {
   const [activeTab, setActiveTab] = useState("home");
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-3.5rem)] bg-muted/30 p-4">
-      <div className="relative w-[390px] bg-background rounded-[2.5rem] border-2 border-border shadow-2xl overflow-hidden flex flex-col" style={{ height: "780px" }}>
+    <div className="flex items-center justify-center min-h-[calc(100vh-3.5rem)] bg-background p-4">
+      <div className="relative w-[390px] bg-card rounded-[2.5rem] border-2 border-border shadow-2xl overflow-hidden flex flex-col" style={{ height: "780px" }}>
         
         {/* Phone notch */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-6 bg-border rounded-b-2xl z-10" />
         
         {/* Status bar */}
-        <div className="pt-8 px-6 pb-2 bg-background shrink-0">
+        <div className="pt-8 px-6 pb-2 bg-card shrink-0">
           <p className="text-xs text-muted-foreground font-medium">9:41 AM</p>
         </div>
 

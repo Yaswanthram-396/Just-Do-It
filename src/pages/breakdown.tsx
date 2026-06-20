@@ -41,15 +41,15 @@ export default function Breakdown() {
   }
 
   return (
-    <div className="p-6 md:p-8 h-full flex flex-col">
-      <div className="flex justify-between items-end mb-6">
+    <div className="p-4 md:p-8 h-full flex flex-col bg-background text-foreground min-h-screen">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-6">
         <div>
           <h1 className="text-3xl font-display font-bold mb-2">Breakdown Studio</h1>
-          <p className="text-muted-foreground">Manage all elements across the script.</p>
+          <p className="text-muted-foreground text-sm">Manage all elements across the script.</p>
         </div>
         <div className="flex gap-2">
           <Link href="/breakdown/script">
-            <Button variant="outline" className="border-primary/30 text-primary hover:bg-primary/5 gap-2">
+            <Button variant="outline" className="border-primary/30 text-primary hover:bg-primary/10 gap-2 bg-card">
               <FileText className="w-4 h-4" /> Open Script
             </Button>
           </Link>
@@ -69,7 +69,7 @@ export default function Breakdown() {
 
       <div className="flex flex-wrap gap-2 mb-6">
         {["All", "Cast", "Props", "Locations", "Costumes", "Vehicles", "VFX"].map(t => (
-          <Badge key={t} variant={t === "All" ? "default" : "outline"} className={`cursor-pointer ${t === "All" ? "bg-primary text-primary-foreground" : "border-border hover:border-primary"}`}>
+          <Badge key={t} variant={t === "All" ? "default" : "outline"} className={`cursor-pointer ${t === "All" ? "bg-primary text-primary-foreground" : "border-border hover:border-primary bg-card"}`}>
             {t}
           </Badge>
         ))}
@@ -80,11 +80,12 @@ export default function Breakdown() {
 
       <div className="flex-1 flex gap-6 min-h-0">
         
-        {/* Main Table */}
+        {/* Main Content Area */}
         <div className="flex-1 bg-card border border-border rounded-lg overflow-hidden flex flex-col">
-          <div className="overflow-auto flex-1">
+          {/* Desktop Table View */}
+          <div className="hidden sm:block overflow-auto flex-1">
             <table className="w-full text-sm text-left">
-              <thead className="bg-muted/50 text-muted-foreground text-xs uppercase font-semibold sticky top-0 z-10">
+              <thead className="bg-[#0B1728] text-muted-foreground text-xs uppercase font-semibold sticky top-0 z-10">
                 <tr>
                   <th className="px-4 py-3 border-b border-border w-8"><input type="checkbox" className="rounded border-border bg-background" /></th>
                   <th className="px-4 py-3 border-b border-border">Element</th>
@@ -96,7 +97,7 @@ export default function Breakdown() {
                   <th className="px-4 py-3 border-b border-border">Risk</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border">
+              <tbody className="divide-y divide-border text-foreground bg-card">
                 {items.map((item, i) => (
                   <tr key={i} className="hover:bg-muted/30 transition-colors group">
                     <td className="px-4 py-3"><input type="checkbox" className="rounded border-border bg-background" /></td>
@@ -116,6 +117,30 @@ export default function Breakdown() {
               </tbody>
             </table>
           </div>
+
+          {/* Mobile Stacked Card Layout */}
+          <div className="block sm:hidden overflow-y-auto flex-1 divide-y divide-border bg-card">
+            {items.map((item, i) => (
+              <div key={i} className="p-4 space-y-2 text-xs">
+                <div className="flex justify-between items-center">
+                  <span className="font-bold text-sm text-foreground">{item.el}</span>
+                  <span className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${getCatColor(item.cat)}`}>
+                    {item.cat}
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-muted-foreground">
+                  <p><strong>Scenes:</strong> {item.scenes}</p>
+                  <p><strong>Dept:</strong> {item.dept}</p>
+                  <p><strong>Status:</strong> {item.status}</p>
+                  <p><strong>Owner:</strong> {item.owner}</p>
+                </div>
+                <div className="flex justify-between items-center pt-1">
+                  <span className="text-[10px]">Risk Factor</span>
+                  <span className={`font-bold ${getRiskColor(item.risk)}`}>{item.risk}</span>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Sidebar Stats */}
@@ -124,17 +149,17 @@ export default function Breakdown() {
             <h3 className="font-display font-bold mb-4 text-sm uppercase tracking-wider text-muted-foreground">Dept Breakdown</h3>
             <div className="space-y-3">
               {[
-                { name: "Art", val: "32%", color: "bg-teal-500" },
-                { name: "Costume", val: "28%", color: "bg-purple-500" },
-                { name: "Production", val: "22%", color: "bg-orange-500" },
-                { name: "VFX", val: "18%", color: "bg-blue-500" }
+                { name: "Art", val: "32%", color: "bg-primary" },
+                { name: "Costume", val: "28%", color: "bg-primary/80" },
+                { name: "Production", val: "22%", color: "bg-primary/65" },
+                { name: "VFX", val: "18%", color: "bg-primary/50" }
               ].map(d => (
                 <div key={d.name}>
-                  <div className="flex justify-between text-xs mb-1">
+                  <div className="flex justify-between text-xs mb-1 text-foreground">
                     <span>{d.name}</span>
                     <span className="font-medium text-muted-foreground">{d.val}</span>
                   </div>
-                  <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                  <div className="h-1.5 w-full bg-border rounded-full overflow-hidden">
                     <div className={`h-full ${d.color}`} style={{ width: d.val }} />
                   </div>
                 </div>
@@ -144,15 +169,15 @@ export default function Breakdown() {
 
           <div className="bg-card border border-border rounded-lg p-5">
             <h3 className="font-display font-bold mb-4 text-sm uppercase tracking-wider text-muted-foreground">Risk Alerts</h3>
-            <div className="flex justify-between items-center bg-red-500/10 text-red-400 p-2 rounded border border-red-500/20 mb-2">
+            <div className="flex justify-between items-center bg-destructive/10 text-destructive p-2 rounded border border-destructive/20 mb-2">
               <span className="text-sm font-bold">High Risk</span>
               <span className="text-lg font-display">3</span>
             </div>
-            <div className="flex justify-between items-center bg-yellow-500/10 text-yellow-400 p-2 rounded border border-yellow-500/20 mb-2">
+            <div className="flex justify-between items-center bg-primary/10 text-primary p-2 rounded border border-primary/20 mb-2">
               <span className="text-sm font-bold">Medium Risk</span>
               <span className="text-lg font-display">5</span>
             </div>
-            <div className="flex justify-between items-center bg-green-500/10 text-green-400 p-2 rounded border border-green-500/20">
+            <div className="flex justify-between items-center bg-success/10 text-success p-2 rounded border border-success/20">
               <span className="text-sm font-bold">Low Risk</span>
               <span className="text-lg font-display">12</span>
             </div>

@@ -18,31 +18,32 @@ export default function Scheduling() {
   ];
 
   return (
-    <div className="p-6 md:p-8 h-full flex flex-col">
+    <div className="p-4 md:p-8 h-full flex flex-col bg-background text-foreground min-h-screen">
       <div className="mb-6">
         <h1 className="text-3xl font-display font-bold mb-2">Scheduling Command Center</h1>
-        <p className="text-muted-foreground">Strip board & resource allocation.</p>
+        <p className="text-muted-foreground text-sm">Strip board & resource allocation.</p>
       </div>
 
-      <div className="flex-1 flex gap-6 min-h-0">
+      <div className="flex-1 flex flex-col lg:flex-row gap-6 min-h-0">
         
         {/* Strip Board */}
         <div className="flex-1 bg-card border border-border rounded-lg flex flex-col overflow-hidden">
-          <div className="flex-1 overflow-auto p-4">
+          {/* Desktop Horizontal Strip Board view */}
+          <div className="hidden sm:block flex-1 overflow-auto p-4">
             <div className="inline-flex flex-col gap-2 min-w-max">
               {days.map((d, i) => (
                 <div key={i} className="flex gap-4 items-stretch group">
-                  <div className="w-8 flex items-center justify-center text-muted-foreground/30 group-hover:text-muted-foreground cursor-grab">
+                  <div className="w-8 flex items-center justify-center text-muted-foreground/35 group-hover:text-muted-foreground cursor-grab">
                     <GripVertical className="w-4 h-4" />
                   </div>
                   
-                  <div className="w-32 shrink-0 bg-muted/30 border border-border rounded-md p-2 flex flex-col justify-center relative overflow-hidden">
-                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary/20"></div>
+                  <div className="w-32 shrink-0 bg-muted/40 border border-border rounded-md p-2 flex flex-col justify-center relative overflow-hidden">
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary/40"></div>
                     <div className="flex justify-between items-center mb-1">
                       <span className="font-display font-bold text-lg leading-none">Day {d.day}</span>
-                      {d.weather === 'sun' && <Sun className="w-3.5 h-3.5 text-yellow-500" />}
-                      {d.weather === 'cloud' && <Cloud className="w-3.5 h-3.5 text-gray-400" />}
-                      {d.weather === 'rain' && <CloudRain className="w-3.5 h-3.5 text-blue-400" />}
+                      {d.weather === 'sun' && <Sun className="w-3.5 h-3.5 text-primary" />}
+                      {d.weather === 'cloud' && <Cloud className="w-3.5 h-3.5 text-muted-foreground" />}
+                      {d.weather === 'rain' && <CloudRain className="w-3.5 h-3.5 text-primary" />}
                     </div>
                     <span className="text-xs text-muted-foreground font-medium">{d.date}</span>
                     <span className="text-[10px] uppercase tracking-wider mt-1 truncate">{d.loc}</span>
@@ -50,7 +51,7 @@ export default function Scheduling() {
 
                   <div className="flex gap-2 flex-1 items-center">
                     {d.scenes.map((s, j) => (
-                      <div key={j} className={`w-48 shrink-0 bg-background border ${s.conflict ? 'border-destructive/50 shadow-[0_0_10px_rgba(255,0,0,0.1)]' : 'border-border'} rounded-md p-3 relative hover:border-primary cursor-pointer transition-colors`}>
+                      <div key={j} className={`w-48 shrink-0 bg-background border ${s.conflict ? 'border-destructive/50 shadow-[0_0_10px_rgba(239,68,68,0.15)]' : 'border-border'} rounded-md p-3 relative hover:border-primary cursor-pointer transition-colors`}>
                         {s.conflict && <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-destructive animate-pulse" />}
                         <div className="font-display font-bold text-primary mb-1">{s.id}</div>
                         <div className="text-sm font-medium truncate">{s.t}</div>
@@ -65,30 +66,53 @@ export default function Scheduling() {
               ))}
             </div>
           </div>
+
+          {/* Mobile Vertical Timeline Layout */}
+          <div className="block sm:hidden flex-1 overflow-y-auto p-4 space-y-4">
+            {days.map((d, i) => (
+              <div key={i} className="flex gap-3 relative pb-2 border-b border-border/60">
+                <div className="w-16 shrink-0 flex flex-col">
+                  <span className="text-xs font-bold text-foreground">Day {d.day}</span>
+                  <span className="text-[10px] text-muted-foreground">{d.date}</span>
+                </div>
+                <div className="flex-1 space-y-1">
+                  <span className="text-[9px] uppercase tracking-wider bg-muted text-muted-foreground px-1.5 py-0.5 rounded">{d.loc}</span>
+                  <div className="space-y-1.5 mt-1.5">
+                    {d.scenes.map((s, j) => (
+                      <div key={j} className={`p-2 bg-background border ${s.conflict ? 'border-destructive/50' : 'border-border'} rounded text-xs`}>
+                        <span className="font-bold text-primary">Scene {s.id}: </span>{s.t}
+                        {s.conflict && <span className="text-destructive font-bold block mt-0.5">⚠ Conflict flagged</span>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Conflict Panel */}
-        <div className="w-80 shrink-0 flex flex-col gap-4">
-          <Card className="bg-destructive/5 border-destructive/20">
+        <div className="w-full lg:w-80 shrink-0 flex flex-col gap-4">
+          <Card className="bg-destructive/10 border-destructive/20">
             <CardContent className="p-4">
               <h3 className="font-display font-bold text-destructive flex items-center gap-2 mb-4">
                 <AlertTriangle className="w-4 h-4" /> Schedule Conflicts
               </h3>
               
               <div className="space-y-4">
-                <div className="bg-background border border-border p-3 rounded text-sm">
+                <div className="bg-background border border-border p-3 rounded text-xs text-foreground">
                   <p className="font-bold mb-1">Location Conflict</p>
-                  <p className="text-muted-foreground text-xs">Scenes 34 & 35 both scheduled for Rajahmundry Market on Day 31. Permit only covers Scene 34 area.</p>
+                  <p className="text-muted-foreground text-[11px] leading-relaxed">Scenes 34 & 35 both scheduled for Rajahmundry Market on Day 31. Permit only covers Scene 34 area.</p>
                 </div>
                 
-                <div className="bg-background border border-border p-3 rounded text-sm">
+                <div className="bg-background border border-border p-3 rounded text-xs text-foreground">
                   <p className="font-bold mb-1">Actor Availability</p>
-                  <p className="text-muted-foreground text-xs">NTR unavailable Day 31 morning. Need to push Scene 34 to post-lunch.</p>
+                  <p className="text-muted-foreground text-[11px] leading-relaxed">NTR unavailable Day 31 morning. Need to push Scene 34 to post-lunch.</p>
                 </div>
 
-                <div className="bg-background border border-border p-3 rounded text-sm">
+                <div className="bg-background border border-border p-3 rounded text-xs text-foreground">
                   <p className="font-bold mb-1">Weather Risk</p>
-                  <p className="text-muted-foreground text-xs">40% rain probability on Day 33 (Cliff sequence). Need cover set.</p>
+                  <p className="text-muted-foreground text-[11px] leading-relaxed">40% rain probability on Day 33 (Cliff sequence). Need cover set.</p>
                 </div>
               </div>
             </CardContent>

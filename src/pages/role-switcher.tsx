@@ -109,19 +109,18 @@ export default function RoleSwitcher() {
       {/* Subtle top border accent */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
 
-
       {/* Main Container */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
         <div className="w-full max-w-[400px] space-y-8">
           
           {/* Header/Logo */}
           <div className="space-y-3 text-center">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl border border-black/10 bg-black text-white font-serif font-black text-2xl shadow-sm">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl border border-primary/20 bg-primary text-primary-foreground font-serif font-black text-2xl shadow-sm">
               C
             </div>
             <div className="space-y-1">
-              <h1 className="text-2xl font-semibold tracking-tight font-sans">Cinamitra</h1>
-              <p className="text-sm text-neutral-500 font-medium">
+              <h1 className="text-2xl font-semibold tracking-tight font-sans text-foreground">Cinamitra</h1>
+              <p className="text-sm text-muted-foreground font-medium">
                 The Operating System for Film Production
               </p>
             </div>
@@ -140,19 +139,19 @@ export default function RoleSwitcher() {
                   className="space-y-6"
                 >
                   <div className="space-y-2">
-                    <h2 className="text-lg font-semibold tracking-tight">Sign in</h2>
-                    <p className="text-xs text-neutral-500">
+                    <h2 className="text-lg font-semibold tracking-tight text-foreground">Sign in</h2>
+                    <p className="text-xs text-muted-foreground">
                       Enter the phone number associated with your production role.
                     </p>
                   </div>
 
                   <form onSubmit={handlePhoneSubmit} className="space-y-4">
                     <div className="space-y-2">
-                      <label htmlFor="phone" className="text-xs font-semibold uppercase tracking-wider text-neutral-500">
+                      <label htmlFor="phone" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                         Phone Number
                       </label>
                       <div className="relative">
-                        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400 text-sm font-medium">
+                        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground text-sm font-medium">
                           +91
                         </span>
                         <Input
@@ -164,7 +163,7 @@ export default function RoleSwitcher() {
                             setPhoneNumber(e.target.value);
                             if (error) setError(null);
                           }}
-                          className="pl-12 h-11 border-neutral-200 focus:border-neutral-900 focus-visible:ring-0 focus-visible:ring-offset-0 text-sm font-medium rounded-lg bg-neutral-50/30"
+                          className="pl-12 h-11 border-border focus:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 text-sm font-medium rounded-lg bg-background/50 text-foreground"
                           autoComplete="off"
                           autoFocus
                           disabled={isLoading}
@@ -173,7 +172,7 @@ export default function RoleSwitcher() {
                     </div>
 
                     {error && (
-                      <div className="flex items-start gap-2 text-xs text-red-600 bg-red-50/50 border border-red-100 rounded-lg p-3">
+                      <div className="flex items-start gap-2 text-xs text-destructive bg-destructive/10 border border-destructive/20 rounded-lg p-3">
                         <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                         <span>{error}</span>
                       </div>
@@ -182,10 +181,10 @@ export default function RoleSwitcher() {
                     <Button
                       type="submit"
                       disabled={isLoading || !phoneNumber}
-                      className="w-full h-11 bg-black text-white hover:bg-neutral-900 transition-colors font-medium rounded-lg text-sm gap-2"
+                      className="w-full h-11 bg-primary text-primary-foreground hover:bg-primary/95 transition-colors font-medium rounded-lg text-sm gap-2"
                     >
                       {isLoading ? (
-                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
                       ) : (
                         <>
                           Continue <ArrowRight className="w-4 h-4" />
@@ -204,15 +203,15 @@ export default function RoleSwitcher() {
                   className="space-y-6"
                 >
                   <div className="space-y-2">
-                    <h2 className="text-lg font-semibold tracking-tight">Verify identity</h2>
-                    <p className="text-xs text-neutral-500 leading-relaxed">
-                      We sent a verification code to <span className="font-semibold text-neutral-800">+91 {phoneNumber}</span> ({matchedRole?.label}).
+                    <h2 className="text-lg font-semibold tracking-tight text-foreground">Verify identity</h2>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      We sent a verification code to <span className="font-semibold text-foreground">+91 {phoneNumber}</span> ({matchedRole?.label}).
                     </p>
                   </div>
 
                   <form onSubmit={handleOtpSubmit} className="space-y-5">
                     <div className="space-y-3 flex flex-col items-center justify-center">
-                      <label className="text-xs font-semibold uppercase tracking-wider text-neutral-500 self-start">
+                      <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground self-start">
                         Verification Code
                       </label>
                       <div className="py-2">
@@ -226,17 +225,17 @@ export default function RoleSwitcher() {
                           disabled={isLoading}
                         >
                           <InputOTPGroup className="gap-2">
-                            <InputOTPSlot index={0} className="w-12 h-12 border-border text-lg font-semibold rounded-lg bg-muted/20" />
-                            <InputOTPSlot index={1} className="w-12 h-12 border-border text-lg font-semibold rounded-lg bg-muted/20" />
-                            <InputOTPSlot index={2} className="w-12 h-12 border-border text-lg font-semibold rounded-lg bg-muted/20" />
-                            <InputOTPSlot index={3} className="w-12 h-12 border-border text-lg font-semibold rounded-lg bg-muted/20" />
+                            <InputOTPSlot index={0} className="w-12 h-12 border-border text-lg font-semibold rounded-lg bg-background text-foreground" />
+                            <InputOTPSlot index={1} className="w-12 h-12 border-border text-lg font-semibold rounded-lg bg-background text-foreground" />
+                            <InputOTPSlot index={2} className="w-12 h-12 border-border text-lg font-semibold rounded-lg bg-background text-foreground" />
+                            <InputOTPSlot index={3} className="w-12 h-12 border-border text-lg font-semibold rounded-lg bg-background text-foreground" />
                           </InputOTPGroup>
                         </InputOTP>
                       </div>
                     </div>
 
                     {error && (
-                      <div className="flex items-start gap-2 text-xs text-red-600 bg-red-50/50 border border-red-100 rounded-lg p-3">
+                      <div className="flex items-start gap-2 text-xs text-destructive bg-destructive/10 border border-destructive/20 rounded-lg p-3">
                         <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                         <span>{error}</span>
                       </div>
@@ -246,10 +245,10 @@ export default function RoleSwitcher() {
                       <Button
                         type="submit"
                         disabled={isLoading || otpValue.length < 4}
-                        className="w-full h-11 bg-black text-white hover:bg-neutral-900 transition-colors font-medium rounded-lg text-sm gap-2"
+                        className="w-full h-11 bg-primary text-primary-foreground hover:bg-primary/95 transition-colors font-medium rounded-lg text-sm gap-2"
                       >
                         {isLoading ? (
-                          <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                          <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
                         ) : (
                           <>
                             Enter Workspace <ArrowRight className="w-4 h-4" />
@@ -265,7 +264,7 @@ export default function RoleSwitcher() {
                           setOtpValue("");
                           setError(null);
                         }}
-                        className="w-full h-10 text-xs text-neutral-500 hover:text-neutral-800 hover:bg-neutral-50 transition-colors font-medium"
+                        className="w-full h-10 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors font-medium"
                       >
                         Back to phone number
                       </Button>
@@ -283,7 +282,7 @@ export default function RoleSwitcher() {
               className="w-full px-5 py-3.5 flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-muted-foreground hover:bg-muted/50 transition-colors border-b border-border"
             >
               <span className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-neutral-500" />
+                <ShieldCheck className="w-4 h-4 text-muted-foreground" />
                 View Demo Numbers
               </span>
               <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${showDemoAccounts ? "rotate-180" : ""}`} />
@@ -298,7 +297,7 @@ export default function RoleSwitcher() {
                   transition={{ duration: 0.25 }}
                   className="overflow-hidden"
                 >
-                  <div className="p-3 bg-muted/30 max-h-[220px] overflow-y-auto divide-y divide-border/60">
+                  <div className="p-3 bg-background/50 max-h-[220px] overflow-y-auto divide-y divide-border/60">
                     {ROLE_MAP.map((item) => {
                       const isSelected = phoneNumber === item.phone;
                       return (
@@ -311,17 +310,17 @@ export default function RoleSwitcher() {
                         >
                           <div>
                             <p className="text-xs font-semibold">{item.label}</p>
-                            <p className={`text-[10px] ${isSelected ? "text-neutral-300" : "text-neutral-400 group-hover:text-neutral-500"}`}>
+                            <p className={`text-[10px] ${isSelected ? "text-primary-foreground/80" : "text-muted-foreground group-hover:text-foreground"}`}>
                               +91 {item.phone}
                             </p>
                           </div>
                           <div className="flex items-center gap-2">
                             <span className={`text-[9px] uppercase tracking-wider font-semibold border px-1.5 py-0.5 rounded ${
-                              isSelected ? "border-neutral-700 bg-neutral-800" : "border-neutral-200 text-neutral-400"
+                              isSelected ? "border-primary-foreground/30 bg-primary/20" : "border-border text-muted-foreground"
                             }`}>
                               OTP: 1234
                             </span>
-                            {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
+                            {isSelected && <Check className="w-3.5 h-3.5 text-primary-foreground" />}
                           </div>
                         </button>
                       );

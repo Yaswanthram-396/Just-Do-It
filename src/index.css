@@ -96,45 +96,45 @@
 }
 
 :root {
-  --button-outline: rgba(0,0,0, .08);
-  --badge-outline: rgba(0,0,0, .05);
+  --button-outline: rgba(255,255,255, .08);
+  --badge-outline: rgba(255,255,255, .05);
 
   --opaque-button-border-intensity: 9;
 
   /* Backgrounds applied on top of other backgrounds when hovered/active */
-  --elevate-1: rgba(0,0,0, .03);
-  --elevate-2: rgba(0,0,0, .06);
+  --elevate-1: rgba(255,255,255, .03);
+  --elevate-2: rgba(255,255,255, .06);
 
-  --background: 36 33% 97%;
-  --foreground: 24 20% 12%;
-  --card: 0 0% 100%;
-  --card-foreground: 24 20% 12%;
-  --card-border: 36 12% 90%;
-  --sidebar: 36 25% 98%;
-  --sidebar-foreground: 24 15% 30%;
-  --sidebar-border: 36 12% 89%;
-  --sidebar-primary: 28 75% 45%;
-  --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 36 20% 94%;
-  --sidebar-accent-foreground: 24 20% 12%;
-  --sidebar-ring: 28 75% 45%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 24 20% 12%;
-  --popover-border: 36 12% 90%;
-  --primary: 28 75% 45%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 36 16% 93%;
-  --secondary-foreground: 24 15% 30%;
-  --muted: 36 16% 93%;
-  --muted-foreground: 24 10% 50%;
-  --accent: 28 75% 45%;
-  --accent-foreground: 0 0% 100%;
-  --destructive: 0 72% 51%;
+  --background: 213 63% 8%; /* #07111F */
+  --foreground: 0 0% 100%; /* #FFFFFF */
+  --card: 215 49% 15%; /* #132238 */
+  --card-foreground: 218 14% 86%; /* #D1D5DB */
+  --card-border: 215 50% 18%; /* #162842 */
+  --sidebar: 215 57% 10%; /* #0B1728 */
+  --sidebar-foreground: 218 14% 86%; /* #D1D5DB */
+  --sidebar-border: 215 50% 18%; /* #162842 */
+  --sidebar-primary: 41 62% 56%; /* #D4A64A */
+  --sidebar-primary-foreground: 213 63% 8%;
+  --sidebar-accent: 215 49% 15%; /* #132238 */
+  --sidebar-accent-foreground: 0 0% 100%;
+  --sidebar-ring: 41 62% 56%; /* #D4A64A */
+  --popover: 215 49% 15%; /* #132238 */
+  --popover-foreground: 0 0% 100%;
+  --popover-border: 215 50% 18%; /* #162842 */
+  --primary: 41 62% 56%; /* #D4A64A */
+  --primary-foreground: 213 63% 8%;
+  --secondary: 40 84% 71%; /* #F3C977 */
+  --secondary-foreground: 213 63% 8%;
+  --muted: 215 50% 18%; /* #162842 */
+  --muted-foreground: 217 19% 63%; /* #94A3B8 */
+  --accent: 41 62% 56%; /* #D4A64A */
+  --accent-foreground: 213 63% 8%;
+  --destructive: 0 84% 60%; /* #EF4444 */
   --destructive-foreground: 0 0% 100%;
-  --border: 36 12% 90%;
-  --input: 36 12% 90%;
-  --ring: 28 75% 45%;
-  --chart-1: 28 75% 45%;
+  --border: 215 50% 18%; /* #162842 */
+  --input: 215 50% 18%; /* #162842 */
+  --ring: 41 62% 56%; /* #D4A64A */
+  --chart-1: 41 62% 56%;
   --chart-2: 200 70% 45%;
   --chart-3: 280 65% 55%;
   --chart-4: 150 60% 38%;
@@ -145,14 +145,14 @@
   --app-font-mono: Menlo, monospace;
   --radius: .5rem;
   
-  --shadow-2xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-xs: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-sm: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 1px 2px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-md: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 2px 4px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-lg: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 4px 6px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00), 0px 8px 10px -1px hsl(202.8169 89.1213% 53.1373% / 0.00);
-  --shadow-2xl: 0px 2px 0px 0px hsl(202.8169 89.1213% 53.1373% / 0.00);
+  --shadow-2xs: 0px 2px 0px 0px rgba(0,0,0,0.5);
+  --shadow-xs: 0px 2px 0px 0px rgba(0,0,0,0.5);
+  --shadow-sm: 0px 2px 0px 0px rgba(0,0,0,0.5);
+  --shadow: 0px 2px 0px 0px rgba(0,0,0,0.5);
+  --shadow-md: 0px 2px 0px 0px rgba(0,0,0,0.5);
+  --shadow-lg: 0px 2px 0px 0px rgba(0,0,0,0.5);
+  --shadow-xl: 0px 2px 0px 0px rgba(0,0,0,0.5);
+  --shadow-2xl: 0px 2px 0px 0px rgba(0,0,0,0.5);
 
   /* Fallback for older browsers */
   --sidebar-primary-border: hsl(var(--sidebar-primary));

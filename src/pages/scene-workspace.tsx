@@ -291,10 +291,30 @@ export default function SceneWorkspace() {
       </div>
 
       {/* ── CENTER PANEL: Discussion ─────────────────────────────── */}
-      <div className="flex-1 flex flex-col min-w-0 bg-[#efeae2]/30 relative">
+      <div className="flex-1 flex flex-col min-w-0 bg-[#07111F] relative">
+        {/* Mobile Horizontal Tab Chips */}
+        <div className="lg:hidden shrink-0 border-b border-border bg-card p-3 flex gap-2 overflow-x-auto [&::-webkit-scrollbar]:h-0">
+          <span className="text-xs font-bold text-primary mr-2 self-center shrink-0">Sc {sceneId} Workspace:</span>
+          {[
+            { label: "Overview", link: `/scenes/${sceneId}` },
+            { label: "Breakdown", link: "/breakdown" },
+            { label: "Discussion", link: `/scenes/${sceneId}` },
+            { label: "Schedule", link: "/scheduling" },
+            { label: "Budget", link: "/budget" },
+            { label: "Files", link: "/reports" },
+            { label: "Continuity", link: "/continuity" }
+          ].map((t) => (
+            <Link key={t.label} href={t.link}>
+              <button className="shrink-0 text-xs font-semibold px-3 py-1.5 rounded-full border border-border bg-card text-muted-foreground hover:text-foreground">
+                {t.label}
+              </button>
+            </Link>
+          ))}
+        </div>
+
         <div ref={chatContainerRef} className={`flex-1 p-4 md:p-6 space-y-4 ${SCROLL_CLS}`}>
 
-          <div className="bg-white/90 border border-border/60 rounded-xl p-3 flex gap-3 text-sm mb-4 shadow-sm">
+          <div className="bg-card border border-border/60 rounded-xl p-3 flex gap-3 text-sm mb-4 shadow-sm">
             <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
             <div>
               <p className="font-bold text-foreground">PINNED APPROVAL</p>
@@ -333,7 +353,7 @@ export default function SceneWorkspace() {
               placeholder={`Message Scene ${sceneId} thread…`}
               value={messageText}
               onChange={(e) => setMessageText(e.target.value)}
-              className="pl-10 pr-12 bg-background border-border h-10 text-sm focus-visible:ring-1 focus-visible:ring-neutral-400" 
+              className="pl-10 pr-12 bg-background border-border h-10 text-sm focus-visible:ring-1 focus-visible:ring-primary text-foreground placeholder:text-muted-foreground/60" 
             />
             <Button 
               type="submit"
@@ -697,30 +717,30 @@ function ChatMessage({ name, dept, color, time, text, hasFile, isSelf }: {
   name: string; dept: string; color: string; time: string; text: string; hasFile?: boolean; isSelf?: boolean;
 }) {
   const colorMap: Record<string, string> = {
-    teal:   "text-emerald-600",
-    orange: "text-amber-600",
-    purple: "text-purple-600",
-    yellow: "text-yellow-600",
-    blue:   "text-blue-600",
-    red:    "text-red-600",
+    teal:   "text-[#14B8A6]",
+    orange: "text-[#D4A64A]",
+    purple: "text-[#A855F7]",
+    yellow: "text-[#F3C977]",
+    blue:   "text-[#3B82F6]",
+    red:    "text-[#EF4444]",
   };
 
   return (
     <div className={`flex w-full ${isSelf ? "justify-end" : "justify-start"} mb-1`}>
       <div 
-        className={`max-w-[80%] md:max-w-[70%] rounded-xl px-3 py-2 shadow-[0_1px_0.5px_rgba(0,0,0,0.1)] relative flex flex-col ${
+        className={`max-w-[80%] md:max-w-[70%] rounded-xl px-3 py-2 shadow-sm relative flex flex-col ${
           isSelf 
-            ? "bg-[#d9fdd3] text-neutral-900 rounded-tr-none border border-[#c1ebd0]/30" 
-            : "bg-white text-neutral-900 rounded-tl-none border border-neutral-100"
+            ? "bg-primary/20 text-foreground rounded-tr-none border border-primary/30" 
+            : "bg-card text-foreground rounded-tl-none border border-border"
         }`}
       >
         {/* Sender name for other users */}
         {!isSelf && (
           <div className="flex items-center gap-1.5 mb-0.5">
-            <span className={`text-[10px] font-bold ${colorMap[color] || "text-neutral-600"}`}>
+            <span className={`text-[10px] font-bold ${colorMap[color] || "text-primary"}`}>
               {name}
             </span>
-            <span className="text-[8px] font-bold text-neutral-400 bg-neutral-100/80 px-1 py-0.2 rounded uppercase tracking-wide">
+            <span className="text-[8px] font-bold text-muted-foreground bg-[#07111F]/50 px-1 py-0.2 rounded uppercase tracking-wide">
               {dept}
             </span>
           </div>

@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Clock, AlertCircle } from "lucide-react";
 
 const upcomingScenes = [
   { num: "34", title: "Rajahmundry Market", loc: "EXT", tod: "DAY", camera: "Arri Alexa 35 + Drone", lighting: "Natural + 2 HMI Fills", status: "Ready" },
@@ -12,15 +12,6 @@ const upcomingScenes = [
   { num: "89", title: "Final Reveal", loc: "INT", tod: "NIGHT", camera: "Sony FX9", lighting: "Low key — single source dramatic", status: "Planning" },
   { num: "103", title: "Climax", loc: "EXT", tod: "DAY", camera: "Arri Alexa 35 + Crane 50ft", lighting: "Natural sun + reflectors", status: "TBD" },
   { num: "12", title: "Palace Interior", loc: "INT", tod: "DAY", camera: "Arri Alexa 35 + Dolly", lighting: "Window light + 6 Kino Flos", status: "Locked" },
-];
-
-const equipment = [
-  { name: "Arri Alexa 35 (A-Cam)", note: "Scene 34, 55, 103", status: "Available" },
-  { name: "Sony FX9 (B-Cam)", note: "Scene 41, 89", status: "Available" },
-  { name: "Crane 50ft", note: "Day 31 — Scene 103", status: "Booked" },
-  { name: "Steadicam Rig", note: "Scene 41 — Action sequences", status: "Available" },
-  { name: "DJI Inspire 3 Drone", note: "Scene 34, 67 aerial", status: "In Use" },
-  { name: "Water Housing (Sony)", note: "Scene 78 boat fight", status: "Reserved" },
 ];
 
 const directorNotes = [
@@ -34,7 +25,7 @@ export default function CinematographerView() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="p-8 max-w-[1400px] mx-auto space-y-8"
+      className="p-4 md:p-8 max-w-[1400px] mx-auto space-y-8 bg-background text-foreground"
     >
       <header className="py-6 border-b border-border/50 relative">
         <Link href="/" className="absolute -top-4 text-xs text-muted-foreground flex items-center gap-1 hover:text-primary transition-colors">
@@ -44,16 +35,16 @@ export default function CinematographerView() {
         <p className="text-xl text-muted-foreground mt-2">Devara: Part 2 — DOP View</p>
       </header>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
           { label: "Upcoming Scenes", value: "8", sub: "this week" },
-          { label: "Equipment Confirmed", value: "94%", sub: "of planned gear" },
+          { label: "Camera Setup Confirmed", value: "94%", sub: "of planned lenses" },
           { label: "Lighting Plans Locked", value: "67 / 89", sub: "shot scenes" },
         ].map((k, i) => (
           <Card key={i} className="bg-card border-border hover:border-primary/50 transition-colors">
             <CardContent className="p-6">
               <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">{k.label}</p>
-              <p className="text-4xl font-display font-bold">{k.value}</p>
+              <p className="text-4xl font-display font-bold text-foreground">{k.value}</p>
               <p className="text-xs text-muted-foreground mt-2">{k.sub}</p>
             </CardContent>
           </Card>
@@ -64,74 +55,78 @@ export default function CinematographerView() {
         <div className="md:col-span-2 space-y-3">
           <h2 className="text-xl font-display font-bold">Upcoming Scenes</h2>
           <div className="bg-card border border-border rounded-lg overflow-hidden">
-            <table className="w-full text-sm">
-              <thead className="bg-muted/50 border-b border-border text-left">
-                <tr>
-                  <th className="p-3 text-muted-foreground font-medium">Scene</th>
-                  <th className="p-3 text-muted-foreground font-medium">Title</th>
-                  <th className="p-3 text-muted-foreground font-medium">Setup</th>
-                  <th className="p-3 text-muted-foreground font-medium">Camera</th>
-                  <th className="p-3 text-muted-foreground font-medium">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {upcomingScenes.map((s, i) => (
-                  <tr key={i} className="hover:bg-muted/30 transition-colors cursor-pointer">
-                    <td className="p-3">
-                      <Link href="/scenes/34" className="font-bold font-display text-primary hover:underline">{s.num}</Link>
-                    </td>
-                    <td className="p-3 font-medium">{s.title}</td>
-                    <td className="p-3">
-                      <div className="flex gap-1">
-                        <span className="px-1.5 py-0.5 bg-muted rounded text-xs font-medium">{s.loc}</span>
-                        <span className="px-1.5 py-0.5 bg-muted rounded text-xs font-medium">{s.tod}</span>
-                      </div>
-                    </td>
-                    <td className="p-3 text-xs text-muted-foreground">{s.camera}</td>
-                    <td className="p-3">
-                      <span className={`px-2 py-0.5 rounded text-xs font-bold ${
-                        s.status === "Locked" ? "bg-green-500/10 text-green-600" :
-                        s.status === "Ready" ? "bg-primary/10 text-primary" :
-                        s.status === "Planning" ? "bg-amber-500/10 text-amber-600" :
-                        "bg-muted text-muted-foreground"
-                      }`}>{s.status}</span>
-                    </td>
+            {/* Desktop Table View */}
+            <div className="hidden sm:block overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-background border-b border-border text-left">
+                  <tr>
+                    <th className="p-3 text-muted-foreground font-medium">Scene</th>
+                    <th className="p-3 text-muted-foreground font-medium">Title</th>
+                    <th className="p-3 text-muted-foreground font-medium">Setup</th>
+                    <th className="p-3 text-muted-foreground font-medium">Camera Gear</th>
+                    <th className="p-3 text-muted-foreground font-medium">Status</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-border text-foreground">
+                  {upcomingScenes.map((s, i) => (
+                    <tr key={i} className="hover:bg-muted/30 transition-colors">
+                      <td className="p-3 font-bold font-display text-primary">{s.num}</td>
+                      <td className="p-3 font-medium">{s.title}</td>
+                      <td className="p-3">
+                        <div className="flex gap-1">
+                          <span className="px-1.5 py-0.5 bg-background border border-border rounded text-xs font-medium text-muted-foreground">{s.loc}</span>
+                          <span className="px-1.5 py-0.5 bg-background border border-border rounded text-xs font-medium text-muted-foreground">{s.tod}</span>
+                        </div>
+                      </td>
+                      <td className="p-3 text-xs text-muted-foreground">{s.camera}</td>
+                      <td className="p-3">
+                        <span className={`px-2 py-0.5 rounded text-xs font-bold ${
+                          s.status === "Locked" ? "bg-success/20 text-success" :
+                          s.status === "Ready" ? "bg-primary/20 text-primary" :
+                          s.status === "Planning" ? "bg-primary/10 text-primary" :
+                          "bg-muted text-muted-foreground"
+                        }`}>{s.status}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card Layout */}
+            <div className="block sm:hidden divide-y divide-border">
+              {upcomingScenes.map((s, i) => (
+                <div key={i} className="p-4 space-y-2 bg-card">
+                  <div className="flex justify-between items-center">
+                    <span className="font-bold text-primary">Scene {s.num}</span>
+                    <span className={`px-2 py-0.5 rounded text-xs font-bold ${
+                      s.status === "Locked" ? "bg-success/20 text-success" :
+                      s.status === "Ready" ? "bg-primary/20 text-primary" :
+                      "bg-muted text-muted-foreground"
+                    }`}>{s.status}</span>
+                  </div>
+                  <h4 className="text-sm font-semibold">{s.title}</h4>
+                  <p className="text-xs text-muted-foreground"><strong>Camera:</strong> {s.camera}</p>
+                  <p className="text-xs text-muted-foreground"><strong>Lighting:</strong> {s.lighting}</p>
+                  <div className="flex gap-1 pt-1">
+                    <span className="px-1.5 py-0.5 bg-background border border-border rounded text-xs font-medium text-muted-foreground">{s.loc}</span>
+                    <span className="px-1.5 py-0.5 bg-background border border-border rounded text-xs font-medium text-muted-foreground">{s.tod}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
         <div className="space-y-6">
           <div className="space-y-3">
-            <h2 className="text-xl font-display font-bold">Equipment Schedule</h2>
-            <div className="space-y-2">
-              {equipment.map((e, i) => (
-                <div key={i} className="bg-card border border-border rounded-lg p-3 flex justify-between items-start">
-                  <div>
-                    <p className="font-medium text-sm">{e.name}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{e.note}</p>
-                  </div>
-                  <span className={`px-2 py-0.5 rounded text-xs font-bold shrink-0 ml-2 ${
-                    e.status === "Available" ? "bg-green-500/10 text-green-600" :
-                    e.status === "Booked" ? "bg-primary/10 text-primary" :
-                    e.status === "In Use" ? "bg-amber-500/10 text-amber-600" :
-                    "bg-muted text-muted-foreground"
-                  }`}>{e.status}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-3">
             <h2 className="text-xl font-display font-bold">Director's Visual Notes</h2>
             <div className="space-y-3">
               {directorNotes.map((n, i) => (
                 <Card key={i} className="bg-card border-border border-l-2 border-l-primary">
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-baseline mb-2">
-                      <Link href="/scenes/34" className="font-bold font-display text-primary text-sm hover:underline">Scene {n.scene}</Link>
+                  <CardContent className="p-4 space-y-2">
+                    <div className="flex justify-between items-baseline">
+                      <span className="font-bold font-display text-primary text-sm">Scene {n.scene}</span>
                       <span className="text-xs text-muted-foreground">{n.date}</span>
                     </div>
                     <p className="text-xs text-muted-foreground leading-relaxed">{n.note}</p>
