@@ -2,10 +2,20 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { StatusBadge } from "@/components/patterns/StatusBadge";
+import { ResponsiveTable, type ResponsiveTableColumn } from "@/components/patterns/ResponsiveTable";
 
-const members = [
+interface Member {
+  name: string;
+  role: string;
+  dept: string;
+  status: "On Set" | "Remote" | "Off Today";
+  scenes: number;
+  initials: string;
+}
+
+const members: Member[] = [
   { name: "Koratala Siva", role: "Director", dept: "Direction", status: "On Set", scenes: 89, initials: "KS" },
   { name: "Karan Johar", role: "Producer", dept: "Production", status: "Remote", scenes: 0, initials: "KJ" },
   { name: "Priya Menon", role: "Line Producer", dept: "Production", status: "On Set", scenes: 312, initials: "PM" },
@@ -25,11 +35,7 @@ const members = [
 
 const depts = ["All", "Direction", "Production", "Finance", "Camera", "Art", "Costume", "Logistics", "Post Production"];
 
-const statusColor: Record<string, string> = {
-  "On Set": "bg-green-500/10 text-green-600",
-  "Remote": "bg-blue-500/10 text-blue-600",
-  "Off Today": "bg-muted text-muted-foreground",
-};
+const statusTone = { "On Set": "success", Remote: "info", "Off Today": "neutral" } as const;
 
 const recentActivity = [
   { action: "Updated Scene 34 discussion", time: "2h ago" },
@@ -50,29 +56,47 @@ export default function TeamView() {
     return matchesDept && matchesSearch;
   });
 
+  const columns: ResponsiveTableColumn<Member>[] = [
+    {
+      key: "name", header: "Member", primary: true,
+      render: m => (
+        <div className="flex items-center gap-3">
+          <Avatar className="h-8 w-8 border border-border">
+            <AvatarFallback className="text-xs bg-muted font-bold">{m.initials}</AvatarFallback>
+          </Avatar>
+          <span className="font-semibold">{m.name}</span>
+        </div>
+      ),
+    },
+    { key: "role", header: "Role", render: m => <span className="text-muted-foreground">{m.role}</span> },
+    { key: "dept", header: "Department", render: m => <span className="px-2 py-0.5 bg-muted text-muted-foreground rounded text-xs font-medium">{m.dept}</span> },
+    { key: "status", header: "Status", render: m => <StatusBadge tone={statusTone[m.status]}>{m.status}</StatusBadge> },
+    { key: "scenes", header: "Scenes", render: m => <span className="font-bold font-display">{m.scenes || "—"}</span> },
+  ];
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex h-[calc(100vh-3.5rem)]"
+      className="flex flex-col lg:flex-row lg:h-[calc(100vh-3.5rem)]"
     >
       {/* Main content */}
-      <div className="flex-1 flex flex-col min-w-0 p-6">
-        <div className="flex items-center justify-between mb-4">
+      <div className="flex-1 flex flex-col min-w-0 p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
           <div>
-            <h1 className="text-3xl font-display font-bold">Production Team</h1>
+            <h1 className="text-2xl sm:text-3xl font-display font-bold">Production Team</h1>
             <p className="text-muted-foreground text-sm">52 members · 14 departments</p>
           </div>
           <button
             data-testid="button-add-member"
-            className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity"
+            className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity self-start sm:self-auto"
           >
             + Add Member
           </button>
         </div>
 
-        <div className="flex items-center gap-3 mb-4">
-          <div className="relative max-w-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4">
+          <div className="relative w-full sm:max-w-xs">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <Input
               data-testid="input-team-search"
@@ -95,51 +119,11 @@ export default function TeamView() {
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-lg overflow-hidden flex-1">
-          <table className="w-full text-sm">
-            <thead className="bg-muted/50 border-b border-border text-left">
-              <tr>
-                <th className="p-3 text-muted-foreground font-medium">Member</th>
-                <th className="p-3 text-muted-foreground font-medium">Role</th>
-                <th className="p-3 text-muted-foreground font-medium">Department</th>
-                <th className="p-3 text-muted-foreground font-medium">Status</th>
-                <th className="p-3 text-muted-foreground font-medium text-center">Scenes</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {filtered.map((m, i) => (
-                <tr
-                  key={i}
-                  onClick={() => setSelected(m)}
-                  className={`hover:bg-muted/30 transition-colors cursor-pointer ${selected.name === m.name ? "bg-primary/5" : ""}`}
-                >
-                  <td className="p-3">
-                    <div className="flex items-center gap-3">
-                      <Avatar className="h-8 w-8 border border-border">
-                        <AvatarFallback className="text-xs bg-muted font-bold">{m.initials}</AvatarFallback>
-                      </Avatar>
-                      <span className="font-semibold">{m.name}</span>
-                    </div>
-                  </td>
-                  <td className="p-3 text-muted-foreground">{m.role}</td>
-                  <td className="p-3">
-                    <span className="px-2 py-0.5 bg-muted text-muted-foreground rounded text-xs font-medium">{m.dept}</span>
-                  </td>
-                  <td className="p-3">
-                    <span className={`px-2 py-0.5 rounded text-xs font-bold ${statusColor[m.status] || "bg-muted text-muted-foreground"}`}>
-                      {m.status}
-                    </span>
-                  </td>
-                  <td className="p-3 text-center font-bold font-display">{m.scenes || "—"}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <ResponsiveTable columns={columns} rows={filtered} rowKey={m => m.name} onRowClick={setSelected} isRowSelected={m => m.name === selected.name} />
       </div>
 
       {/* Detail panel */}
-      <div className="w-72 shrink-0 border-l border-border p-5 overflow-y-auto">
+      <div className="w-full lg:w-72 shrink-0 border-t lg:border-t-0 lg:border-l border-border p-5 lg:overflow-y-auto">
         <div className="flex items-center gap-3 mb-4">
           <Avatar className="h-12 w-12 border-2 border-primary/20">
             <AvatarFallback className="text-sm font-bold bg-primary/10 text-primary">{selected.initials}</AvatarFallback>
@@ -155,11 +139,9 @@ export default function TeamView() {
             <span className="text-muted-foreground">Department</span>
             <span className="font-medium">{selected.dept}</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between items-center">
             <span className="text-muted-foreground">Status</span>
-            <span className={`px-2 py-0.5 rounded text-xs font-bold ${statusColor[selected.status] || "bg-muted text-muted-foreground"}`}>
-              {selected.status}
-            </span>
+            <StatusBadge tone={statusTone[selected.status]}>{selected.status}</StatusBadge>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Scenes Assigned</span>

@@ -303,29 +303,29 @@ export default function BreakdownScript() {
     <div className="flex flex-col h-[calc(100vh-3.5rem)] bg-background">
 
       {/* ── Header ──────────────────────────────────────────────────── */}
-      <header className="h-11 border-b border-border flex items-center justify-between px-4 shrink-0 bg-background/95 backdrop-blur z-20">
-        <div className="flex items-center gap-3">
-          <Link href="/breakdown" className="text-muted-foreground hover:text-foreground transition-colors">
+      <header className="h-11 border-b border-border flex items-center justify-between px-2 sm:px-4 shrink-0 bg-background/95 backdrop-blur z-20 gap-2 overflow-x-auto">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <Link href="/breakdown" className="text-muted-foreground hover:text-foreground transition-colors shrink-0">
             <ArrowLeft className="w-4 h-4" />
           </Link>
-          <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Devara: Part 2</span>
-          <span className="text-muted-foreground/40">·</span>
-          <span className="text-xs font-medium">Script v1.2</span>
-          <span className="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase tracking-wider">Breakdown Active</span>
+          <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Devara: Part 2</span>
+          <span className="text-muted-foreground/40 hidden sm:inline">·</span>
+          <span className="text-xs font-medium hidden sm:inline whitespace-nowrap">Script v1.2</span>
+          <span className="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase tracking-wider hidden md:inline whitespace-nowrap">Breakdown Active</span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <div className="relative hidden md:block">
             <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <Input className="h-7 pl-8 text-xs w-48 bg-muted/50 border-border" placeholder="Search script..." />
           </div>
-          <button className="h-7 px-2.5 rounded border border-border text-xs font-medium text-muted-foreground hover:text-foreground hover:border-border/80 transition-colors flex items-center gap-1.5">
-            <RotateCcw className="w-3 h-3" /> Regenerate
+          <button className="h-7 px-2.5 rounded border border-border text-xs font-medium text-muted-foreground hover:text-foreground hover:border-border/80 transition-colors flex items-center gap-1.5 shrink-0">
+            <RotateCcw className="w-3 h-3" /> <span className="hidden sm:inline">Regenerate</span>
           </button>
-          <button className="h-7 px-2.5 rounded border border-border text-xs font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5">
-            <Download className="w-3 h-3" /> Export
+          <button className="h-7 px-2.5 rounded border border-border text-xs font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5 shrink-0">
+            <Download className="w-3 h-3" /> <span className="hidden sm:inline">Export</span>
           </button>
-          <button className="h-7 px-2.5 rounded bg-primary text-primary-foreground text-xs font-semibold hover:opacity-90 transition-opacity flex items-center gap-1.5">
-            <Lock className="w-3 h-3" /> Lock Breakdown
+          <button className="h-7 px-2.5 rounded bg-primary text-primary-foreground text-xs font-semibold hover:opacity-90 transition-opacity flex items-center gap-1.5 shrink-0">
+            <Lock className="w-3 h-3" /> <span className="hidden sm:inline">Lock Breakdown</span>
           </button>
         </div>
       </header>
@@ -333,7 +333,7 @@ export default function BreakdownScript() {
       <div className="flex flex-1 min-h-0">
 
         {/* ── LEFT SIDEBAR ─────────────────────────────────────────── */}
-        <div className="w-[260px] shrink-0 border-r border-border flex flex-col bg-card/40">
+        <div className="w-[260px] shrink-0 border-r border-border flex-col bg-card/40 hidden lg:flex">
           <div className="p-3 border-b border-border">
             <div className="relative">
               <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
@@ -577,7 +577,7 @@ export default function BreakdownScript() {
         </div>
 
         {/* ── RIGHT: INTELLIGENCE PANEL ─────────────────────────────── */}
-        <div className="w-[268px] shrink-0 border-l border-border bg-card/40 flex flex-col">
+        <div className="w-[268px] shrink-0 border-l border-border bg-card/40 flex-col hidden xl:flex">
           <div className="px-4 pt-4 pb-3 border-b border-border shrink-0">
             <div className="flex items-center gap-2">
               <Activity className="w-4 h-4 text-primary" />

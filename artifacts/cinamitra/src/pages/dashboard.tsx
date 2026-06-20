@@ -45,16 +45,18 @@ export default function Dashboard() {
             <CardTitle className="font-display">Production Timeline</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="relative pt-8 pb-4">
-              <div className="absolute top-10 left-0 w-full h-1 bg-muted rounded-full"></div>
-              <div className="absolute top-10 left-0 w-[44%] h-1 bg-primary rounded-full"></div>
-              
-              <div className="relative flex justify-between">
-                <TimelineNode label="Development" date="Complete" active={true} />
-                <TimelineNode label="Pre-Production" date="Complete" active={true} />
-                <TimelineNode label="Photography" date="Active (44%)" active={true} isCurrent={true} />
-                <TimelineNode label="Post-Production" date="Upcoming" active={false} />
-                <TimelineNode label="Release" date="TBD" active={false} />
+            <div className="overflow-x-auto -mx-2 px-2">
+              <div className="relative pt-8 pb-4 min-w-[480px]">
+                <div className="absolute top-10 left-0 w-full h-1 bg-muted rounded-full"></div>
+                <div className="absolute top-10 left-0 w-[44%] h-1 bg-primary rounded-full"></div>
+
+                <div className="relative flex justify-between">
+                  <TimelineNode label="Development" date="Complete" active={true} />
+                  <TimelineNode label="Pre-Production" date="Complete" active={true} />
+                  <TimelineNode label="Photography" date="Active (44%)" active={true} isCurrent={true} />
+                  <TimelineNode label="Post-Production" date="Upcoming" active={false} />
+                  <TimelineNode label="Release" date="TBD" active={false} />
+                </div>
               </div>
             </div>
           </CardContent>
@@ -90,12 +92,12 @@ export default function Dashboard() {
               { dept: "Costume", time: "1h ago", text: "Uploaded fitting photos for Saif's villain outfit", color: "text-purple-400 bg-purple-400/10" },
               { dept: "Production", time: "2h ago", text: "Secured generator truck for night shoot", color: "text-orange-400 bg-orange-400/10" }
             ].map((act, i) => (
-              <div key={i} className="flex items-start gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors">
-                <span className={`text-[10px] uppercase font-bold px-2 py-1 rounded w-20 text-center ${act.color}`}>
+              <div key={i} className="flex items-start gap-3 sm:gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors flex-wrap">
+                <span className={`text-[10px] uppercase font-bold px-2 py-1 rounded w-20 text-center shrink-0 ${act.color}`}>
                   {act.dept}
                 </span>
-                <p className="flex-1 text-sm">{act.text}</p>
-                <span className="text-xs text-muted-foreground">{act.time}</span>
+                <p className="flex-1 min-w-[140px] text-sm">{act.text}</p>
+                <span className="text-xs text-muted-foreground shrink-0">{act.time}</span>
               </div>
             ))}
           </div>

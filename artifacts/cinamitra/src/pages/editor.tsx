@@ -1,9 +1,23 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
+import { PageHeader } from "@/components/patterns/PageHeader";
+import { KpiGrid } from "@/components/patterns/KpiGrid";
+import { StatusBadge } from "@/components/patterns/StatusBadge";
+import { DetailCard } from "@/components/patterns/DetailCard";
+import { ResponsiveTable, type ResponsiveTableColumn } from "@/components/patterns/ResponsiveTable";
 
-const sceneMaterial = [
+interface SceneMaterial {
+  num: string;
+  title: string;
+  takes: number;
+  best: string;
+  vfx: boolean;
+  notes: string;
+  received: string;
+}
+
+const sceneMaterial: SceneMaterial[] = [
   { num: "12", title: "Palace Interior", takes: 7, best: "Take 5", vfx: false, notes: "Strong performance. Wide + close covered.", received: "Oct 12" },
   { num: "23", title: "Flashback Village", takes: 12, best: "Take 9", vfx: true, notes: "Sky replacement needed. Good coverage.", received: "Oct 13" },
   { num: "34", title: "Rajahmundry Market", takes: 18, best: "TBD", vfx: true, notes: "Action heavy. Multiple setups. Review drone plates.", received: "Oct 14" },
@@ -18,7 +32,14 @@ const sceneMaterial = [
   { num: "50", title: "Safehouse", takes: 8, best: "Take 6", vfx: false, notes: "Dialogue heavy. Clear sync.", received: "Oct 23" },
 ];
 
-const vfxFlags = [
+interface VfxFlag {
+  scene: string;
+  type: string;
+  vendor: string;
+  status: "In Progress" | "Briefed" | "Not Started";
+}
+
+const vfxFlags: VfxFlag[] = [
   { scene: "34", type: "Crowd Extension", vendor: "Pixion Studios", status: "In Progress" },
   { scene: "55", type: "Sky Replacement + Crowd", vendor: "Red Chillies VFX", status: "Briefed" },
   { scene: "67", type: "Wire Removal + Stunt Enhancement", vendor: "DQ Entertainment", status: "In Progress" },
@@ -34,105 +55,67 @@ const continuityNotes = [
   { scene: "41", from: "Script Supervisor", note: "Dialogue line change on set — Take 7 onwards uses revised script. Disregard takes 1–6 for final cut." },
 ];
 
+const vfxTone = { "In Progress": "primary", Briefed: "warning", "Not Started": "neutral" } as const;
+
+const sceneColumns: ResponsiveTableColumn<SceneMaterial>[] = [
+  { key: "num", header: "Scene", primary: true, render: s => <Link href="/scenes/34" className="font-bold font-display text-primary hover:underline">{s.num}</Link> },
+  { key: "title", header: "Title", render: s => <span className="font-medium">{s.title}</span> },
+  { key: "takes", header: "Takes", render: s => <span className="font-bold">{s.takes}</span> },
+  { key: "best", header: "Best Take", render: s => <span className="text-xs font-medium text-green-600">{s.best}</span> },
+  { key: "vfx", header: "VFX", render: s => s.vfx ? <span className="px-2 py-0.5 bg-purple-500/10 text-purple-600 text-xs font-bold rounded">VFX</span> : <span className="text-muted-foreground text-xs">—</span> },
+  { key: "received", header: "Received", render: s => <span className="text-xs text-muted-foreground">{s.received}</span> },
+];
+
 export default function EditorView() {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="p-8 max-w-[1400px] mx-auto space-y-8"
+      className="p-4 sm:p-6 lg:p-8 max-w-[1400px] mx-auto space-y-6 sm:space-y-8"
     >
-      <header className="py-6 border-b border-border/50 relative">
-        <Link href="/" className="absolute -top-4 text-xs text-muted-foreground flex items-center gap-1 hover:text-primary transition-colors">
-          <ArrowLeft className="w-3 h-3" /> Back to Role Switcher
-        </Link>
-        <h1 className="text-4xl font-display font-bold tracking-tight">Post Production</h1>
-        <p className="text-xl text-muted-foreground mt-2">Devara: Part 2 — Editor View</p>
-      </header>
+      <PageHeader title="Post Production" subtitle="Devara: Part 2 — Editor View" />
 
-      <div className="grid grid-cols-3 gap-4">
-        {[
-          { label: "Scenes Received", value: "23 / 89", sub: "shot and delivered" },
-          { label: "VFX Flags", value: "14", sub: "scenes requiring VFX" },
-          { label: "Takes Logged", value: "312", sub: "total across all scenes" },
-        ].map((k, i) => (
-          <Card key={i} className="bg-card border-border hover:border-primary/50 transition-colors">
-            <CardContent className="p-6">
-              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">{k.label}</p>
-              <p className="text-4xl font-display font-bold">{k.value}</p>
-              <p className="text-xs text-muted-foreground mt-2">{k.sub}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <KpiGrid items={[
+        { label: "Scenes Received", value: "23 / 89", sub: "shot and delivered" },
+        { label: "VFX Flags", value: "14", sub: "scenes requiring VFX" },
+        { label: "Takes Logged", value: "312", sub: "total across all scenes" },
+      ]} />
 
-      <div className="grid md:grid-cols-3 gap-8">
+      <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
         <div className="md:col-span-2 space-y-3">
-          <h2 className="text-xl font-display font-bold">Scene Material Log</h2>
-          <div className="bg-card border border-border rounded-lg overflow-hidden">
-            <table className="w-full text-sm">
-              <thead className="bg-muted/50 border-b border-border text-left">
-                <tr>
-                  <th className="p-3 text-muted-foreground font-medium">Scene</th>
-                  <th className="p-3 text-muted-foreground font-medium">Title</th>
-                  <th className="p-3 text-muted-foreground font-medium">Takes</th>
-                  <th className="p-3 text-muted-foreground font-medium">Best Take</th>
-                  <th className="p-3 text-muted-foreground font-medium">VFX</th>
-                  <th className="p-3 text-muted-foreground font-medium">Received</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {sceneMaterial.map((s, i) => (
-                  <tr key={i} className="hover:bg-muted/30 transition-colors">
-                    <td className="p-3">
-                      <Link href="/scenes/34" className="font-bold font-display text-primary hover:underline">{s.num}</Link>
-                    </td>
-                    <td className="p-3 font-medium">{s.title}</td>
-                    <td className="p-3 text-center font-bold">{s.takes}</td>
-                    <td className="p-3 text-xs font-medium text-green-600">{s.best}</td>
-                    <td className="p-3">
-                      {s.vfx ? <span className="px-2 py-0.5 bg-purple-500/10 text-purple-600 text-xs font-bold rounded">VFX</span>
-                        : <span className="text-muted-foreground text-xs">—</span>}
-                    </td>
-                    <td className="p-3 text-xs text-muted-foreground">{s.received}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <h2 className="text-lg sm:text-xl font-display font-bold">Scene Material Log</h2>
+          <ResponsiveTable columns={sceneColumns} rows={sceneMaterial} rowKey={s => s.num} />
         </div>
 
         <div className="space-y-6">
           <div className="space-y-3">
-            <h2 className="text-xl font-display font-bold">VFX Flags</h2>
+            <h2 className="text-lg sm:text-xl font-display font-bold">VFX Flags</h2>
             <div className="space-y-2">
               {vfxFlags.map((v, i) => (
-                <div key={i} className="bg-card border border-border rounded-lg p-3">
-                  <div className="flex justify-between items-start mb-1">
+                <DetailCard
+                  key={i}
+                  title={
                     <div className="flex items-center gap-2">
-                      <Link href="/scenes/34" className="font-bold font-display text-primary text-sm hover:underline">Sc {v.scene}</Link>
-                      <span className="text-sm font-medium">{v.type}</span>
+                      <Link href="/scenes/34" className="font-bold font-display text-primary hover:underline">Sc {v.scene}</Link>
+                      <span className="font-medium">{v.type}</span>
                     </div>
-                    <span className={`px-2 py-0.5 rounded text-xs font-bold ${
-                      v.status === "In Progress" ? "bg-primary/10 text-primary" :
-                      v.status === "Briefed" ? "bg-amber-500/10 text-amber-600" :
-                      "bg-muted text-muted-foreground"
-                    }`}>{v.status}</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground">{v.vendor}</p>
-                </div>
+                  }
+                  subtitle={v.vendor}
+                  badge={<StatusBadge tone={vfxTone[v.status]}>{v.status}</StatusBadge>}
+                />
               ))}
             </div>
           </div>
 
           <div className="space-y-3">
-            <h2 className="text-xl font-display font-bold">Notes from Set</h2>
+            <h2 className="text-lg sm:text-xl font-display font-bold">Notes from Set</h2>
             <div className="space-y-2">
               {continuityNotes.map((n, i) => (
                 <Card key={i} className="bg-card border-border border-l-2 border-l-primary">
                   <CardContent className="p-3">
-                    <div className="flex justify-between items-baseline mb-1">
+                    <div className="flex justify-between items-baseline mb-1 gap-2">
                       <Link href="/scenes/34" className="font-bold font-display text-primary text-sm hover:underline">Scene {n.scene}</Link>
-                      <span className="text-xs text-muted-foreground">{n.from}</span>
+                      <span className="text-xs text-muted-foreground shrink-0">{n.from}</span>
                     </div>
                     <p className="text-xs text-muted-foreground leading-relaxed">{n.note}</p>
                   </CardContent>

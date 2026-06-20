@@ -56,19 +56,19 @@ export default function ReportsView() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="p-8 max-w-[1400px] mx-auto space-y-8"
+      className="p-4 sm:p-6 lg:p-8 max-w-[1400px] mx-auto space-y-6 sm:space-y-8"
     >
-      <header className="py-6 border-b border-border/50">
-        <h1 className="text-4xl font-display font-bold tracking-tight">Reports & Analytics</h1>
-        <p className="text-xl text-muted-foreground mt-2">Devara: Part 2 — Principal Photography Day 23</p>
+      <header className="py-4 sm:py-6 border-b border-border/50">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-display font-bold tracking-tight">Reports & Analytics</h1>
+        <p className="text-base sm:text-lg lg:text-xl text-muted-foreground mt-1 sm:mt-2">Devara: Part 2 — Principal Photography Day 23</p>
       </header>
 
-      <div className="flex gap-1 border-b border-border">
+      <div className="flex gap-1 border-b border-border overflow-x-auto">
         {tabs.map(t => (
           <button
             key={t}
             onClick={() => setActiveTab(t)}
-            className={`px-5 py-2.5 text-sm font-semibold transition-colors relative ${
+            className={`px-3 sm:px-5 py-2.5 text-sm font-semibold transition-colors relative shrink-0 ${
               activeTab === t
                 ? "text-foreground border-b-2 border-primary -mb-px"
                 : "text-muted-foreground hover:text-foreground"
@@ -122,18 +122,20 @@ export default function ReportsView() {
               <CardHeader className="pb-2">
                 <CardTitle className="text-base font-display">Department Budget Allocation</CardTitle>
               </CardHeader>
-              <CardContent className="flex items-center gap-6">
-                <ResponsiveContainer width="50%" height={200}>
-                  <PieChart>
-                    <Pie data={deptData} cx="50%" cy="50%" innerRadius={55} outerRadius={85} dataKey="value">
-                      {deptData.map((entry, i) => (
-                        <Cell key={i} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip formatter={(v: number) => `${v}%`} />
-                  </PieChart>
-                </ResponsiveContainer>
-                <div className="flex-1 space-y-1.5">
+              <CardContent className="flex flex-col sm:flex-row items-center gap-6">
+                <div className="w-full sm:w-1/2">
+                  <ResponsiveContainer width="100%" height={200}>
+                    <PieChart>
+                      <Pie data={deptData} cx="50%" cy="50%" innerRadius={55} outerRadius={85} dataKey="value">
+                        {deptData.map((entry, i) => (
+                          <Cell key={i} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip formatter={(v: number) => `${v}%`} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="flex-1 w-full space-y-1.5">
                   {deptData.map((d, i) => (
                     <div key={i} className="flex items-center justify-between text-xs">
                       <div className="flex items-center gap-2">

@@ -55,10 +55,10 @@ export default function DiscussionsView() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex h-[calc(100vh-3.5rem)]"
+      className="flex flex-col lg:flex-row lg:h-[calc(100vh-3.5rem)]"
     >
       {/* Left: Scene Index */}
-      <div className="w-80 shrink-0 border-r border-border flex flex-col">
+      <div className="w-full lg:w-80 shrink-0 border-b lg:border-b-0 lg:border-r border-border flex flex-col">
         <div className="p-4 border-b border-border">
           <div className="flex items-baseline justify-between mb-3">
             <h2 className="text-lg font-display font-bold">Discussions</h2>
@@ -76,7 +76,7 @@ export default function DiscussionsView() {
             ))}
           </div>
         </div>
-        <div className="flex-1 overflow-y-auto">
+        <div className="max-h-72 lg:max-h-none lg:flex-1 overflow-y-auto">
           {filtered.map((s, i) => (
             <div
               key={i}
@@ -108,10 +108,10 @@ export default function DiscussionsView() {
       {/* Right: Thread */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Thread header */}
-        <div className="px-6 py-4 border-b border-border bg-background">
-          <div className="flex items-center gap-3">
+        <div className="px-4 sm:px-6 py-4 border-b border-border bg-background">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <Link href="/scenes/34" className="font-display font-bold text-xl text-primary hover:underline">Scene 34</Link>
-            <span className="text-muted-foreground">—</span>
+            <span className="text-muted-foreground hidden sm:inline">—</span>
             <span className="font-medium">Rajahmundry Market Chase</span>
             <span className="px-2 py-0.5 bg-primary/10 text-primary text-xs font-semibold rounded">Scheduled · Day 31</span>
           </div>
@@ -119,7 +119,7 @@ export default function DiscussionsView() {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
           {thread.map((msg, i) => (
             <div key={i} className={`flex gap-3 ${msg.pinned ? "bg-primary/5 border border-primary/20 rounded-xl p-4 -mx-2" : ""}`}>
               <div className="w-8 h-8 rounded-full bg-muted shrink-0 flex items-center justify-center text-xs font-bold text-foreground border border-border">

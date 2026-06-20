@@ -1,9 +1,19 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Link } from "wouter";
+import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import { ArrowLeft, CheckCircle, Clock, AlertCircle } from "lucide-react";
+import { CheckCircle, Clock, AlertCircle } from "lucide-react";
+import { PageHeader } from "@/components/patterns/PageHeader";
+import { KpiGrid } from "@/components/patterns/KpiGrid";
+import { StatusBadge } from "@/components/patterns/StatusBadge";
+import { ResponsiveTable, type ResponsiveTableColumn } from "@/components/patterns/ResponsiveTable";
 
-const vehicles = [
+interface Vehicle {
+  vehicle: string;
+  driver: string;
+  assignment: string;
+  status: "Active" | "Available" | "Maintenance";
+}
+
+const vehicles: Vehicle[] = [
   { vehicle: "Toyota Innova — MH02 AB1234", driver: "Ravi Kumar", assignment: "NTR Jr. pickup", status: "Active" },
   { vehicle: "Tempo Traveller — AP09 CD5678", driver: "Suresh P.", assignment: "Crew Transport — Set A", status: "Active" },
   { vehicle: "Ambulance — AP05 EF9012", driver: "Dr. Crew Med", assignment: "On-set standby", status: "Active" },
@@ -32,78 +42,50 @@ const resources = [
   { label: "Location Permits", value: "2 Pending", total: "Rajahmundry Market + River Ghat", ok: false },
 ];
 
+const vehicleTone = { Active: "success", Available: "neutral", Maintenance: "destructive" } as const;
+
+const vehicleColumns: ResponsiveTableColumn<Vehicle>[] = [
+  {
+    key: "vehicle", header: "Vehicle", primary: true,
+    render: v => (
+      <div>
+        <p className="font-medium text-xs">{v.vehicle}</p>
+        <p className="text-xs text-muted-foreground">{v.driver}</p>
+      </div>
+    ),
+  },
+  { key: "assignment", header: "Assignment", render: v => <span className="text-xs text-muted-foreground">{v.assignment}</span> },
+  { key: "status", header: "Status", render: v => <StatusBadge tone={vehicleTone[v.status]}>{v.status}</StatusBadge> },
+];
+
 export default function ProductionManagerView() {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="p-8 max-w-[1400px] mx-auto space-y-8"
+      className="p-4 sm:p-6 lg:p-8 max-w-[1400px] mx-auto space-y-6 sm:space-y-8"
     >
-      <header className="py-6 border-b border-border/50 relative">
-        <Link href="/" className="absolute -top-4 text-xs text-muted-foreground flex items-center gap-1 hover:text-primary transition-colors">
-          <ArrowLeft className="w-3 h-3" /> Back to Role Switcher
-        </Link>
-        <h1 className="text-4xl font-display font-bold tracking-tight">Logistics Command</h1>
-        <p className="text-xl text-muted-foreground mt-2">Devara: Part 2 — Day 23</p>
-      </header>
+      <PageHeader title="Logistics Command" subtitle="Devara: Part 2 — Day 23" />
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {[
-          { label: "Vehicles Active", value: "14", sub: "on deployment today", urgent: false },
-          { label: "Drivers Available", value: "9 / 14", sub: "5 assigned, 9 free", urgent: false },
-          { label: "Pending Pickups", value: "6", sub: "scheduled this afternoon", urgent: false },
-          { label: "Accommodation", value: "47 / 52", sub: "crew confirmed", urgent: false },
-        ].map((k, i) => (
-          <Card key={i} className="bg-card border-border hover:border-primary/50 transition-colors">
-            <CardContent className="p-6">
-              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">{k.label}</p>
-              <p className="text-3xl font-display font-bold">{k.value}</p>
-              <p className="text-xs text-muted-foreground mt-1">{k.sub}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <KpiGrid items={[
+        { label: "Vehicles Active", value: "14", sub: "on deployment today" },
+        { label: "Drivers Available", value: "9 / 14", sub: "5 assigned, 9 free" },
+        { label: "Pending Pickups", value: "6", sub: "scheduled this afternoon" },
+        { label: "Accommodation", value: "47 / 52", sub: "crew confirmed" },
+      ]} />
 
-      <div className="grid md:grid-cols-3 gap-8">
+      <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
         <div className="space-y-3">
-          <h2 className="text-xl font-display font-bold">Vehicle Fleet</h2>
-          <div className="bg-card border border-border rounded-lg overflow-hidden">
-            <table className="w-full text-sm">
-              <thead className="bg-muted/50 border-b border-border text-left">
-                <tr>
-                  <th className="p-3 text-muted-foreground font-medium">Vehicle</th>
-                  <th className="p-3 text-muted-foreground font-medium">Assignment</th>
-                  <th className="p-3 text-muted-foreground font-medium">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {vehicles.map((v, i) => (
-                  <tr key={i} className="hover:bg-muted/30 transition-colors">
-                    <td className="p-3">
-                      <p className="font-medium text-xs">{v.vehicle}</p>
-                      <p className="text-xs text-muted-foreground">{v.driver}</p>
-                    </td>
-                    <td className="p-3 text-xs text-muted-foreground">{v.assignment}</td>
-                    <td className="p-3">
-                      <span className={`px-2 py-0.5 rounded text-xs font-bold ${
-                        v.status === "Active" ? "bg-green-500/10 text-green-600" :
-                        v.status === "Maintenance" ? "bg-destructive/10 text-destructive" :
-                        "bg-muted text-muted-foreground"
-                      }`}>{v.status}</span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <h2 className="text-lg sm:text-xl font-display font-bold">Vehicle Fleet</h2>
+          <ResponsiveTable columns={vehicleColumns} rows={vehicles} rowKey={v => v.vehicle} />
         </div>
 
         <div className="space-y-3">
-          <h2 className="text-xl font-display font-bold">Today's Logistics</h2>
+          <h2 className="text-lg sm:text-xl font-display font-bold">Today's Logistics</h2>
           <div className="space-y-2">
             {logistics.map((l, i) => (
               <div key={i} className="flex gap-3 bg-card border border-border rounded-lg p-3 items-start">
-                <div className="shrink-0 text-right w-16">
+                <div className="shrink-0 text-right w-14 sm:w-16">
                   <span className="text-xs font-mono text-muted-foreground">{l.time}</span>
                 </div>
                 <div className="flex-1 min-w-0">
@@ -121,11 +103,11 @@ export default function ProductionManagerView() {
         </div>
 
         <div className="space-y-3">
-          <h2 className="text-xl font-display font-bold">Resource Status</h2>
+          <h2 className="text-lg sm:text-xl font-display font-bold">Resource Status</h2>
           <div className="space-y-3">
             {resources.map((r, i) => (
-              <Card key={i} className={`border ${r.ok ? "bg-card border-border" : "bg-destructive/5 border-destructive/30"}`}>
-                <CardContent className="p-4 flex items-center justify-between">
+              <Card key={i} className={r.ok ? "bg-card border-border" : "bg-destructive/5 border-destructive/30"}>
+                <CardContent className="p-4 flex items-center justify-between gap-2 flex-wrap">
                   <div>
                     <p className="font-medium text-sm">{r.label}</p>
                     <p className="text-xs text-muted-foreground mt-0.5">{r.total}</p>

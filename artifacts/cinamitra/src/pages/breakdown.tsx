@@ -42,9 +42,9 @@ export default function Breakdown() {
 
   return (
     <div className="p-6 md:p-8 h-full flex flex-col">
-      <div className="flex justify-between items-end mb-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-display font-bold mb-2">Breakdown Studio</h1>
+          <h1 className="text-2xl sm:text-3xl font-display font-bold mb-2">Breakdown Studio</h1>
           <p className="text-muted-foreground">Manage all elements across the script.</p>
         </div>
         <div className="flex gap-2">

@@ -5,8 +5,22 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Search, LayoutGrid, List, Columns3, AlignLeft, Users, Shirt, Monitor } from "lucide-react";
 import { motion } from "framer-motion";
+import { StatusBadge } from "@/components/patterns/StatusBadge";
+import { ResponsiveTable, type ResponsiveTableColumn } from "@/components/patterns/ResponsiveTable";
 
-const SCENES = [
+interface Scene {
+  id: number;
+  title: string;
+  ext: string;
+  time: string;
+  loc: string;
+  cast: number;
+  status: "Draft" | "Ready" | "Scheduled" | "Completed";
+  pages: string;
+  highlight?: boolean;
+}
+
+const SCENES: Scene[] = [
   { id: 12, title: "Palace Interior", ext: "INT", time: "DAY", loc: "Palace", cast: 3, status: "Scheduled", pages: "1½" },
   { id: 23, title: "Flashback Village", ext: "EXT", time: "DAY", loc: "Village", cast: 6, status: "Ready", pages: "2" },
   { id: 34, title: "Rajahmundry Market", ext: "EXT", time: "DAY", loc: "Market", cast: 8, status: "Scheduled", pages: "2⅛", highlight: true },
@@ -19,6 +33,26 @@ const SCENES = [
   { id: 94, title: "Song Sequence", ext: "EXT", time: "DAY", loc: "Beach", cast: 20, status: "Draft", pages: "1" },
   { id: 103, title: "Climax", ext: "EXT", time: "DAY", loc: "Cliff", cast: 8, status: "Draft", pages: "5" },
   { id: 120, title: "Epilogue", ext: "INT", time: "DAY", loc: "Village", cast: 2, status: "Draft", pages: "1" },
+];
+
+const statusTone = { Draft: "neutral", Ready: "info", Scheduled: "primary", Completed: "success" } as const;
+
+const sceneColumns: ResponsiveTableColumn<Scene>[] = [
+  { key: "id", header: "Scene", primary: true, render: s => <Link href="/scenes/34" className="font-display font-bold text-primary hover:underline">{s.id}</Link> },
+  { key: "title", header: "Title", render: s => <span className="font-medium">{s.title}</span> },
+  { key: "loc", header: "Location", render: s => <span className="text-muted-foreground">{s.loc}</span> },
+  {
+    key: "type", header: "Type",
+    render: s => (
+      <div className="flex gap-1">
+        <span className="bg-muted text-[10px] px-1 rounded">{s.ext}</span>
+        <span className="bg-muted text-[10px] px-1 rounded">{s.time}</span>
+      </div>
+    ),
+  },
+  { key: "cast", header: "Cast", render: s => <span className="text-muted-foreground">{s.cast}</span> },
+  { key: "pages", header: "Pages", render: s => <span className="text-muted-foreground">{s.pages}</span> },
+  { key: "status", header: "Status", render: s => <StatusBadge tone={statusTone[s.status]}>{s.status}</StatusBadge> },
 ];
 
 export default function Scenes() {
@@ -71,7 +105,7 @@ export default function Scenes() {
 
                   <div className="flex justify-between items-start mb-4">
                     <span className="text-4xl font-display font-bold text-primary/80 group-hover:text-primary transition-colors">{scene.id}</span>
-                    <StatusBadge status={scene.status} />
+                    <StatusBadge tone={statusTone[scene.status]}>{scene.status}</StatusBadge>
                   </div>
                   
                   <h3 className="text-lg font-bold mb-2 leading-tight">{scene.title}</h3>
@@ -97,54 +131,8 @@ export default function Scenes() {
           ))}
         </div>
       ) : (
-        <div className="border border-border rounded-lg bg-card overflow-hidden">
-          <table className="w-full text-sm text-left">
-            <thead className="bg-muted/50 text-muted-foreground text-xs uppercase font-semibold">
-              <tr>
-                <th className="px-4 py-3 border-b border-border">Scene</th>
-                <th className="px-4 py-3 border-b border-border">Title</th>
-                <th className="px-4 py-3 border-b border-border">Location</th>
-                <th className="px-4 py-3 border-b border-border">Type</th>
-                <th className="px-4 py-3 border-b border-border">Cast</th>
-                <th className="px-4 py-3 border-b border-border">Pages</th>
-                <th className="px-4 py-3 border-b border-border">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {SCENES.map((scene) => (
-                <tr key={scene.id} className="hover:bg-muted/30 cursor-pointer transition-colors" onClick={() => window.location.href = "/scenes/34"}>
-                  <td className="px-4 py-3 font-display font-bold text-primary">{scene.id}</td>
-                  <td className="px-4 py-3 font-medium">{scene.title}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{scene.loc}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-1">
-                      <span className="bg-muted text-[10px] px-1 rounded">{scene.ext}</span>
-                      <span className="bg-muted text-[10px] px-1 rounded">{scene.time}</span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 text-muted-foreground">{scene.cast}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{scene.pages}</td>
-                  <td className="px-4 py-3"><StatusBadge status={scene.status} /></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <ResponsiveTable columns={sceneColumns} rows={SCENES} rowKey={s => s.id} />
       )}
     </div>
-  );
-}
-
-function StatusBadge({ status }: { status: string }) {
-  const colors: Record<string, string> = {
-    "Draft": "bg-muted text-muted-foreground border-transparent",
-    "Ready": "bg-blue-500/10 text-blue-400 border-blue-500/20",
-    "Scheduled": "bg-primary/10 text-primary border-primary/20",
-    "Completed": "bg-green-500/10 text-green-400 border-green-500/20"
-  };
-  return (
-    <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${colors[status]}`}>
-      {status}
-    </span>
   );
 }

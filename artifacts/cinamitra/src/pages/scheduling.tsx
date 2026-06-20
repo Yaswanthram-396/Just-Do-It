@@ -24,10 +24,10 @@ export default function Scheduling() {
         <p className="text-muted-foreground">Strip board & resource allocation.</p>
       </div>
 
-      <div className="flex-1 flex gap-6 min-h-0">
-        
+      <div className="flex-1 flex flex-col lg:flex-row gap-6 min-h-0">
+
         {/* Strip Board */}
-        <div className="flex-1 bg-card border border-border rounded-lg flex flex-col overflow-hidden">
+        <div className="flex-1 bg-card border border-border rounded-lg flex flex-col overflow-hidden min-h-[300px]">
           <div className="flex-1 overflow-auto p-4">
             <div className="inline-flex flex-col gap-2 min-w-max">
               {days.map((d, i) => (
@@ -68,7 +68,7 @@ export default function Scheduling() {
         </div>
 
         {/* Conflict Panel */}
-        <div className="w-80 shrink-0 flex flex-col gap-4">
+        <div className="w-full lg:w-80 shrink-0 flex flex-col gap-4">
           <Card className="bg-destructive/5 border-destructive/20">
             <CardContent className="p-4">
               <h3 className="font-display font-bold text-destructive flex items-center gap-2 mb-4">

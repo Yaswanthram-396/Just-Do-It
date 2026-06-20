@@ -2,9 +2,19 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StatusBadge } from "@/components/patterns/StatusBadge";
+import { ResponsiveTable, type ResponsiveTableColumn } from "@/components/patterns/ResponsiveTable";
 
-const vendors = [
+interface Vendor {
+  name: string;
+  cat: string;
+  contact: string;
+  outstanding: string;
+  invoices: number;
+  status: "Active" | "Flagged";
+}
+
+const vendors: Vendor[] = [
   { name: "Roja Art Works", cat: "Art", contact: "Suresh K. — 9876543210", outstanding: "₹3,20,000", invoices: 2, status: "Active" },
   { name: "SunTech Equipment", cat: "Equipment", contact: "Rao M. — 9765432109", outstanding: "₹8,75,000", invoices: 1, status: "Flagged" },
   { name: "Krishna Catering Services", cat: "Catering", contact: "Krishna P. — 9654321098", outstanding: "₹1,40,000", invoices: 2, status: "Active" },
@@ -18,6 +28,8 @@ const vendors = [
   { name: "Pixion Studios", cat: "VFX", contact: "Arun T. — 8776543210", outstanding: "₹18,00,000", invoices: 5, status: "Active" },
   { name: "Red Chillies VFX", cat: "VFX", contact: "Shah R. — 8665432109", outstanding: "₹8,50,000", invoices: 2, status: "Active" },
 ];
+
+const vendorTone = { Active: "success", Flagged: "destructive" } as const;
 
 const categories = ["All", "Art", "Equipment", "Catering", "Location", "Costume", "VFX", "Transport"];
 
@@ -40,29 +52,47 @@ export default function VendorsView() {
     return matchesCat && matchesSearch;
   });
 
+  const columns: ResponsiveTableColumn<Vendor>[] = [
+    { key: "name", header: "Vendor", primary: true, render: v => <span className="font-semibold">{v.name}</span> },
+    { key: "cat", header: "Category", render: v => <span className="px-2 py-0.5 bg-muted text-muted-foreground rounded text-xs font-medium">{v.cat}</span> },
+    { key: "contact", header: "Contact", render: v => <span className="text-xs text-muted-foreground">{v.contact}</span> },
+    { key: "outstanding", header: "Outstanding", render: v => <span className="font-bold font-display">{v.outstanding}</span> },
+    { key: "invoices", header: "Invoices", render: v => <span className="font-medium">{v.invoices}</span> },
+    { key: "status", header: "Status", render: v => <StatusBadge tone={vendorTone[v.status]}>{v.status}</StatusBadge> },
+    {
+      key: "actions", header: "",
+      render: v => (
+        <div className="flex gap-2" onClick={e => e.stopPropagation()}>
+          <button className="text-xs font-semibold text-primary hover:underline">View</button>
+          <button className="text-xs font-semibold text-muted-foreground hover:text-foreground hover:underline">Pay</button>
+        </div>
+      ),
+    },
+  ];
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex h-[calc(100vh-3.5rem)]"
+      className="flex flex-col lg:flex-row lg:h-[calc(100vh-3.5rem)]"
     >
       {/* Main table */}
-      <div className="flex-1 flex flex-col min-w-0 p-6">
-        <div className="flex items-center justify-between mb-4">
+      <div className="flex-1 flex flex-col min-w-0 p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
           <div>
-            <h1 className="text-3xl font-display font-bold">Vendors</h1>
+            <h1 className="text-2xl sm:text-3xl font-display font-bold">Vendors</h1>
             <p className="text-muted-foreground text-sm">28 active vendor relationships</p>
           </div>
           <button
             data-testid="button-add-vendor"
-            className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity"
+            className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity self-start sm:self-auto"
           >
             + Add Vendor
           </button>
         </div>
 
-        <div className="flex items-center gap-3 mb-4">
-          <div className="relative flex-1 max-w-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4">
+          <div className="relative w-full sm:flex-1 sm:max-w-xs">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <Input
               data-testid="input-vendor-search"
@@ -72,7 +102,7 @@ export default function VendorsView() {
               onChange={e => setSearch(e.target.value)}
             />
           </div>
-          <div className="flex gap-1.5">
+          <div className="flex gap-1.5 flex-wrap">
             {categories.map(c => (
               <button
                 key={c}
@@ -85,59 +115,19 @@ export default function VendorsView() {
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-lg overflow-hidden flex-1">
-          <table className="w-full text-sm">
-            <thead className="bg-muted/50 border-b border-border text-left">
-              <tr>
-                <th className="p-3 text-muted-foreground font-medium">Vendor</th>
-                <th className="p-3 text-muted-foreground font-medium">Category</th>
-                <th className="p-3 text-muted-foreground font-medium">Contact</th>
-                <th className="p-3 text-muted-foreground font-medium">Outstanding</th>
-                <th className="p-3 text-muted-foreground font-medium">Invoices</th>
-                <th className="p-3 text-muted-foreground font-medium">Status</th>
-                <th className="p-3 text-muted-foreground font-medium"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {filtered.map((v, i) => (
-                <tr
-                  key={i}
-                  onClick={() => setSelectedVendor(v)}
-                  className={`hover:bg-muted/30 transition-colors cursor-pointer ${selectedVendor.name === v.name ? "bg-primary/5" : ""}`}
-                >
-                  <td className="p-3 font-semibold">{v.name}</td>
-                  <td className="p-3">
-                    <span className="px-2 py-0.5 bg-muted text-muted-foreground rounded text-xs font-medium">{v.cat}</span>
-                  </td>
-                  <td className="p-3 text-xs text-muted-foreground">{v.contact}</td>
-                  <td className="p-3 font-bold font-display">{v.outstanding}</td>
-                  <td className="p-3 text-center font-medium">{v.invoices}</td>
-                  <td className="p-3">
-                    <span className={`px-2 py-0.5 rounded text-xs font-bold ${
-                      v.status === "Active" ? "bg-green-500/10 text-green-600" :
-                      v.status === "Flagged" ? "bg-destructive/10 text-destructive" :
-                      "bg-muted text-muted-foreground"
-                    }`}>{v.status}</span>
-                  </td>
-                  <td className="p-3">
-                    <div className="flex gap-2">
-                      <button className="text-xs font-semibold text-primary hover:underline">View</button>
-                      <button className="text-xs font-semibold text-muted-foreground hover:text-foreground hover:underline">Pay</button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <ResponsiveTable
+          columns={columns}
+          rows={filtered}
+          rowKey={v => v.name}
+          onRowClick={setSelectedVendor}
+          isRowSelected={v => v.name === selectedVendor.name}
+        />
       </div>
 
       {/* Sidebar detail */}
-      <div className="w-72 shrink-0 border-l border-border p-5 overflow-y-auto">
+      <div className="w-full lg:w-72 shrink-0 border-t lg:border-t-0 lg:border-l border-border p-5 lg:overflow-y-auto">
         <h3 className="font-display font-bold text-lg mb-1">{selectedVendor.name}</h3>
-        <span className={`px-2 py-0.5 rounded text-xs font-bold ${
-          selectedVendor.status === "Active" ? "bg-green-500/10 text-green-600" : "bg-destructive/10 text-destructive"
-        }`}>{selectedVendor.status}</span>
+        <StatusBadge tone={vendorTone[selectedVendor.status]}>{selectedVendor.status}</StatusBadge>
 
         <div className="mt-4 space-y-2 text-sm">
           <div>

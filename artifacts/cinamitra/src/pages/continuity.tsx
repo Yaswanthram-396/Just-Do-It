@@ -1,10 +1,21 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
+import { PageHeader } from "@/components/patterns/PageHeader";
+import { KpiGrid } from "@/components/patterns/KpiGrid";
+import { StatusBadge } from "@/components/patterns/StatusBadge";
+import { ResponsiveTable, type ResponsiveTableColumn } from "@/components/patterns/ResponsiveTable";
 
-const continuityLog = [
+interface ContinuityItem {
+  scene: string;
+  char: string;
+  type: string;
+  desc: string;
+  status: "Flagged" | "Monitoring" | "Resolved";
+}
+
+const continuityLog: ContinuityItem[] = [
   { scene: "41", char: "NTR Jr.", type: "Wardrobe", desc: "White kurta sleeve rolled up in Scene 34, must match", status: "Flagged" },
   { scene: "55", char: "Saif Ali Khan", type: "Props", desc: "Villain's ring was absent in last cut of Scene 50", status: "Monitoring" },
   { scene: "67", char: "NTR Jr.", type: "Makeup", desc: "Scar on left cheek must be consistent with Scene 60", status: "Flagged" },
@@ -20,29 +31,22 @@ const continuityLog = [
 ];
 
 const characters = [
-  {
-    name: "NTR Jr.",
-    scenes: ["12", "23", "34", "41", "55", "67", "78", "89", "103"],
-    baseNote: "White kurta + gold trim (Scenes 34–55). Torn state from Scene 90 onwards.",
-  },
-  {
-    name: "Saif Ali Khan",
-    scenes: ["23", "41", "50", "55", "67", "103"],
-    baseNote: "Villain dark coat established Scene 23. Ring continuity critical.",
-  },
-  {
-    name: "Female Lead",
-    scenes: ["12", "55", "89"],
-    baseNote: "Traditional silk saree. Bun hairstyle consistent.",
-  },
-  {
-    name: "Antagonist 2",
-    scenes: ["41", "67", "103"],
-    baseNote: "Uniform outfit. Beard growth tracked across shooting days.",
-  },
+  { name: "NTR Jr.", scenes: ["12", "23", "34", "41", "55", "67", "78", "89", "103"], baseNote: "White kurta + gold trim (Scenes 34–55). Torn state from Scene 90 onwards." },
+  { name: "Saif Ali Khan", scenes: ["23", "41", "50", "55", "67", "103"], baseNote: "Villain dark coat established Scene 23. Ring continuity critical." },
+  { name: "Female Lead", scenes: ["12", "55", "89"], baseNote: "Traditional silk saree. Bun hairstyle consistent." },
+  { name: "Antagonist 2", scenes: ["41", "67", "103"], baseNote: "Uniform outfit. Beard growth tracked across shooting days." },
 ];
 
 const filters = ["All", "Wardrobe", "Props", "Makeup", "Flagged"];
+const statusTone = { Flagged: "destructive", Resolved: "success", Monitoring: "warning" } as const;
+
+const continuityColumns: ResponsiveTableColumn<ContinuityItem>[] = [
+  { key: "scene", header: "Scene", primary: true, render: r => <Link href="/scenes/34" className="font-bold font-display text-primary hover:underline">Scene {r.scene}</Link> },
+  { key: "char", header: "Character", render: r => <span className="font-medium">{r.char}</span> },
+  { key: "type", header: "Type", render: r => <span className="px-2 py-0.5 rounded bg-muted text-muted-foreground text-xs font-medium">{r.type}</span> },
+  { key: "desc", header: "Issue", className: "max-w-[220px]", render: r => <span className="text-muted-foreground text-xs">{r.desc}</span> },
+  { key: "status", header: "Status", render: r => <StatusBadge tone={statusTone[r.status]}>{r.status}</StatusBadge> },
+];
 
 export default function ContinuityView() {
   const [activeFilter, setActiveFilter] = useState("All");
@@ -57,37 +61,21 @@ export default function ContinuityView() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="p-8 max-w-[1400px] mx-auto space-y-8"
+      className="p-4 sm:p-6 lg:p-8 max-w-[1400px] mx-auto space-y-6 sm:space-y-8"
     >
-      <header className="py-6 border-b border-border/50 relative">
-        <Link href="/" className="absolute -top-4 text-xs text-muted-foreground flex items-center gap-1 hover:text-primary transition-colors">
-          <ArrowLeft className="w-3 h-3" /> Back to Role Switcher
-        </Link>
-        <h1 className="text-4xl font-display font-bold tracking-tight">Continuity Dashboard</h1>
-        <p className="text-xl text-muted-foreground mt-2">Devara: Part 2</p>
-      </header>
+      <PageHeader title="Continuity Dashboard" subtitle="Devara: Part 2" />
 
-      <div className="grid grid-cols-3 gap-4">
-        {[
-          { label: "Continuity Warnings", value: "4", sub: "require action", urgent: true },
-          { label: "Scenes Logged", value: "89", sub: "of 312 total", urgent: false },
-          { label: "Characters Tracked", value: "12", sub: "active in production", urgent: false },
-        ].map((k, i) => (
-          <Card key={i} className={`border ${k.urgent ? "bg-destructive/5 border-destructive/30" : "bg-card border-border"} hover:border-primary/50 transition-colors`}>
-            <CardContent className="p-6">
-              <p className={`text-xs font-bold uppercase tracking-widest mb-2 ${k.urgent ? "text-destructive" : "text-muted-foreground"}`}>{k.label}</p>
-              <p className={`text-4xl font-display font-bold ${k.urgent ? "text-destructive" : ""}`}>{k.value}</p>
-              <p className="text-xs text-muted-foreground mt-2">{k.sub}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <KpiGrid items={[
+        { label: "Continuity Warnings", value: "4", sub: "require action", tone: "destructive" },
+        { label: "Scenes Logged", value: "89", sub: "of 312 total" },
+        { label: "Characters Tracked", value: "12", sub: "active in production" },
+      ]} />
 
-      <div className="grid md:grid-cols-3 gap-8">
+      <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
         <div className="md:col-span-2 space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-display font-bold">Continuity Log</h2>
-            <div className="flex gap-2">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <h2 className="text-lg sm:text-xl font-display font-bold">Continuity Log</h2>
+            <div className="flex gap-2 flex-wrap">
               {filters.map(f => (
                 <button
                   key={f}
@@ -99,44 +87,11 @@ export default function ContinuityView() {
               ))}
             </div>
           </div>
-          <div className="bg-card border border-border rounded-lg overflow-hidden">
-            <table className="w-full text-sm">
-              <thead className="bg-muted/50 border-b border-border text-left">
-                <tr>
-                  <th className="p-3 text-muted-foreground font-medium">Scene</th>
-                  <th className="p-3 text-muted-foreground font-medium">Character</th>
-                  <th className="p-3 text-muted-foreground font-medium">Type</th>
-                  <th className="p-3 text-muted-foreground font-medium">Issue</th>
-                  <th className="p-3 text-muted-foreground font-medium">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {filtered.map((r, i) => (
-                  <tr key={i} className="hover:bg-muted/30 transition-colors">
-                    <td className="p-3">
-                      <Link href="/scenes/34" className="font-bold font-display text-primary hover:underline">{r.scene}</Link>
-                    </td>
-                    <td className="p-3 font-medium">{r.char}</td>
-                    <td className="p-3">
-                      <span className="px-2 py-0.5 rounded bg-muted text-muted-foreground text-xs font-medium">{r.type}</span>
-                    </td>
-                    <td className="p-3 text-muted-foreground text-xs max-w-[220px]">{r.desc}</td>
-                    <td className="p-3">
-                      <span className={`px-2 py-0.5 rounded text-xs font-bold ${
-                        r.status === "Flagged" ? "bg-destructive/10 text-destructive" :
-                        r.status === "Resolved" ? "bg-green-500/10 text-green-600" :
-                        "bg-amber-500/10 text-amber-600"
-                      }`}>{r.status}</span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <ResponsiveTable columns={continuityColumns} rows={filtered} rowKey={(r, i) => `${r.scene}-${i}`} emptyMessage="No continuity items match this filter." />
         </div>
 
         <div className="space-y-4">
-          <h2 className="text-xl font-display font-bold">Character Timelines</h2>
+          <h2 className="text-lg sm:text-xl font-display font-bold">Character Timelines</h2>
           {characters.map((ch, i) => (
             <Card key={i} className="bg-card border-border">
               <CardHeader className="pb-2 pt-4 px-4">
@@ -165,7 +120,7 @@ export default function ContinuityView() {
                 { a: "67", b: "71", note: "NTR scar must carry through" },
                 { a: "55", b: "78", note: "Wedding to boat — hairstyle check" },
               ].map((p, i) => (
-                <div key={i} className="flex items-center gap-2 bg-muted/40 rounded p-2 text-xs">
+                <div key={i} className="flex flex-wrap items-center gap-2 bg-muted/40 rounded p-2 text-xs">
                   <span className="font-bold font-display text-primary">Sc {p.a}</span>
                   <span className="text-muted-foreground">→</span>
                   <span className="font-bold font-display text-primary">Sc {p.b}</span>
